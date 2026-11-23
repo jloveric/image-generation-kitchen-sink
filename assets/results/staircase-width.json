@@ -1,0 +1,678 @@
+[
+  {
+    "settings": {
+      "label": "steps-12x96-gaussian-wider-bandwidth-refined",
+      "config": {
+        "inputs": 1,
+        "outputs": 1,
+        "width": 48,
+        "winners": 8,
+        "depth": 12,
+        "competition": "layer",
+        "readout": "class-sum",
+        "gate": "gaussian",
+        "gate_width": 0.5,
+        "layer_gate_widths": [
+          0.24,
+          0.231,
+          0.222,
+          0.213,
+          0.204,
+          0.195,
+          0.185,
+          0.176,
+          0.167,
+          0.158,
+          0.149,
+          0.14
+        ],
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0
+      },
+      "phases": [
+        [
+          "signsgd",
+          0.003,
+          128,
+          80,
+          1.0
+        ],
+        [
+          "lion",
+          0.0015,
+          128,
+          120,
+          0.8
+        ],
+        [
+          "lion",
+          0.0005,
+          128,
+          140,
+          0.85
+        ]
+      ],
+      "backend": "mojo",
+      "schedule": "hold-cosine",
+      "task": "steps",
+      "samples": 12288
+    },
+    "parameters": 102624,
+    "validation": {
+      "runs": [
+        {
+          "seed": 1,
+          "phase_epochs": [
+            60,
+            100,
+            0
+          ],
+          "rmse": 0.2854457087240994,
+          "smooth_rmse": 0.01603699978144547,
+          "finest_steps_rmse": 0.5856279309586342,
+          "plateau_ripple": 0.07389175692373501,
+          "smooth_slope_error": 6.691310178171228
+        },
+        {
+          "seed": 2,
+          "phase_epochs": [
+            75,
+            85,
+            95
+          ],
+          "rmse": 0.29430939017999297,
+          "smooth_rmse": 0.015949166650444525,
+          "finest_steps_rmse": 0.5832442673162088,
+          "plateau_ripple": 0.07758305752077675,
+          "smooth_slope_error": 7.360689879059502
+        },
+        {
+          "seed": 3,
+          "phase_epochs": [
+            75,
+            50,
+            0
+          ],
+          "rmse": 0.30036742072281236,
+          "smooth_rmse": 0.022688975221905962,
+          "finest_steps_rmse": 0.565664851230982,
+          "plateau_ripple": 0.050238592148629455,
+          "smooth_slope_error": 9.295214890009671
+        }
+      ],
+      "median": {
+        "rmse": 0.29430939017999297,
+        "smooth_rmse": 0.01603699978144547,
+        "finest_steps_rmse": 0.5832442673162088,
+        "plateau_ripple": 0.07389175692373501,
+        "smooth_slope_error": 7.360689879059502
+      }
+    },
+    "test": {
+      "runs": [
+        {
+          "seed": 7,
+          "phase_epochs": [
+            65,
+            10,
+            0
+          ],
+          "rmse": 0.30206672458695577,
+          "smooth_rmse": 0.03803006589628552,
+          "finest_steps_rmse": 0.5665459000821057,
+          "plateau_ripple": 0.043487979460265384,
+          "smooth_slope_error": 10.191250186748976
+        },
+        {
+          "seed": 8,
+          "phase_epochs": [
+            60,
+            70,
+            0
+          ],
+          "rmse": 0.29439904093059954,
+          "smooth_rmse": 0.027338054066293978,
+          "finest_steps_rmse": 0.5873907631389609,
+          "plateau_ripple": 0.07571446951560466,
+          "smooth_slope_error": 11.662736082459194
+        },
+        {
+          "seed": 9,
+          "phase_epochs": [
+            75,
+            80,
+            0
+          ],
+          "rmse": 0.2895011406009544,
+          "smooth_rmse": 0.017337145563812772,
+          "finest_steps_rmse": 0.5718460373514969,
+          "plateau_ripple": 0.06379401728240647,
+          "smooth_slope_error": 8.763432258459975
+        }
+      ],
+      "median": {
+        "rmse": 0.29439904093059954,
+        "smooth_rmse": 0.027338054066293978,
+        "finest_steps_rmse": 0.5718460373514969,
+        "plateau_ripple": 0.06379401728240647,
+        "smooth_slope_error": 10.191250186748976
+      }
+    }
+  },
+  {
+    "settings": {
+      "label": "steps-width-128-refined",
+      "config": {
+        "inputs": 1,
+        "outputs": 1,
+        "width": 64,
+        "winners": 8,
+        "depth": 12,
+        "competition": "layer",
+        "readout": "class-sum",
+        "gate": "gaussian",
+        "gate_width": 0.5,
+        "layer_gate_widths": [
+          0.24,
+          0.231,
+          0.222,
+          0.213,
+          0.204,
+          0.195,
+          0.185,
+          0.176,
+          0.167,
+          0.158,
+          0.149,
+          0.14
+        ],
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0
+      },
+      "phases": [
+        [
+          "signsgd",
+          0.003,
+          128,
+          80,
+          1.0
+        ],
+        [
+          "lion",
+          0.0015,
+          128,
+          120,
+          0.8
+        ],
+        [
+          "lion",
+          0.0005,
+          128,
+          140,
+          0.85
+        ]
+      ],
+      "backend": "mojo",
+      "schedule": "hold-cosine",
+      "task": "steps",
+      "samples": 12288
+    },
+    "parameters": 181888,
+    "validation": {
+      "runs": [
+        {
+          "seed": 1,
+          "phase_epochs": [
+            55,
+            45,
+            0
+          ],
+          "rmse": 0.2944669528499167,
+          "smooth_rmse": 0.03630779088367662,
+          "finest_steps_rmse": 0.5520913768102873,
+          "plateau_ripple": 0.06628243307867178,
+          "smooth_slope_error": 12.908226038382585
+        },
+        {
+          "seed": 2,
+          "phase_epochs": [
+            50,
+            100,
+            75
+          ],
+          "rmse": 0.2920444893602005,
+          "smooth_rmse": 0.02012843156096728,
+          "finest_steps_rmse": 0.5711052707083166,
+          "plateau_ripple": 0.07048912797688335,
+          "smooth_slope_error": 7.626705600026783
+        },
+        {
+          "seed": 3,
+          "phase_epochs": [
+            70,
+            45,
+            0
+          ],
+          "rmse": 0.27970012183236687,
+          "smooth_rmse": 0.03424483854079212,
+          "finest_steps_rmse": 0.5720758250217793,
+          "plateau_ripple": 0.07982224278286097,
+          "smooth_slope_error": 15.681439130172727
+        }
+      ],
+      "median": {
+        "rmse": 0.2920444893602005,
+        "smooth_rmse": 0.03424483854079212,
+        "finest_steps_rmse": 0.5711052707083166,
+        "plateau_ripple": 0.07048912797688335,
+        "smooth_slope_error": 12.908226038382585
+      }
+    },
+    "test": {
+      "runs": [
+        {
+          "seed": 7,
+          "phase_epochs": [
+            80,
+            105,
+            0
+          ],
+          "rmse": 0.30271560743498077,
+          "smooth_rmse": 0.014752786916421278,
+          "finest_steps_rmse": 0.5782285023991737,
+          "plateau_ripple": 0.09681361712162083,
+          "smooth_slope_error": 8.198618456523722
+        },
+        {
+          "seed": 8,
+          "phase_epochs": [
+            75,
+            120,
+            25
+          ],
+          "rmse": 0.28363458241897777,
+          "smooth_rmse": 0.021972112091111294,
+          "finest_steps_rmse": 0.5790137238290755,
+          "plateau_ripple": 0.07346825759412294,
+          "smooth_slope_error": 7.8855929983461905
+        },
+        {
+          "seed": 9,
+          "phase_epochs": [
+            65,
+            60,
+            25
+          ],
+          "rmse": 0.2877273404806046,
+          "smooth_rmse": 0.020932054076722804,
+          "finest_steps_rmse": 0.5754043503134909,
+          "plateau_ripple": 0.08179805505924913,
+          "smooth_slope_error": 9.71934408966122
+        }
+      ],
+      "median": {
+        "rmse": 0.2877273404806046,
+        "smooth_rmse": 0.020932054076722804,
+        "finest_steps_rmse": 0.5782285023991737,
+        "plateau_ripple": 0.08179805505924913,
+        "smooth_slope_error": 8.198618456523722
+      }
+    }
+  },
+  {
+    "settings": {
+      "label": "steps-width-192-refined",
+      "config": {
+        "inputs": 1,
+        "outputs": 1,
+        "width": 96,
+        "winners": 8,
+        "depth": 12,
+        "competition": "layer",
+        "readout": "class-sum",
+        "gate": "gaussian",
+        "gate_width": 0.5,
+        "layer_gate_widths": [
+          0.24,
+          0.231,
+          0.222,
+          0.213,
+          0.204,
+          0.195,
+          0.185,
+          0.176,
+          0.167,
+          0.158,
+          0.149,
+          0.14
+        ],
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0
+      },
+      "phases": [
+        [
+          "signsgd",
+          0.003,
+          128,
+          80,
+          1.0
+        ],
+        [
+          "lion",
+          0.0015,
+          128,
+          120,
+          0.8
+        ],
+        [
+          "lion",
+          0.0005,
+          128,
+          140,
+          0.85
+        ]
+      ],
+      "backend": "mojo",
+      "schedule": "hold-cosine",
+      "task": "steps",
+      "samples": 12288
+    },
+    "parameters": 408000,
+    "validation": {
+      "runs": [
+        {
+          "seed": 1,
+          "phase_epochs": [
+            65,
+            70,
+            0
+          ],
+          "rmse": 0.276330997845637,
+          "smooth_rmse": 0.028655161984553323,
+          "finest_steps_rmse": 0.5802733589662266,
+          "plateau_ripple": 0.08214392490963834,
+          "smooth_slope_error": 14.397400236887348
+        },
+        {
+          "seed": 2,
+          "phase_epochs": [
+            80,
+            120,
+            0
+          ],
+          "rmse": 0.2756733811772244,
+          "smooth_rmse": 0.0168890147716429,
+          "finest_steps_rmse": 0.5641282518288805,
+          "plateau_ripple": 0.08072747143559432,
+          "smooth_slope_error": 10.540843242553018
+        },
+        {
+          "seed": 3,
+          "phase_epochs": [
+            80,
+            95,
+            0
+          ],
+          "rmse": 0.2856833685631779,
+          "smooth_rmse": 0.020620644827813697,
+          "finest_steps_rmse": 0.5742922718543348,
+          "plateau_ripple": 0.08158227885108248,
+          "smooth_slope_error": 12.35923846313091
+        }
+      ],
+      "median": {
+        "rmse": 0.276330997845637,
+        "smooth_rmse": 0.020620644827813697,
+        "finest_steps_rmse": 0.5742922718543348,
+        "plateau_ripple": 0.08158227885108248,
+        "smooth_slope_error": 12.35923846313091
+      }
+    },
+    "test": {
+      "runs": [
+        {
+          "seed": 7,
+          "phase_epochs": [
+            80,
+            55,
+            0
+          ],
+          "rmse": 0.29001064960621364,
+          "smooth_rmse": 0.03815978042612626,
+          "finest_steps_rmse": 0.5716365279183752,
+          "plateau_ripple": 0.08535218855094419,
+          "smooth_slope_error": 13.269368191926043
+        },
+        {
+          "seed": 8,
+          "phase_epochs": [
+            80,
+            90,
+            0
+          ],
+          "rmse": 0.28752413943533217,
+          "smooth_rmse": 0.0202362752616522,
+          "finest_steps_rmse": 0.5588888389008153,
+          "plateau_ripple": 0.08007683340412734,
+          "smooth_slope_error": 10.009606973234236
+        },
+        {
+          "seed": 9,
+          "phase_epochs": [
+            80,
+            80,
+            140
+          ],
+          "rmse": 0.2653925958130413,
+          "smooth_rmse": 0.01909978317108394,
+          "finest_steps_rmse": 0.5731886321985603,
+          "plateau_ripple": 0.11141138916178556,
+          "smooth_slope_error": 12.809526902042732
+        }
+      ],
+      "median": {
+        "rmse": 0.28752413943533217,
+        "smooth_rmse": 0.0202362752616522,
+        "finest_steps_rmse": 0.5716365279183752,
+        "plateau_ripple": 0.08535218855094419,
+        "smooth_slope_error": 12.809526902042732
+      }
+    }
+  },
+  {
+    "settings": {
+      "label": "steps-width-96-dual-refined",
+      "config": {
+        "inputs": 1,
+        "outputs": 1,
+        "width": 48,
+        "winners": 8,
+        "depth": 12,
+        "competition": "layer",
+        "readout": "class-sum",
+        "gate": "gaussian-dual",
+        "gate_width": 0.5,
+        "layer_gate_widths": [
+          0.24,
+          0.231,
+          0.222,
+          0.213,
+          0.204,
+          0.195,
+          0.185,
+          0.176,
+          0.167,
+          0.158,
+          0.149,
+          0.14
+        ],
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0
+      },
+      "phases": [
+        [
+          "signsgd",
+          0.003,
+          128,
+          80,
+          1.0
+        ],
+        [
+          "lion",
+          0.0015,
+          128,
+          120,
+          0.8
+        ],
+        [
+          "lion",
+          0.0005,
+          128,
+          140,
+          0.85
+        ]
+      ],
+      "backend": "mojo",
+      "schedule": "hold-cosine",
+      "task": "steps",
+      "samples": 12288
+    },
+    "parameters": 102624,
+    "validation": {
+      "runs": [
+        {
+          "seed": 1,
+          "phase_epochs": [
+            70,
+            45,
+            0
+          ],
+          "rmse": 0.29493822753708304,
+          "smooth_rmse": 0.021518766543241655,
+          "finest_steps_rmse": 0.5740983602719043,
+          "plateau_ripple": 0.10027845487997761,
+          "smooth_slope_error": 12.728528491636794
+        },
+        {
+          "seed": 2,
+          "phase_epochs": [
+            40,
+            75,
+            0
+          ],
+          "rmse": 0.2718724456338213,
+          "smooth_rmse": 0.020116000619813227,
+          "finest_steps_rmse": 0.5611756867907333,
+          "plateau_ripple": 0.05976621793390424,
+          "smooth_slope_error": 14.704131273878925
+        },
+        {
+          "seed": 3,
+          "phase_epochs": [
+            70,
+            25,
+            0
+          ],
+          "rmse": 0.30368381057741417,
+          "smooth_rmse": 0.021698598436581965,
+          "finest_steps_rmse": 0.5682554584936486,
+          "plateau_ripple": 0.1105778031400975,
+          "smooth_slope_error": 8.561279061776775
+        }
+      ],
+      "median": {
+        "rmse": 0.29493822753708304,
+        "smooth_rmse": 0.021518766543241655,
+        "finest_steps_rmse": 0.5682554584936486,
+        "plateau_ripple": 0.10027845487997761,
+        "smooth_slope_error": 12.728528491636794
+      }
+    },
+    "test": {
+      "runs": [
+        {
+          "seed": 7,
+          "phase_epochs": [
+            50,
+            120,
+            0
+          ],
+          "rmse": 0.3011007784501576,
+          "smooth_rmse": 0.01989869038128759,
+          "finest_steps_rmse": 0.5617445311535808,
+          "plateau_ripple": 0.0709276554354648,
+          "smooth_slope_error": 12.185378680403677
+        },
+        {
+          "seed": 8,
+          "phase_epochs": [
+            55,
+            75,
+            0
+          ],
+          "rmse": 0.2896463973014669,
+          "smooth_rmse": 0.02648430564231367,
+          "finest_steps_rmse": 0.5808826259929623,
+          "plateau_ripple": 0.07415658244697834,
+          "smooth_slope_error": 11.401568416426983
+        },
+        {
+          "seed": 9,
+          "phase_epochs": [
+            70,
+            35,
+            0
+          ],
+          "rmse": 0.2882741961756242,
+          "smooth_rmse": 0.032365644582162324,
+          "finest_steps_rmse": 0.569430296904356,
+          "plateau_ripple": 0.08813739075398448,
+          "smooth_slope_error": 12.409583325120073
+        }
+      ],
+      "median": {
+        "rmse": 0.2896463973014669,
+        "smooth_rmse": 0.02648430564231367,
+        "finest_steps_rmse": 0.569430296904356,
+        "plateau_ripple": 0.07415658244697834,
+        "smooth_slope_error": 12.185378680403677
+      }
+    }
+  }
+]

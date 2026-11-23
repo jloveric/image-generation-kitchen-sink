@@ -1,0 +1,2852 @@
+{
+  "image_sha256": "9f44cb31801a573788e5ec1b6e0f6b539e1f41c75239d18a2b756980ebca9d3b",
+  "screen": [
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 55,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 55,
+      "validation": {
+        "rmse": 0.2257853477643055,
+        "mae": 0.10850470513105392,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 18.94668481000194,
+        "channel_mae": [
+          0.05923277884721756,
+          0.05404951423406601,
+          0.04947439208626747
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 32,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.23431333557045214,
+        "mae": 0.11388508975505829,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 18.624659783692188,
+        "channel_mae": [
+          0.060923006385564804,
+          0.0566854402422905,
+          0.05321873724460602
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 32,
+        "depth": 2,
+        "rate": 0.003,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 64,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.22563782069446395,
+        "mae": 0.10969220101833344,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 18.95236198380436,
+        "channel_mae": [
+          0.059615835547447205,
+          0.05438226833939552,
+          0.05053973197937012
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 32,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.21545688640713107,
+        "mae": 0.10141492635011673,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.35339232299361,
+        "channel_mae": [
+          0.055866654962301254,
+          0.05090360343456268,
+          0.04535169154405594
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.2202658431897475,
+        "mae": 0.10519284754991531,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.161656794079246,
+        "channel_mae": [
+          0.057671818882226944,
+          0.053158897906541824,
+          0.04695814847946167
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 2,
+        "rate": 0.003,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 64,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.22740675840143326,
+        "mae": 0.1112004891037941,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 18.8845325626364,
+        "channel_mae": [
+          0.059634990990161896,
+          0.056477151811122894,
+          0.050688158720731735
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 65,
+      "validation": {
+        "rmse": 0.20950660152697684,
+        "mae": 0.09925224632024765,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.59664567161824,
+        "channel_mae": [
+          0.0543176531791687,
+          0.05032425373792648,
+          0.04423604905605316
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.2209700384766884,
+        "mae": 0.10653834044933319,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.13393208721239,
+        "channel_mae": [
+          0.058651018887758255,
+          0.0533001646399498,
+          0.04785593971610069
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 2,
+        "rate": 0.003,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 64,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.21845693652321066,
+        "mae": 0.10384894907474518,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.23328313049774,
+        "channel_mae": [
+          0.056977514177560806,
+          0.05189955234527588,
+          0.046895917505025864
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.20852771140536883,
+        "mae": 0.09877181798219681,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.63732437593418,
+        "channel_mae": [
+          0.05410696566104889,
+          0.04992205277085304,
+          0.044128332287073135
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.2150219682774467,
+        "mae": 0.10203100740909576,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.370943253174016,
+        "channel_mae": [
+          0.054944951087236404,
+          0.0511813685297966,
+          0.04691984876990318
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.003,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 64,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.21170895807514686,
+        "mae": 0.1011882871389389,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.505815217672193,
+        "channel_mae": [
+          0.054897017776966095,
+          0.05114785581827164,
+          0.04573717713356018
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.19755917831855707,
+        "mae": 0.0926428735256195,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.106655689472266,
+        "channel_mae": [
+          0.051291510462760925,
+          0.04642428830265999,
+          0.04124823585152626
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 24,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 65,
+      "validation": {
+        "rmse": 0.20898692835021637,
+        "mae": 0.09892823547124863,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.61821745640846,
+        "channel_mae": [
+          0.05455465614795685,
+          0.049732934683561325,
+          0.04410437121987343
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 24,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.3,
+          0.25,
+          0.2
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.22367874017324607,
+        "mae": 0.10874573141336441,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.02810575340459,
+        "channel_mae": [
+          0.05872281640768051,
+          0.05414523929357529,
+          0.05025005713105202
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 65,
+      "validation": {
+        "rmse": 0.19772733880568016,
+        "mae": 0.0923779234290123,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.0992654878971,
+        "channel_mae": [
+          0.0519283227622509,
+          0.04596937447786331,
+          0.04066884517669678
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.3,
+          0.25,
+          0.2
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.20711128477454585,
+        "mae": 0.09709753096103668,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.696524658559248,
+        "channel_mae": [
+          0.05367124080657959,
+          0.048380255699157715,
+          0.04359445720911026
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.1978591718423694,
+        "mae": 0.0922725722193718,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.093476173959925,
+        "channel_mae": [
+          0.0511406809091568,
+          0.04635245352983475,
+          0.04091542214155197
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.3,
+          0.25,
+          0.2
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.21243807220250546,
+        "mae": 0.10068711638450623,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.47595287923886,
+        "channel_mae": [
+          0.05550273507833481,
+          0.05034821107983589,
+          0.0451793447136879
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 1,
+        "rate": 0.002,
+        "tau": 0.065,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": null,
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 60,
+      "validation": {
+        "rmse": 0.26957671364416647,
+        "mae": 0.13411062955856323,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 17.406952421045276,
+        "channel_mae": [
+          0.07117942720651627,
+          0.0654527097940445,
+          0.06453336775302887
+        ]
+      },
+      "updated_layers": [
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 128,
+        "depth": 1,
+        "rate": 0.002,
+        "tau": 0.065,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": null,
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.2618941700858778,
+        "mae": 0.12834079563617706,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 17.658083295497683,
+        "channel_mae": [
+          0.06722675263881683,
+          0.06568015366792679,
+          0.05960385873913765
+        ]
+      },
+      "updated_layers": [
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 32,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "class",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 60,
+      "validation": {
+        "rmse": 0.37954934886769215,
+        "mae": 0.2003176212310791,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 14.435234899027511,
+        "channel_mae": [
+          0.09721051901578903,
+          0.10163968801498413,
+          0.10162527859210968
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 32,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.24848901976781967,
+        "mae": 0.12187667191028595,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 18.114455855482387,
+        "channel_mae": [
+          0.06502893567085266,
+          0.05937163531780243,
+          0.05841398239135742
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "class",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 65,
+      "validation": {
+        "rmse": 0.43509568490660366,
+        "mae": 0.2256234735250473,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 13.248904389946256,
+        "channel_mae": [
+          0.11985885351896286,
+          0.10709112137556076,
+          0.11148437112569809
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.15
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.2175055801552494,
+        "mae": 0.10472040623426437,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.27119184612895,
+        "channel_mae": [
+          0.056359849870204926,
+          0.05197380110621452,
+          0.04874653369188309
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.19755917831855707,
+        "mae": 0.0926428735256195,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.106655689472266,
+        "channel_mae": [
+          0.051291510462760925,
+          0.04642428830265999,
+          0.04124823585152626
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 2,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.20171524215731304,
+        "mae": 0.09439057856798172,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.925825594566202,
+        "channel_mae": [
+          0.052672918885946274,
+          0.047245465219020844,
+          0.04166717827320099
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 3,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.19782848415491794,
+        "mae": 0.093424953520298,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.094823448068407,
+        "channel_mae": [
+          0.05183018371462822,
+          0.046594250947237015,
+          0.04171266779303551
+        ]
+      },
+      "updated_layers": [
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 65,
+      "validation": {
+        "rmse": 0.19772733880568016,
+        "mae": 0.0923779234290123,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.0992654878971,
+        "channel_mae": [
+          0.0519283227622509,
+          0.04596937447786331,
+          0.04066884517669678
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 2,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.19864089266207668,
+        "mae": 0.0934089869260788,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.059226749189676,
+        "channel_mae": [
+          0.052268318831920624,
+          0.04661821946501732,
+          0.041226692497730255
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 3,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.19833775771691264,
+        "mae": 0.09193261712789536,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.072491932032044,
+        "channel_mae": [
+          0.050326671451330185,
+          0.04686716943979263,
+          0.04070476070046425
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 80,
+      "validation": {
+        "rmse": 0.1978591718423694,
+        "mae": 0.0922725722193718,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.093476173959925,
+        "channel_mae": [
+          0.0511406809091568,
+          0.04635245352983475,
+          0.04091542214155197
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 2,
+      "epoch": 70,
+      "validation": {
+        "rmse": 0.19948893419047642,
+        "mae": 0.0940745547413826,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.02222371265413,
+        "channel_mae": [
+          0.05200016126036644,
+          0.04702039808034897,
+          0.04209093004465103
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 64,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.25,
+          0.18,
+          0.12
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 3,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.1937753972345175,
+        "mae": 0.08958638459444046,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 20.27462719619445,
+        "channel_mae": [
+          0.050755228847265244,
+          0.04427916184067726,
+          0.03934489190578461
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.3,
+          0.25,
+          0.2
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 1,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.20711128477454585,
+        "mae": 0.09709753096103668,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.696524658559248,
+        "channel_mae": [
+          0.05367124080657959,
+          0.048380255699157715,
+          0.04359445720911026
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.3,
+          0.25,
+          0.2
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 2,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.21117754368015146,
+        "mae": 0.10028170794248581,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.527645232096923,
+        "channel_mae": [
+          0.055019136518239975,
+          0.0499747097492218,
+          0.045428335666656494
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "trial": {
+        "task": "image",
+        "width": 48,
+        "depth": 3,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.3,
+          0.25,
+          0.2
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "seed": 3,
+      "epoch": 75,
+      "validation": {
+        "rmse": 0.21252323356895203,
+        "mae": 0.10001835972070694,
+        "no_winner_fraction": [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "psnr_db": 19.472471610566927,
+        "channel_mae": [
+          0.055409371852874756,
+          0.05052776634693146,
+          0.04409002885222435
+        ]
+      },
+      "updated_layers": [
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "grain_test_pair_count": 100,
+  "results": {
+    "selected": {
+      "trial": {
+        "task": "image",
+        "width": 96,
+        "depth": 2,
+        "rate": 0.002,
+        "tau": 0.15,
+        "connection": "affine",
+        "competition": "layer",
+        "readout": "class-sum",
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "gate": "gaussian",
+        "winners": 8,
+        "sine_omega": null,
+        "epochs": 80,
+        "batch": 128,
+        "rule": "signsgd",
+        "layer_gates": [
+          0.16,
+          0.1
+        ],
+        "output_bound": 1.0,
+        "output_levels": 256
+      },
+      "parameters": 334080,
+      "medians": {
+        "test_psnr_db": 19.835064958295227,
+        "test_rgb_mae": 0.04773785049716631,
+        "bright_test_psnr_db": 15.672097070890185,
+        "full_fit_psnr_db": 20.520507775852437,
+        "exact_channel_fraction": 0.6087708587708588,
+        "exact_pixel_fraction": 0.6016483516483516,
+        "grain_rgb_levels": 13.667502961256243
+      },
+      "runs": [
+        {
+          "trial": {
+            "task": "image",
+            "width": 96,
+            "depth": 2,
+            "rate": 0.002,
+            "tau": 0.15,
+            "connection": "affine",
+            "competition": "layer",
+            "readout": "class-sum",
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "gate": "gaussian",
+            "winners": 8,
+            "sine_omega": null,
+            "epochs": 80,
+            "batch": 128,
+            "rule": "signsgd",
+            "layer_gates": [
+              0.16,
+              0.1
+            ],
+            "output_bound": 1.0,
+            "output_levels": 256
+          },
+          "seed": 4,
+          "epoch": 80,
+          "validation": {
+            "rmse": 0.20045369944749913,
+            "mae": 0.09341218322515488,
+            "no_winner_fraction": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "psnr_db": 19.980318398749194,
+            "channel_mae": [
+              0.05138009041547775,
+              0.04781525582075119,
+              0.040922608226537704
+            ]
+          },
+          "updated_layers": [
+            true,
+            true
+          ],
+          "test": {
+            "test_psnr_db": 19.836432993053958,
+            "test_rgb_mae": 0.04771630341808001,
+            "bright_test_psnr_db": 15.695622913114617,
+            "full_fit_psnr_db": 20.544295380777893,
+            "exact_channel_fraction": 0.6062271062271062,
+            "exact_pixel_fraction": 0.6007326007326007,
+            "grain_rgb_levels": 13.181678895543074
+          }
+        },
+        {
+          "trial": {
+            "task": "image",
+            "width": 96,
+            "depth": 2,
+            "rate": 0.002,
+            "tau": 0.15,
+            "connection": "affine",
+            "competition": "layer",
+            "readout": "class-sum",
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "gate": "gaussian",
+            "winners": 8,
+            "sine_omega": null,
+            "epochs": 80,
+            "batch": 128,
+            "rule": "signsgd",
+            "layer_gates": [
+              0.16,
+              0.1
+            ],
+            "output_bound": 1.0,
+            "output_levels": 256
+          },
+          "seed": 5,
+          "epoch": 75,
+          "validation": {
+            "rmse": 0.1936806999094222,
+            "mae": 0.09058711677789688,
+            "no_winner_fraction": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "psnr_db": 20.278872996104376,
+            "channel_mae": [
+              0.04952464997768402,
+              0.046081915497779846,
+              0.04027381166815758
+            ]
+          },
+          "updated_layers": [
+            true,
+            true
+          ],
+          "test": {
+            "test_psnr_db": 19.88613581251865,
+            "test_rgb_mae": 0.04775939757625262,
+            "bright_test_psnr_db": 15.739652461882317,
+            "full_fit_psnr_db": 20.583677489241552,
+            "exact_channel_fraction": 0.6084656084656085,
+            "exact_pixel_fraction": 0.6019536019536019,
+            "grain_rgb_levels": 14.153327026969412
+          }
+        },
+        {
+          "trial": {
+            "task": "image",
+            "width": 96,
+            "depth": 2,
+            "rate": 0.002,
+            "tau": 0.15,
+            "connection": "affine",
+            "competition": "layer",
+            "readout": "class-sum",
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "gate": "gaussian",
+            "winners": 8,
+            "sine_omega": null,
+            "epochs": 80,
+            "batch": 128,
+            "rule": "signsgd",
+            "layer_gates": [
+              0.16,
+              0.1
+            ],
+            "output_bound": 1.0,
+            "output_levels": 256
+          },
+          "seed": 6,
+          "epoch": 80,
+          "validation": {
+            "rmse": 0.19756082589244925,
+            "mae": 0.09249922633171082,
+            "no_winner_fraction": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "psnr_db": 20.106583252517186,
+            "channel_mae": [
+              0.05026920884847641,
+              0.04734361171722412,
+              0.04113568738102913
+            ]
+          },
+          "updated_layers": [
+            true,
+            true
+          ],
+          "test": {
+            "test_psnr_db": 19.833696923536493,
+            "test_rgb_mae": 0.04728776961565018,
+            "bright_test_psnr_db": 15.707866009774154,
+            "full_fit_psnr_db": 20.496720170926977,
+            "exact_channel_fraction": 0.6090761090761091,
+            "exact_pixel_fraction": 0.5995115995115995,
+            "grain_rgb_levels": 13.029837434443534
+          }
+        },
+        {
+          "trial": {
+            "task": "image",
+            "width": 96,
+            "depth": 2,
+            "rate": 0.002,
+            "tau": 0.15,
+            "connection": "affine",
+            "competition": "layer",
+            "readout": "class-sum",
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "gate": "gaussian",
+            "winners": 8,
+            "sine_omega": null,
+            "epochs": 80,
+            "batch": 128,
+            "rule": "signsgd",
+            "layer_gates": [
+              0.16,
+              0.1
+            ],
+            "output_bound": 1.0,
+            "output_levels": 256
+          },
+          "seed": 7,
+          "epoch": 75,
+          "validation": {
+            "rmse": 0.19663423254662138,
+            "mae": 0.09229812026023865,
+            "no_winner_fraction": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "psnr_db": 20.147417363407452,
+            "channel_mae": [
+              0.05036018043756485,
+              0.04658468812704086,
+              0.041502006351947784
+            ]
+          },
+          "updated_layers": [
+            true,
+            true
+          ],
+          "test": {
+            "test_psnr_db": 19.753611546100057,
+            "test_rgb_mae": 0.04797964667280515,
+            "bright_test_psnr_db": 15.618660347518613,
+            "full_fit_psnr_db": 20.547745541711997,
+            "exact_channel_fraction": 0.6109076109076109,
+            "exact_pixel_fraction": 0.6019536019536019,
+            "grain_rgb_levels": 14.440451890667063
+          }
+        },
+        {
+          "trial": {
+            "task": "image",
+            "width": 96,
+            "depth": 2,
+            "rate": 0.002,
+            "tau": 0.15,
+            "connection": "affine",
+            "competition": "layer",
+            "readout": "class-sum",
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "gate": "gaussian",
+            "winners": 8,
+            "sine_omega": null,
+            "epochs": 80,
+            "batch": 128,
+            "rule": "signsgd",
+            "layer_gates": [
+              0.16,
+              0.1
+            ],
+            "output_bound": 1.0,
+            "output_levels": 256
+          },
+          "seed": 8,
+          "epoch": 80,
+          "validation": {
+            "rmse": 0.19732449386189344,
+            "mae": 0.09243378043174744,
+            "no_winner_fraction": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "psnr_db": 20.116979963044237,
+            "channel_mae": [
+              0.05014711990952492,
+              0.04681214317679405,
+              0.0416911244392395
+            ]
+          },
+          "updated_layers": [
+            true,
+            true
+          ],
+          "test": {
+            "test_psnr_db": 19.83686366128764,
+            "test_rgb_mae": 0.047688369949658714,
+            "bright_test_psnr_db": 15.648571228665752,
+            "full_fit_psnr_db": 20.471162487576493,
+            "exact_channel_fraction": 0.6096866096866097,
+            "exact_pixel_fraction": 0.6013431013431013,
+            "grain_rgb_levels": 14.385640972961497
+          }
+        },
+        {
+          "trial": {
+            "task": "image",
+            "width": 96,
+            "depth": 2,
+            "rate": 0.002,
+            "tau": 0.15,
+            "connection": "affine",
+            "competition": "layer",
+            "readout": "class-sum",
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "gate": "gaussian",
+            "winners": 8,
+            "sine_omega": null,
+            "epochs": 80,
+            "batch": 128,
+            "rule": "signsgd",
+            "layer_gates": [
+              0.16,
+              0.1
+            ],
+            "output_bound": 1.0,
+            "output_levels": 256
+          },
+          "seed": 9,
+          "epoch": 75,
+          "validation": {
+            "rmse": 0.20072941251758442,
+            "mae": 0.0934792160987854,
+            "no_winner_fraction": [
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            "psnr_db": 19.96837964258453,
+            "channel_mae": [
+              0.05127236247062683,
+              0.0472981221973896,
+              0.0416480228304863
+            ]
+          },
+          "updated_layers": [
+            true,
+            true
+          ],
+          "test": {
+            "test_psnr_db": 19.596140322488672,
+            "test_rgb_mae": 0.04899714266260465,
+            "bright_test_psnr_db": 15.463836218109304,
+            "full_fit_psnr_db": 20.480088156248026,
+            "exact_channel_fraction": 0.6074481074481074,
+            "exact_pixel_fraction": 0.6019536019536019,
+            "grain_rgb_levels": 12.565429065416286
+          }
+        }
+      ]
+    }
+  }
+}

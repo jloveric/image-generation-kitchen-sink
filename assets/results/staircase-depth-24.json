@@ -1,0 +1,178 @@
+[
+  {
+    "settings": {
+      "label": "steps-12x96-gaussian-wider-bandwidth-refined",
+      "config": {
+        "inputs": 1,
+        "outputs": 1,
+        "width": 48,
+        "winners": 8,
+        "depth": 12,
+        "competition": "layer",
+        "readout": "class-sum",
+        "gate": "gaussian",
+        "gate_width": 0.5,
+        "layer_gate_widths": [
+          0.24,
+          0.231,
+          0.222,
+          0.213,
+          0.204,
+          0.195,
+          0.185,
+          0.176,
+          0.167,
+          0.158,
+          0.149,
+          0.14
+        ],
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0
+      },
+      "phases": [
+        [
+          "signsgd",
+          0.003,
+          128,
+          80,
+          1.0
+        ],
+        [
+          "lion",
+          0.0015,
+          128,
+          120,
+          0.8
+        ],
+        [
+          "lion",
+          0.0005,
+          128,
+          140,
+          0.85
+        ]
+      ],
+      "backend": "mojo",
+      "schedule": "hold-cosine",
+      "task": "steps",
+      "samples": 12288
+    },
+    "seed": 8,
+    "parameters": 102624,
+    "phase_epochs": [
+      60,
+      70,
+      0
+    ],
+    "test": {
+      "rmse": 0.29439904093059954,
+      "smooth_rmse": 0.027338054066293978,
+      "finest_steps_rmse": 0.5873907631389609,
+      "plateau_ripple": 0.07571446951560466,
+      "smooth_slope_error": 11.662736082459194
+    }
+  },
+  {
+    "settings": {
+      "label": "steps-depth-24-refined",
+      "config": {
+        "inputs": 1,
+        "outputs": 1,
+        "width": 48,
+        "winners": 8,
+        "depth": 24,
+        "competition": "layer",
+        "readout": "class-sum",
+        "gate": "gaussian",
+        "gate_width": 0.5,
+        "layer_gate_widths": [
+          0.24,
+          0.236,
+          0.231,
+          0.227,
+          0.223,
+          0.218,
+          0.214,
+          0.21,
+          0.205,
+          0.201,
+          0.197,
+          0.192,
+          0.188,
+          0.183,
+          0.179,
+          0.175,
+          0.17,
+          0.166,
+          0.162,
+          0.157,
+          0.153,
+          0.149,
+          0.144,
+          0.14
+        ],
+        "readout_layers": "all",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0
+      },
+      "phases": [
+        [
+          "signsgd",
+          0.003,
+          128,
+          80,
+          1.0
+        ],
+        [
+          "lion",
+          0.0015,
+          128,
+          120,
+          0.8
+        ],
+        [
+          "lion",
+          0.0005,
+          128,
+          140,
+          0.85
+        ]
+      ],
+      "backend": "mojo",
+      "schedule": "hold-cosine",
+      "task": "steps",
+      "samples": 12288
+    },
+    "seed": 8,
+    "parameters": 214368,
+    "phase_epochs": [
+      80,
+      60,
+      0
+    ],
+    "test": {
+      "rmse": 0.2783318189765511,
+      "smooth_rmse": 0.04942495440260364,
+      "finest_steps_rmse": 0.5372634698375647,
+      "plateau_ripple": 0.06667228866453315,
+      "smooth_slope_error": 83.25585462796002
+    }
+  }
+]

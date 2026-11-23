@@ -1,0 +1,9 @@
+[project]
+name = "hebbian-fit"
+version = "0.1.0"
+description = "Supervised Hebbian regression from coordinates"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2.2", "matplotlib>=3.10", "pillow>=11"]
+
+[project.optional-dependencies]
+gpu = ["max-core>=26.7"]
