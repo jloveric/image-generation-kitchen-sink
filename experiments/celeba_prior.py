@@ -58,6 +58,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True, help="Mixture decoder export")
     parser.add_argument("--checkpoint", choices=("selected", "latest"), default="selected",
                         help="Fit codes and export decoder weights from this checkpoint")
+    parser.add_argument("--code-top-k", type=int, help="Bottleneck competition count when encoding training portraits")
+    parser.add_argument("--vector-gate-width", type=float, help="Gaussian width stored in the decoder export")
     args = parser.parse_args()
     if args.components < 2 or not np.isfinite(args.local_scale) or args.local_scale <= 0:
         parser.error("Choose at least two components and a positive finite local scale")
@@ -67,7 +69,7 @@ def main():
                                  for name in ("decoder.npz", "selected.npz", "latest.npz")}:
         parser.error("Choose an export path distinct from the decoder and training checkpoints")
     config = json.loads((args.run / "results.json").read_text())["config"]
-    model = model_for(config, args.run)
+    model = model_for(config, args.run, code_top_k=args.code_top_k, vector_gate_width=args.vector_gate_width)
     if args.local_rank is not None and args.local_rank > model.latent_width:
         parser.error("Local rank cannot exceed code width")
     load_checkpoint(args.run / f"{args.checkpoint}.npz", model)

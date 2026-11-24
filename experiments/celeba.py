@@ -152,7 +152,8 @@ def train(train_images, validation, path, args):
                         vector_output_class_width=args.vector_output_class_width,
                         vector_decoder_skip=args.vector_decoder_skip, projected_decoder_votes=args.projected_decoder_votes,
                         vector_gate_width=args.vector_gate_width, zero_init_bias=args.zero_init_bias,
-                        encoder_top_k=args.encoder_top_k, vector_top_k=args.vector_top_k)
+                        encoder_top_k=args.encoder_top_k, vector_top_k=args.vector_top_k,
+                        encoder_hidden_widths=args.encoder_hidden_widths)
     rng = np.random.default_rng(args.seed)
     latest, best = path / "latest.npz", path / "selected.npz"
     tuning = dict(coordinate_scale=1., decoder_rate_decay=1., encoder_gate_widths=[.24, .18],
@@ -164,7 +165,7 @@ def train(train_images, validation, path, args):
                   encoder_width=ENCODER_WIDTH, latent_width=LATENT, select_on_training=False,
                   vector_output_class_width=1, vector_decoder_skip=False, projected_decoder_votes=False,
                   checks_per_epoch=1, vector_hidden_depth=1, vector_gate_width=.24,
-                  zero_init_bias=False, encoder_top_k=[0, 0], vector_top_k=0)
+                  zero_init_bias=False, encoder_top_k=[0, 0], vector_top_k=0, encoder_hidden_widths=[])
     config = dict(epochs=args.epochs, seed=args.seed, lr=args.rate, encoder_rate=args.encoder_rate,
                   rule=args.rule, depth=args.depth, gate_width=args.gate_width, images=len(train_images),
                   validation_images=len(validation), **{key: getattr(args, key) for key in tuning})
@@ -373,6 +374,8 @@ def main():
                         help="Keep this many neurons per pool in each encoder layer. Zero uses Gaussian competition.")
     parser.add_argument("--encoder-width", type=int, default=ENCODER_WIDTH,
                         help="Total number of neurons in the first encoder layer, a multiple of six")
+    parser.add_argument("--encoder-hidden-widths", nargs="+", type=int, default=[], metavar="WIDTH",
+                        help="Widths of extra dense encoder layers before the bottleneck")
     parser.add_argument("--latent-width", type=int, default=LATENT,
                         help="Number of neurons in the bottleneck, an even integer")
     parser.add_argument("--decoder-rate-decay", type=float, default=1.,

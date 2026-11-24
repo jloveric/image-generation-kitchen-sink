@@ -69,6 +69,22 @@ class AutoencoderTest(unittest.TestCase):
         for key, array in model.state().items():
             np.testing.assert_array_equal(array, before[key])
 
+    def test_deeper_encoder_updates_all_layers_from_the_same_residual_signs(self):
+        settings = dict(images_per_batch=4, inputs=12, decoder_kind="vector", encoder_width=24,
+                        encoder_hidden_widths=(18, 12), latent_width=8, projected_encoder_votes=True)
+        a, b = Autoencoder(3, **settings), Autoencoder(3, **settings)
+        self.assertEqual([(layer.config.inputs, layer.config.units) for layer in a.encoder],
+                         [(12, 24), (24, 18), (18, 12), (12, 8)])
+        initial = a.state()
+        prediction = a.decode(a.encode(self.images))
+        targets = np.where(prediction < 0, .9, -.9).astype(np.float32)
+        a.step(self.images, None, targets, .004)
+        b.step(self.images, None, targets / 2, .004)
+        other = b.state()
+        for key, array in a.state().items():
+            self.assertFalse(np.array_equal(array, initial[key]), key)
+            np.testing.assert_array_equal(array, other[key], err_msg=key)
+
     def test_top_k_autoencoder_uses_signed_updates_in_each_layer(self):
         model = Autoencoder(3, images_per_batch=4, inputs=12, decoder_kind="vector",
                             encoder_width=24, latent_width=26, encoder_top_k=(5, 6), vector_top_k=1)
@@ -217,10 +233,11 @@ class AutoencoderTest(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
     def test_gpu_small_pools_and_balanced_encoder_feedback(self):
-        for skip, depth in ((False, 1), (True, 1), (True, 2)):
-            with self.subTest(skip=skip, depth=depth):
+        for skip, depth, extra_widths in ((False, 1, ()), (True, 1, ()), (True, 2, ()), (False, 2, (48, 24))):
+            with self.subTest(skip=skip, depth=depth, encoder_hidden_widths=extra_widths):
                 settings = dict(images_per_batch=4, inputs=12, decoder_kind="vector",
                                 projected_encoder_votes=True, bottleneck_pool_size=8, center_each_input=True,
+                                encoder_hidden_widths=extra_widths,
                                 vector_hidden_width=16, vector_hidden_depth=depth, vector_decoder_skip=skip, projected_decoder_votes=skip,
                                 decoder_rate_decay=.15 if skip else 1.)
                 cpu, gpu = Autoencoder(3, **settings), Autoencoder(3, backend="mojo", **settings)
@@ -232,7 +249,7 @@ class AutoencoderTest(unittest.TestCase):
                     model.step(self.images, None, targets, .004)
                 actual = gpu.state()
                 for key, expected in cpu.state().items():
-                    if skip and key.startswith("decoder_"):
+                    if (skip or extra_widths) and key.startswith("decoder_"):
                         # Roundoff near zero coactivity can change a sign update by one step.
                         continue
                     np.testing.assert_allclose(actual[key], expected, atol=3e-6, err_msg=key)

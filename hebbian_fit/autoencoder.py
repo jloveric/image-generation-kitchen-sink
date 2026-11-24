@@ -37,13 +37,17 @@ def vector_decoder_config(rule, inputs=LATENT, class_width=1, gate_width=.24, to
 
 
 def encoder_configs(inputs, rule, gate_widths=(.24, .18), encoder_width=ENCODER_WIDTH, latent_width=LATENT,
-                    top_k=(0, 0)):
+                    top_k=(0, 0), hidden_widths=()):
+    widths = (encoder_width, *hidden_widths)
     return (
         ModelConfig(inputs=inputs, outputs=3, width=encoder_width // 6, depth=1,
                     competition="output", gate="hard" if top_k[0] else "gaussian", gate_width=gate_widths[0],
                     top_k=top_k[0] or None,
                     hidden_rule=rule),
-        ModelConfig(inputs=encoder_width, outputs=1, width=latent_width // 2, depth=1,
+        *(ModelConfig(inputs=previous, outputs=3, width=width // 6, depth=1,
+                      competition="output", gate="gaussian", gate_width=gate_widths[0], hidden_rule=rule)
+          for previous, width in zip(widths, hidden_widths)),
+        ModelConfig(inputs=widths[-1], outputs=1, width=latent_width // 2, depth=1,
                     competition="output", gate="hard" if top_k[1] else "gaussian", gate_width=gate_widths[1],
                     top_k=top_k[1] or None,
                     hidden_rule=rule),
@@ -79,6 +83,11 @@ def projected_votes(teaching, projection, pair_index):
     votes = teaching[:, groups] * polarity
     return (np.ascontiguousarray(votes.sum(axis=2)[:, pair_index]),
             np.ascontiguousarray(np.count_nonzero(votes, axis=2)[:, pair_index], dtype=np.float32))
+
+
+def class_pair_indices(width):
+    class_width = width // 6
+    return np.broadcast_to(np.arange(width // 2).reshape(3, 1, class_width), (3, 2, class_width)).ravel()
 
 
 class EncoderLayer:
@@ -206,7 +215,8 @@ class Autoencoder:
                  normalize_each_input=False, paired_decoder_init=False, encoder_votes_per_pair=None,
                  encoder_width=ENCODER_WIDTH, latent_width=LATENT, vector_output_class_width=1,
                  vector_decoder_skip=False, projected_decoder_votes=False, vector_hidden_depth=1,
-                 vector_gate_width=.24, zero_init_bias=False, encoder_top_k=(0, 0), vector_top_k=0):
+                 vector_gate_width=.24, zero_init_bias=False, encoder_top_k=(0, 0), vector_top_k=0,
+                 encoder_hidden_widths=()):
         if decoder_kind not in ("coordinate", "vector"):
             raise ValueError("Unknown decoder kind")
         if vector_hidden_depth < 1 or (vector_hidden_depth > 1 and not vector_hidden_width):
@@ -225,6 +235,9 @@ class Autoencoder:
             raise ValueError("Output Top-K requires the image-vector decoder")
         if encoder_width < 6 or encoder_width % 6 or latent_width < 6 or latent_width % 2:
             raise ValueError("Encoder width must be a positive multiple of six and code width an even integer of at least six")
+        encoder_hidden_widths = tuple(encoder_hidden_widths)
+        if any(width < 6 or width % 6 for width in encoder_hidden_widths):
+            raise ValueError("Extra encoder widths must be positive multiples of six")
         self.decoder_kind = decoder_kind
         self.latent_width = latent_width
         if bottleneck_pool_size is not None and (
@@ -235,14 +248,18 @@ class Autoencoder:
         if encoder_votes_per_pair is not None and (
                 not projected_encoder_votes or encoder_votes_per_pair < 2 or encoder_votes_per_pair % 2):
             raise ValueError("Sparse balanced feedback needs a positive even vote count")
-        self.vote_projection = (vote_assignment(latent_width // 2, 0, projected_encoder_votes, encoder_votes_per_pair)
-                                if projected_latent_votes or projected_encoder_votes else None)
-        self.first_projection = (vote_assignment(encoder_width // 2, 1, True, encoder_votes_per_pair)
-                                 if projected_encoder_votes else None)
-        self.bottleneck_pairs = np.arange(latent_width) // 2
-        class_width = encoder_width // 6
-        self.first_pairs = np.broadcast_to(np.arange(encoder_width // 2).reshape(3, 1, class_width),
-                                           (3, 2, class_width)).ravel()
+        encoder_widths = (encoder_width, *encoder_hidden_widths)
+        vote_seeds = (1, *range(2 + vector_hidden_depth, 2 + vector_hidden_depth + len(encoder_hidden_widths)))
+        self.encoder_projections = [
+            (vote_assignment(width // 2, vote_seed, True, encoder_votes_per_pair), class_pair_indices(width))
+            if projected_encoder_votes else (None, None)
+            for width, vote_seed in zip(encoder_widths, vote_seeds, strict=True)
+        ]
+        self.encoder_projections.append((
+            vote_assignment(latent_width // 2, 0, projected_encoder_votes, encoder_votes_per_pair)
+            if projected_latent_votes or projected_encoder_votes else None,
+            np.arange(latent_width) // 2,
+        ))
         self.center_each_input = center_each_input or normalize_each_input
         self.normalize_each_input = normalize_each_input
         self.coordinate_scale = coordinate_scale
@@ -251,25 +268,28 @@ class Autoencoder:
             raise ValueError("Encoder input center must match the flattened input")
         self.images_per_batch = images_per_batch
         self.queries_per_batch = queries_per_batch
-        encoder_settings = encoder_configs(inputs, rule, encoder_gate_widths, encoder_width, latent_width, encoder_top_k)
+        encoder_settings = encoder_configs(inputs, rule, encoder_gate_widths, encoder_width, latent_width,
+                                           encoder_top_k, encoder_hidden_widths)
+        code_index = len(encoder_settings) - 1
+        encoder_seeds = (seed, *range(seed + 3, seed + 3 + len(encoder_hidden_widths)), seed + 1)
         self.encoder = [
-            EncoderLayer(config, seed + i, images_per_batch, backend, bottleneck=i == 1,
-                         pool_size=bottleneck_pool_size if i == 1 else None)
-            for i, config in enumerate(encoder_settings)
+            EncoderLayer(config, layer_seed, images_per_batch, backend, bottleneck=i == code_index,
+                         pool_size=bottleneck_pool_size if i == code_index else None)
+            for i, (config, layer_seed) in enumerate(zip(encoder_settings, encoder_seeds, strict=True))
         ]
         self.decoder_skip = vector_decoder_skip
         self.decoder_hidden_rate = decoder_rate_decay
         self.decoder_projections = []
         if projected_decoder_votes:
             pairs = 3 * vector_hidden_width
-            self.decoder_pairs = np.broadcast_to(np.arange(pairs).reshape(3, 1, vector_hidden_width),
-                                                 (3, 2, vector_hidden_width)).ravel()
+            self.decoder_pairs = class_pair_indices(2 * pairs)
         layers = []
         previous_width = latent_width
         for index in range(vector_hidden_depth if vector_hidden_width else 0):
             hidden_config = ModelConfig(inputs=previous_width, outputs=3, width=vector_hidden_width, depth=1,
                                         competition="output", gate="gaussian", gate_width=.5, hidden_rule=rule)
-            layers.append(EncoderLayer(hidden_config, seed + 3 + index, images_per_batch, backend, False))
+            layers.append(EncoderLayer(hidden_config, seed + 3 + len(encoder_hidden_widths) + index,
+                                       images_per_batch, backend, False))
             previous_width = hidden_config.units
             if projected_decoder_votes:
                 self.decoder_projections.append(vote_assignment(pairs, 2 + index, True))
@@ -367,12 +387,10 @@ class Autoencoder:
                 hidden_signs, hidden_counts = projected_votes(teaching, self.decoder_projections[index], self.decoder_pairs)
             layer.update(decoder_trace[index], hidden_signs, hidden_counts, rate * self.decoder_hidden_rate)
         encoder_rate = rate * encoder_rate_scale
-        first_signs, first_counts = (signs, counts) if self.first_projection is None else projected_votes(
-            teaching, self.first_projection, self.first_pairs)
-        self.encoder[0].update(traces[0], first_signs, first_counts, encoder_rate)
-        if self.vote_projection is not None:
-            signs, counts = projected_votes(teaching, self.vote_projection, self.bottleneck_pairs)
-        self.encoder[1].update(traces[1], signs, counts, encoder_rate)
+        for layer, trace, (projection, pairs) in zip(self.encoder, traces, self.encoder_projections, strict=True):
+            layer_signs, layer_counts = ((signs, counts) if projection is None else
+                                         projected_votes(teaching, projection, pairs))
+            layer.update(trace, layer_signs, layer_counts, encoder_rate)
 
     def components(self):
         models = {f"encoder_{i}": layer.model for i, layer in enumerate(self.encoder)}

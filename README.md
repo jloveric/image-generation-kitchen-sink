@@ -8,13 +8,93 @@ This repository tests dense mixed-class MLPs as black-box regressors. Every hidd
 
 ### CelebA face generation
 
-The sequential autoencoder with a **4,096-value bottleneck** reaches **119.24** squared RGB error per test portrait, down from **144.21** for the 2,048-value model in the manuscript. This error sums squared RGB differences on a 0–1 scale and averages them across all 19,962 official CelebA test portraits. The network maps **12,288 → 6,144 → 4,096 → 24,576**. The decoder receives only the bottleneck and produces an increase/decrease pair for each RGB value. All **201,361,408** weights and biases are independently initialized and trained by Lion-style local coactivity.
+#### 256-value bottleneck
 
-![Generated portraits from the lower-step sequential CelebA autoencoder](assets/results/celeba-target120-faces.png)
+The best 256-value model scores **184.19** summed squared RGB error per portrait on the 0–1 scale across all 19,962 official test portraits. Its dense layers are **12,288 → 3,072 → 1,536 → 256 → 1,536 → 24,576**, for **81,033,472** learned weights and biases. The encoder has three dense layers including the bottleneck. The decoder has two including the RGB layer. The bottleneck has one forty-eighth as many values as the input.
+
+![Portraits generated from the 256-value bottleneck](assets/results/celeba-256-faces.png)
+
+With the same two-pass schedule and the same bottleneck and RGB competition settings, the model with one extra layer on each side scored **185.38**, compared with **191.71** for the shallow model. Validation selected the deeper checkpoint after two passes and the shallow checkpoint after one pass. The one-pass experiments with two extra encoder layers, two extra decoder layers, or two on both sides scored **233.52**, **233.63**, and **239.77**, respectively.
+
+The winning run uses Lion-style local coactivity, batches of 128, and a starting RGB layer step of **0.0008**. All encoder layers and the decoder hidden layer start at **0.00012**. The first encoder layer keeps 768 winners per pool. The added encoder and decoder layers use Gaussian widths of 0.85 and 0.50, respectively. All 256 bottleneck values pass through. Fixed subtraction of the two activity magnitudes in each output pair gives one RGB value. With the trained weights fixed, validation selected an RGB Gaussian width of **0.40** for inference, lowering the test error from 185.38 to 184.19. [Full run settings and validation checks](assets/results/celeba-256.json)
+
+![Validation curves for the 256-value models](assets/results/celeba-256.png)
+
+For training, use the CelebA command with the following settings. Add `--vector-gate-width .40` to the reconstruction and sampler commands for the selected checkpoint. [CelebA data and commands](papers/README.md#celeba)
+
+```bash
+python -m experiments.celeba "$face_archive" --partitions "$face_partitions" --output "$run" \
+  --backend mojo --full-only --full-epochs 2 --checks-per-epoch 2 --reconstruction-only \
+  --decoder vector --encoder-width 3072 --encoder-hidden-widths 1536 --latent-width 256 \
+  --encoder-top-k 768 86 --encoder-gate-widths .85 .85 --vector-hidden-width 256 \
+  --projected-encoder-votes --projected-decoder-votes --center-encoder --decoder-rate-decay .15 \
+  --encoder-rate .15 --decoder-init-scale .12 --vector-gate-width .44 --images-per-batch 128 \
+  --rule lion --rate .0008
+```
+
+##### One further layer on each side
+
+Adding a 768-neuron encoder layer and a second 1,536-neuron decoder layer gives **12,288 → 3,072 → 1,536 → 768 → 256 → 1,536 → 1,536 → 24,576** with **84,378,112** learned weights and biases. Both layouts use the two-pass schedule above. At the training settings, the deeper model scored **232.82** on the official test split, compared with **185.38** for the previous layout. Adjusting the RGB Gaussian width on validation gave final test scores of **232.07** and **184.19**, respectively. The deeper model's validation error fell by only 0.04 in the last half pass. [Training curves](assets/results/celeba-256-extra-depth.png) · [Run settings and measurements](assets/results/celeba-256-extra-depth.json)
+
+![Portraits from the 256-value model with four encoder layers and three decoder layers](assets/results/celeba-256-extra-depth-faces.png)
+
+For the added layers, set `--encoder-hidden-widths 1536 768` and `--vector-hidden-depth 2` in the training command above. Use `--vector-gate-width .42` in the reconstruction and sampler commands.
+
+##### Smaller starting steps on the seven-layer model
+
+All runs use the same 256-value bottleneck, 84,378,112 parameters, and cosine schedule shape. Validation selected the checkpoint in each run. The table reports test error with the training RGB Gaussian width of 0.44.
+
+| Starting RGB step | Scheduled passes | Selected pass | Test RGB error ↓ |
+|---:|---:|---:|---:|
+| 0.0008 | 2 | 2 | 232.82 |
+| **0.0006** | **2** | **2** | **231.66** |
+| 0.0004 | 2 | 2 | 240.36 |
+| 0.0004 | 4 | 2.5 | 232.18 |
+
+At the validation-selected RGB Gaussian width of 0.42, lowering the starting step from 0.0008 to 0.0006 reduced test error from **232.07 to 230.91**. The four-pass 0.0004 run has roughly the same cumulative scheduled step as the two-pass 0.0008 run. Its best checkpoint occurs at 2.5 passes. To reproduce the best smaller-step run, use `--rate .0006` with the added-layer training command above. [Training curves](assets/results/celeba-256-smaller-step.png) · [Run settings and measurements](assets/results/celeba-256-smaller-step.json)
+
+![Portraits from the seven-layer, 256-value model trained at a starting step of 0.0006](assets/results/celeba-256-smaller-step-faces.png)
+
+#### 512-value bottleneck
+
+The best **512-value** autoencoder scores **161.16** squared RGB error per test portrait. It maps **12,288 → 6,144 → 512 → 24,576** with **91,257,344** learned weights and biases. The code has one twenty-fourth as many values as the input. Test error sums squared RGB differences on a 0–1 scale and averages them across all 19,962 official CelebA test portraits.
+
+![Portraits generated from a 512-value bottleneck](assets/results/celeba-refinement-faces.png)
+
+| Bottleneck values | Learned parameters | Test RGB error ↓ |
+|---:|---:|---:|
+| **512** | **91,257,344** | **161.16** |
+| 3,072 | 169,903,104 | 112.38 |
+| 4,096 | 201,361,408 | 105.32 |
+
+The 512-value model trains for one pass with Lion-style local coactivity, 1,536 winners per first encoder pool, 128 winners per bottleneck pool, and a Gaussian RGB width of 0.46. With the trained weights fixed, validation favored retaining all 512 code values and using an RGB width of 0.44. That changed the test error from **164.49** to **161.16**. Two scheduled passes gave **164.37** at the checkpoint selected after one pass. Separately, changing the 4,096-value model's RGB width from 0.50 to 0.46 lowered its error from **106.78** to **105.32** with its saved weights. [Runs and validation checks](assets/results/celeba-refinement.json)
+
+![Validation curves for the 512-value models and wider comparisons](assets/results/celeba-refinement.png)
+
+To reproduce the 512-value result, use the CelebA training command with `--encoder-width 6144 --latent-width 512 --rate .0014 --encoder-top-k 1536 128 --vector-gate-width .46` and a new output directory. Add `--code-top-k 172 --vector-gate-width .44` to the reconstruction and sampler commands. A count of 172 keeps every value in the bottleneck pools of 172, 172, and 168. [CelebA data and commands](papers/README.md#celeba)
+
+#### Top-K comparison
+
+The 4,096-value model maps **12,288 → 6,144 → 4,096 → 24,576**. Its decoder receives only the bottleneck and produces an increase/decrease pair for each RGB value. All layers train by Lion-style local coactivity.
+
+The best model keeps the **1,536** largest activation magnitudes in each first-layer pool of 2,048 and the **1,024** largest in each bottleneck pool of 1,366, 1,366, and 1,364. Winners retain their original signed activity. All other activities are zeroed. Each pool contains both classes. The output keeps Gaussian competition of width **0.50** within each RGB pair.
+
+| Encoder | RGB output | Initialization | Test RGB error ↓ |
+|---|---|---|---:|
+| **Top-K** | **Gaussian** | **Independent** | **106.78** |
+| Top-K | Both neurons unscaled | Gaussian checkpoint | 115.53 |
+| Gaussian | Gaussian | Independent | 119.24 |
+| Top-K | Both neurons unscaled | Independent | 125.40 |
+
+The 106.78 and 119.24 runs differ only in encoder competition. Both use one pass through 162,770 training portraits in batches of 128. The decoder starts at **0.0014** and both encoder layers at **0.00021**. Validation selected the best Top-K checkpoint at the end of the pass. The continuation started from the Gaussian checkpoint at a decoder step of 0.00012 and selected its checkpoint after a further quarter pass. In the 4,096-portrait training pilot, the all-hard model kept about 90% of the encoder activations and one winner per RGB pair. Its validation error was **175.59**, compared with **139.33** for the Gaussian control. [Run settings and measurements](assets/results/celeba-topk.json)
+
+![Validation error during training for Top-K and Gaussian competition](assets/results/celeba-topk.png)
+
+To reproduce the best score, use the training and reconstruction commands with `--encoder-width 6144 --latent-width 4096 --rate .0014 --encoder-top-k 1536 1024` and a new output directory. The portrait panel uses the 16-component sampler described there, fitted to the selected Top-K model's training codes. [CelebA data and commands](papers/README.md#celeba)
 
 #### Lower-step training
 
-The 4,096-value model starts the decoder at **0.0014** and both encoder layers at **0.00021**, using the same hold and cosine schedule as the manuscript. Validation selected the checkpoint after one pass through 162,770 training portraits, in batches of 128. The 2,048-value model reached **126.88** with a 0.0006 decoder step and two passes. [Run settings and checkpoint measurements](assets/results/celeba-target120.json)
+The Gaussian 4,096-value model starts the decoder at **0.0014** and both encoder layers at **0.00021**, using the same hold and cosine schedule as the manuscript. Validation selected the checkpoint after one pass through 162,770 training portraits, in batches of 128. The 2,048-value model reached **126.88** with a 0.0006 decoder step and two passes. [Run settings and checkpoint measurements](assets/results/celeba-target120.json)
 
 ![Squared RGB error per validation portrait over passes through the training split](assets/results/celeba-target120.png)
 

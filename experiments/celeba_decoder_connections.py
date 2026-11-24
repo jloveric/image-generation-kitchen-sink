@@ -72,7 +72,8 @@ def main():
     report = dict(test_images=len(test), generated_draws=len(BLOCKS) * BLOCK_SIZE,
                   displayed_draws=DRAWS, reconstruction_indices=indices.tolist(),
                   sampler=dict(components=16, rank=64, scale=.85), runs={})
-    config_defaults = {"vector_gate_width": .24, "zero_init_bias": False, "encoder_top_k": [0, 0], "vector_top_k": 0}
+    config_defaults = {"vector_gate_width": .24, "zero_init_bias": False, "encoder_top_k": [0, 0],
+                       "vector_top_k": 0, "encoder_hidden_widths": []}
     reference_configs = {}
     for name, label, code_width, skip in RUNS:
         first = args.runs / name / "full"

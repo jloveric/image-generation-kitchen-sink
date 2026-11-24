@@ -76,8 +76,16 @@ def attribute_contrast(reconstructed, targets, labels):
     return ratios
 
 
-def model_for(config, path, backend="numpy"):
+def model_for(config, path, backend="numpy", *, code_top_k=None, vector_gate_width=None):
     center = np.load(path / "encoder-center.npy") if config.get("center_encoder") else None
+    encoder_top_k = config.get("encoder_top_k", (0, 0))
+    if code_top_k is not None:
+        encoder_top_k = (encoder_top_k[0], code_top_k)
+    vector_top_k = config.get("vector_top_k", 0)
+    if vector_gate_width is None:
+        vector_gate_width = config.get("vector_gate_width", .24)
+    elif config.get("decoder") != "vector" or vector_top_k:
+        raise ValueError("An output Gaussian width requires a Gaussian image-vector decoder")
     return Autoencoder(config["seed"], decoder_kind="vector", backend=backend,
                        images_per_batch=config.get("images_per_batch", IMAGES_PER_BATCH),
                        encoder_gate_widths=config.get("encoder_gate_widths", (.24, .18)),
@@ -88,6 +96,7 @@ def model_for(config, path, backend="numpy"):
                        normalize_each_input=config.get("normalize_each_input", False),
                        encoder_votes_per_pair=config.get("encoder_votes_per_pair"),
                        encoder_width=config.get("encoder_width", ENCODER_WIDTH),
+                       encoder_hidden_widths=config.get("encoder_hidden_widths", ()),
                        latent_width=config.get("latent_width", LATENT),
                        vector_output_class_width=config.get("vector_output_class_width", 1),
                        vector_decoder_skip=config.get("vector_decoder_skip", False),
@@ -96,8 +105,7 @@ def model_for(config, path, backend="numpy"):
                        input_center=center, rule=config["rule"],
                        vector_hidden_width=config.get("vector_hidden_width", 0),
                        vector_hidden_depth=config.get("vector_hidden_depth", 1),
-                       vector_gate_width=config.get("vector_gate_width", .24),
-                       encoder_top_k=config.get("encoder_top_k", (0, 0)), vector_top_k=config.get("vector_top_k", 0))
+                       vector_gate_width=vector_gate_width, encoder_top_k=encoder_top_k, vector_top_k=vector_top_k)
 
 
 def compare(path, validation, target_edges, labels, decoder_path=None, seed_start=0):

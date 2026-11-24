@@ -1,0 +1,1566 @@
+{
+  "reference": {
+    "path": "runs/celeba-sequential/full/topk-encoder75-matched/full",
+    "config": {
+      "epochs": 1,
+      "seed": 7,
+      "lr": 0.0014,
+      "encoder_rate": 0.15,
+      "rule": "lion",
+      "depth": 6,
+      "gate_width": null,
+      "images": 162770,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 0,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 6144,
+      "latent_width": 4096,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": false,
+      "checks_per_epoch": 4,
+      "vector_hidden_depth": 1,
+      "vector_gate_width": 0.5,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        1536,
+        1024
+      ],
+      "vector_top_k": 0
+    },
+    "widths": [
+      12288,
+      6144,
+      4096,
+      24576
+    ],
+    "architecture": {
+      "encoder_0": {
+        "inputs": 12288,
+        "outputs": 3,
+        "width": 1024,
+        "winners": 8,
+        "depth": 1,
+        "competition": "output",
+        "readout": "fixed",
+        "gate": "hard",
+        "gate_width": 0.85,
+        "layer_gate_widths": null,
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0,
+        "top_k": 1536
+      },
+      "encoder_1": {
+        "inputs": 6144,
+        "outputs": 1,
+        "width": 2048,
+        "winners": 8,
+        "depth": 1,
+        "competition": "output",
+        "readout": "fixed",
+        "gate": "hard",
+        "gate_width": 0.85,
+        "layer_gate_widths": null,
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": null,
+        "output_levels": null,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0,
+        "top_k": 1024
+      },
+      "decoder": {
+        "inputs": 4096,
+        "outputs": 12288,
+        "width": 1,
+        "winners": 8,
+        "depth": 1,
+        "competition": "output",
+        "readout": "class-sum",
+        "gate": "gaussian",
+        "gate_width": 0.5,
+        "layer_gate_widths": null,
+        "readout_layers": "last",
+        "initialization": "normal",
+        "unit_norm_updates": false,
+        "sine_omega": null,
+        "connection": "affine",
+        "hidden_rule": "lion",
+        "output_bound": 1,
+        "output_levels": 256,
+        "edge_transitions": null,
+        "clip_output": true,
+        "layer_rate_decay": 1.0,
+        "top_k": null
+      }
+    },
+    "parameters": 201361408,
+    "selected_epoch": 1,
+    "validation_error": 110.15103667673749,
+    "curve": [
+      {
+        "passes": 0,
+        "error": 1144.9962320804339
+      },
+      {
+        "passes": 0.25,
+        "error": 132.60344147868815
+      },
+      {
+        "passes": 0.5,
+        "error": 116.87357691098617
+      },
+      {
+        "passes": 0.75,
+        "error": 111.26316821567643
+      },
+      {
+        "passes": 1,
+        "error": 110.15103667673749
+      }
+    ],
+    "test_portraits": 19962,
+    "test_error": 106.78240716854842,
+    "independent_replay": {
+      "checkpoint": "runs/celeba-sequential/full/topk-encoder75-matched/full/selected.npz",
+      "epoch": 1,
+      "validation_error": 110.15103667673749,
+      "test_portraits": 19962,
+      "test_error": 106.78240716854842,
+      "backend": "mojo"
+    }
+  },
+  "full": {
+    "refine-topk3072-cold": {
+      "path": "runs/celeba-sequential/full/refine-topk3072-cold/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0014,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 6144,
+        "latent_width": 3072,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          768
+        ],
+        "vector_top_k": 0
+      },
+      "widths": [
+        12288,
+        6144,
+        3072,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 1536,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 768
+        },
+        "decoder": {
+          "inputs": 3072,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 169903104,
+      "selected_epoch": 1,
+      "validation_error": 115.71164848055892,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 1145.8222542715164
+        },
+        {
+          "passes": 0.25,
+          "error": 133.65018769399109
+        },
+        {
+          "passes": 0.5,
+          "error": 119.92929520352891
+        },
+        {
+          "passes": 0.75,
+          "error": 116.43709179210953
+        },
+        {
+          "passes": 1,
+          "error": 115.71164848055892
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 112.38344976141947
+    },
+    "refine-topk4096-continue008": {
+      "path": "runs/celeba-sequential/full/refine-topk4096-continue008/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 8e-05,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 6144,
+        "latent_width": 4096,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          1024
+        ],
+        "vector_top_k": 0,
+        "initialize_from": "runs/celeba-sequential/full/topk-encoder75-matched/full/selected.npz"
+      },
+      "widths": [
+        12288,
+        6144,
+        4096,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 2048,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1024
+        },
+        "decoder": {
+          "inputs": 4096,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 201361408,
+      "selected_epoch": 1,
+      "validation_error": 109.92477231931038,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 110.15103667673749
+        },
+        {
+          "passes": 0.25,
+          "error": 110.14739088873041
+        },
+        {
+          "passes": 0.5,
+          "error": 110.00748779883688
+        },
+        {
+          "passes": 0.75,
+          "error": 109.94230758346055
+        },
+        {
+          "passes": 1,
+          "error": 109.92477231931038
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 106.55324500860127
+    },
+    "refine-topk512-cold": {
+      "path": "runs/celeba-sequential/full/refine-topk512-cold/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0014,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 6144,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.46,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          128
+        ],
+        "vector_top_k": 0
+      },
+      "widths": [
+        12288,
+        6144,
+        512,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 128
+        },
+        "decoder": {
+          "inputs": 512,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.46,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 91257344,
+      "selected_epoch": 1,
+      "validation_error": 168.13724454984293,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 1145.0246021838552
+        },
+        {
+          "passes": 0.25,
+          "error": 185.8906646115758
+        },
+        {
+          "passes": 0.5,
+          "error": 169.1015761310247
+        },
+        {
+          "passes": 0.75,
+          "error": 168.3005807412344
+        },
+        {
+          "passes": 1,
+          "error": 168.13724454984293
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 164.48935074521765
+    },
+    "refine-topk512-hidden": {
+      "path": "runs/celeba-sequential/full/refine-topk512-hidden/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0014,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 6144,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.46,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          128
+        ],
+        "vector_top_k": 0
+      },
+      "widths": [
+        12288,
+        6144,
+        512,
+        1536,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 128
+        },
+        "hidden": {
+          "inputs": 512,
+          "outputs": 3,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        },
+        "decoder": {
+          "inputs": 1536,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.46,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 117211136,
+      "selected_epoch": 1,
+      "validation_error": 168.3770615939058,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 1132.9204916453923
+        },
+        {
+          "passes": 0.25,
+          "error": 189.11399545649923
+        },
+        {
+          "passes": 0.5,
+          "error": 171.2452003141232
+        },
+        {
+          "passes": 0.75,
+          "error": 168.7193474174984
+        },
+        {
+          "passes": 1,
+          "error": 168.3770615939058
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 164.490688142657
+    },
+    "refine-topk512-long": {
+      "path": "runs/celeba-sequential/full/refine-topk512-long/full",
+      "config": {
+        "epochs": 2,
+        "seed": 7,
+        "lr": 0.0008,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 6144,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.46,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          128
+        ],
+        "vector_top_k": 0
+      },
+      "widths": [
+        12288,
+        6144,
+        512,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 128
+        },
+        "decoder": {
+          "inputs": 512,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.46,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 91257344,
+      "selected_epoch": 1,
+      "validation_error": 168.17297884079193,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 1145.0246021838552
+        },
+        {
+          "passes": 0.5,
+          "error": 176.94357274359373
+        },
+        {
+          "passes": 1,
+          "error": 168.17297884079193
+        },
+        {
+          "passes": 1.5,
+          "error": 171.59294500508116
+        },
+        {
+          "passes": 2,
+          "error": 172.3048370659804
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 164.37323514362797
+    },
+    "refine-topk512-soft-code": {
+      "path": "runs/celeba-sequential/full/refine-topk512-soft-code/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0014,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 6144,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.46,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          0
+        ],
+        "vector_top_k": 0
+      },
+      "widths": [
+        12288,
+        6144,
+        512,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        },
+        "decoder": {
+          "inputs": 512,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.46,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 91257344,
+      "selected_epoch": 1,
+      "validation_error": 167.2801986250188,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 1138.7045433513706
+        },
+        {
+          "passes": 0.25,
+          "error": 191.23550798893936
+        },
+        {
+          "passes": 0.5,
+          "error": 169.99732926610042
+        },
+        {
+          "passes": 0.75,
+          "error": 167.7074322501306
+        },
+        {
+          "passes": 1,
+          "error": 167.2801986250188
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 163.61353093208868
+    },
+    "refine-topk512-votes": {
+      "path": "runs/celeba-sequential/full/refine-topk512-votes/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0014,
+        "encoder_rate": 0.15,
+        "rule": "lion",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.85,
+          0.85
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 128,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 0.12,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": 4,
+        "encoder_width": 6144,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.46,
+        "zero_init_bias": false,
+        "encoder_top_k": [
+          1536,
+          128
+        ],
+        "vector_top_k": 0
+      },
+      "widths": [
+        12288,
+        6144,
+        512,
+        24576
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 1536
+        },
+        "encoder_1": {
+          "inputs": 6144,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "hard",
+          "gate_width": 0.85,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": 128
+        },
+        "decoder": {
+          "inputs": 512,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.46,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null
+        }
+      },
+      "parameters": 91257344,
+      "selected_epoch": 1,
+      "validation_error": 168.79226830318208,
+      "curve": [
+        {
+          "passes": 0,
+          "error": 1145.0246021838552
+        },
+        {
+          "passes": 0.25,
+          "error": 186.4987013751105
+        },
+        {
+          "passes": 0.5,
+          "error": 169.68225584795297
+        },
+        {
+          "passes": 0.75,
+          "error": 168.81982053461874
+        },
+        {
+          "passes": 1,
+          "error": 168.79226830318208
+        }
+      ],
+      "test_portraits": 19962,
+      "test_error": 164.88413561002434
+    }
+  },
+  "stopped": {
+    "refine-topk3072-long": [
+      {
+        "passes": 0,
+        "error": 1146.8394419561664
+      },
+      {
+        "passes": 0.5,
+        "error": 119.8503495040939
+      }
+    ],
+    "refine-topk4096-continue032": [
+      {
+        "passes": 0,
+        "error": 110.15103667673749
+      },
+      {
+        "passes": 0.25,
+        "error": 111.99185186755392
+      },
+      {
+        "passes": 0.5,
+        "error": 113.16864194465012
+      }
+    ]
+  },
+  "fixed_weights": {
+    "checkpoint": "runs/celeba-sequential/full/topk-encoder75-matched/full/selected.npz",
+    "parameters": 201361408,
+    "training_rule": "lion",
+    "latent_width": 4096,
+    "encoder_top_k": [
+      1536,
+      1024
+    ],
+    "training_vector_gate_width": 0.5,
+    "inference_vector_gate_width": 0.46,
+    "validation_portraits": 512,
+    "validation_error": 108.64248891438578,
+    "test_portraits": 19962,
+    "test_error": 105.3220577397127,
+    "backend": "mojo"
+  },
+  "compact_fixed_weights": {
+    "checkpoint": "runs/celeba-sequential/full/refine-topk512-cold/full/selected.npz",
+    "parameters": 91257344,
+    "training_rule": "lion",
+    "latent_width": 512,
+    "training_encoder_top_k": [
+      1536,
+      128
+    ],
+    "encoder_top_k": [
+      1536,
+      172
+    ],
+    "training_vector_gate_width": 0.46,
+    "inference_vector_gate_width": 0.44,
+    "validation_portraits": 512,
+    "validation_error": 164.90843596350786,
+    "test_portraits": 19962,
+    "test_error": 161.16412070599173,
+    "backend": "mojo"
+  },
+  "selected": "512-saved-weights-k172-width044",
+  "overall": "saved-weights-width-046",
+  "compact": "512-saved-weights-k172-width044",
+  "test_portraits": 19962,
+  "test_error": 161.16412070599173,
+  "validation_error": 164.90843596350786,
+  "checkpoint": "runs/celeba-sequential/full/refine-topk512-cold/full/selected.npz",
+  "checkpoint_sha256": "461b3c6231a92c584763a94100393553a06b1d6bd6a539ff9c5842b1c08ba513",
+  "saved_weights_validation": {
+    "checkpoint": "runs/celeba-sequential/full/topk-encoder75-matched/full/selected.npz",
+    "backend": "numpy",
+    "validation_portraits": 512,
+    "results": [
+      {
+        "encoder_top_k": [
+          1536,
+          1024
+        ],
+        "vector_gate_width": 0.5,
+        "validation_error": 110.1516440153257
+      },
+      {
+        "encoder_top_k": [
+          1536,
+          1024
+        ],
+        "vector_gate_width": 0.45,
+        "validation_error": 108.66642304787663
+      },
+      {
+        "encoder_top_k": [
+          1536,
+          1024
+        ],
+        "vector_gate_width": 0.46,
+        "validation_error": 108.64310436330922
+      },
+      {
+        "encoder_top_k": [
+          1536,
+          1024
+        ],
+        "vector_gate_width": 0.47,
+        "validation_error": 108.80232522810073
+      },
+      {
+        "encoder_top_k": [
+          1536,
+          1152
+        ],
+        "vector_gate_width": 0.5,
+        "validation_error": 109.12634004043736
+      },
+      {
+        "encoder_top_k": [
+          1536,
+          1152
+        ],
+        "vector_gate_width": 0.46,
+        "validation_error": 108.38735996447178
+      },
+      {
+        "encoder_top_k": [
+          1536,
+          1280
+        ],
+        "vector_gate_width": 0.46,
+        "validation_error": 108.34924738843
+      },
+      {
+        "encoder_top_k": [
+          1664,
+          1152
+        ],
+        "vector_gate_width": 0.5,
+        "validation_error": 108.63668983128122
+      },
+      {
+        "encoder_top_k": [
+          1664,
+          1152
+        ],
+        "vector_gate_width": 0.46,
+        "validation_error": 108.16751425137093
+      },
+      {
+        "encoder_top_k": [
+          1792,
+          1280
+        ],
+        "vector_gate_width": 0.46,
+        "validation_error": 108.06487514552205
+      }
+    ]
+  },
+  "compact_validation_checks": {
+    "refine-compact-saved-gates.json": {
+      "run": "runs/celeba-sequential/full/refine-topk512-cold/full",
+      "validation_portraits": 512,
+      "settings": [
+        {
+          "code_top_k": 128,
+          "output_gaussian_width": 0.38,
+          "validation_error": 169.02625507837277
+        },
+        {
+          "code_top_k": 128,
+          "output_gaussian_width": 0.42,
+          "validation_error": 166.68230057191124
+        },
+        {
+          "code_top_k": 128,
+          "output_gaussian_width": 0.46,
+          "validation_error": 168.13700332670396
+        },
+        {
+          "code_top_k": 128,
+          "output_gaussian_width": 0.5,
+          "validation_error": 171.84153168727653
+        },
+        {
+          "code_top_k": 128,
+          "output_gaussian_width": 0.54,
+          "validation_error": 176.73516821654738
+        },
+        {
+          "code_top_k": 112,
+          "output_gaussian_width": 0.46,
+          "validation_error": 172.6023436342939
+        },
+        {
+          "code_top_k": 144,
+          "output_gaussian_width": 0.46,
+          "validation_error": 166.19179011825273
+        },
+        {
+          "code_top_k": 160,
+          "output_gaussian_width": 0.46,
+          "validation_error": 165.70328585366178
+        },
+        {
+          "code_top_k": 172,
+          "output_gaussian_width": 0.46,
+          "validation_error": 165.66255043895174
+        }
+      ]
+    },
+    "refine-compact-joint-gates.json": {
+      "run": "runs/celeba-sequential/full/refine-topk512-cold/full",
+      "validation_portraits": 512,
+      "settings": [
+        {
+          "code_top_k": 128,
+          "output_gaussian_width": 0.42,
+          "validation_error": 166.68230057191124
+        },
+        {
+          "code_top_k": 160,
+          "output_gaussian_width": 0.4,
+          "validation_error": 165.90789923807571
+        },
+        {
+          "code_top_k": 160,
+          "output_gaussian_width": 0.42,
+          "validation_error": 164.9422261732667
+        },
+        {
+          "code_top_k": 160,
+          "output_gaussian_width": 0.44,
+          "validation_error": 164.94252174218897
+        },
+        {
+          "code_top_k": 160,
+          "output_gaussian_width": 0.46,
+          "validation_error": 165.70328585366178
+        },
+        {
+          "code_top_k": 172,
+          "output_gaussian_width": 0.42,
+          "validation_error": 164.9153132321843
+        },
+        {
+          "code_top_k": 172,
+          "output_gaussian_width": 0.44,
+          "validation_error": 164.90828346807325
+        },
+        {
+          "code_top_k": 172,
+          "output_gaussian_width": 0.46,
+          "validation_error": 165.66255043895174
+        },
+        {
+          "code_top_k": 172,
+          "output_gaussian_width": 0.48,
+          "validation_error": 167.00679435596294
+        }
+      ]
+    }
+  },
+  "independently_verified_test_error": 161.164121,
+  "generation": {
+    "export": "runs/celeba-sequential/full/refine-topk512-cold/full/decoder-mixture-k172-width044.npz",
+    "sha256": "2f7594c67f8540dbcae6e8262c3ed9159d95b1e2a7977d7b86406b6bb4f2b825",
+    "components": 16,
+    "local_rank": 64,
+    "local_scale": 0.85,
+    "portraits": 36
+  }
+}

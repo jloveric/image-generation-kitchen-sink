@@ -102,7 +102,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=("sine", "marble", "portraits", "reconstruction"))
     parser.add_argument("--run", type=Path, default=FACE_RUN, help="Final CelebA full run directory")
+    parser.add_argument("--code-top-k", type=int,
+                        help="Evaluate a saved CelebA checkpoint with a different bottleneck competition count")
+    parser.add_argument("--vector-gate-width", type=float,
+                        help="Evaluate a saved CelebA checkpoint at a different RGB Gaussian width")
     args = parser.parse_args()
+    if args.task != "reconstruction" and (args.code_top_k is not None or args.vector_gate_width is not None):
+        parser.error("Competition overrides require the reconstruction task")
     OUT.mkdir(exist_ok=True)
     if args.task == "sine":
         sine()
@@ -113,7 +119,8 @@ def main():
         figure(np.stack([generator.generate(i) for i in range(36)]), OUT / "portraits.png")
     else:
         config = json.loads((args.run / "results.json").read_text())["config"]
-        model = model_for(config, args.run, backend="mojo")
+        model = model_for(config, args.run, backend="mojo", code_top_k=args.code_top_k,
+                          vector_gate_width=args.vector_gate_width)
         load_checkpoint(args.run / "selected.npz", model)
         test = np.load(args.run.parent / "test.npy", mmap_mode="r")
         center = np.load(args.run / "encoder-center.npy").reshape(test.shape[1:])
