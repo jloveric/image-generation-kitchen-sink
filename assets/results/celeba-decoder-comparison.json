@@ -1,0 +1,2730 @@
+{
+  "checkpoint_panel_size": 512,
+  "training_portrait_panel": {
+    "panel_seed": 6417,
+    "panel_size": 2048,
+    "target_edge_spread": 1.295525312423706,
+    "attribute_counts": {
+      "Male": 813,
+      "Facial hair": 341,
+      "Eyeglasses": 114,
+      "Open-mouth smile": 731,
+      "Oval face": 577,
+      "Nose offset above 0.28 eye spans": 219
+    },
+    "montage": {
+      "Facial hair": [
+        {
+          "filename": "039432.jpg",
+          "training_index": 39431
+        },
+        {
+          "filename": "075485.jpg",
+          "training_index": 75484
+        },
+        {
+          "filename": "139651.jpg",
+          "training_index": 139650
+        }
+      ],
+      "Eyeglasses": [
+        {
+          "filename": "114853.jpg",
+          "training_index": 114852
+        },
+        {
+          "filename": "108923.jpg",
+          "training_index": 108922
+        },
+        {
+          "filename": "091476.jpg",
+          "training_index": 91475
+        }
+      ],
+      "Open-mouth smile": [
+        {
+          "filename": "065527.jpg",
+          "training_index": 65526
+        },
+        {
+          "filename": "121770.jpg",
+          "training_index": 121769
+        },
+        {
+          "filename": "041974.jpg",
+          "training_index": 41973
+        }
+      ],
+      "Head turn": [
+        {
+          "filename": "069434.jpg",
+          "training_index": 69433
+        },
+        {
+          "filename": "049550.jpg",
+          "training_index": 49549
+        },
+        {
+          "filename": "136688.jpg",
+          "training_index": 136687
+        }
+      ],
+      "Oval face label": [
+        {
+          "filename": "100745.jpg",
+          "training_index": 100744
+        },
+        {
+          "filename": "018810.jpg",
+          "training_index": 18809
+        },
+        {
+          "filename": "082270.jpg",
+          "training_index": 82269
+        }
+      ],
+      "Other face shapes": [
+        {
+          "filename": "000702.jpg",
+          "training_index": 701
+        },
+        {
+          "filename": "153536.jpg",
+          "training_index": 153535
+        },
+        {
+          "filename": "044525.jpg",
+          "training_index": 44524
+        }
+      ]
+    },
+    "runs": {
+      "fixed768x2048": {
+        "label": "Published baseline",
+        "parameters": 61369088,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.004,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 1.0,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 0,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 1
+        },
+        "training_sse": 215.1664708073382,
+        "test_sse": 214.5604174222192,
+        "panel_edge_error": 0.35700517892837524,
+        "panel_edge_spread": 0.873964250087738,
+        "panel_attribute_contrast": {
+          "Male": 0.7314717769622803,
+          "Facial hair": 0.6693532466888428,
+          "Eyeglasses": 0.579921543598175,
+          "Open-mouth smile": 0.6181762218475342,
+          "Oval face": 0.6964840888977051,
+          "Nose offset above 0.28 eye spans": 0.8804234862327576
+        },
+        "panel_attribute_sse": {
+          "Male": 225.82910410839634,
+          "Facial hair": 227.00387136390006,
+          "Eyeglasses": 243.0117217218557,
+          "Open-mouth smile": 204.72642942635346,
+          "Oval face": 199.36882732393116,
+          "Nose offset above 0.28 eye spans": 236.0205910132027
+        },
+        "montage_sse": [
+          158.47784152248096,
+          114.04279104674606,
+          163.86544651466102,
+          200.80307226776495,
+          132.527882364393,
+          385.25666177119274,
+          173.06183282999154,
+          185.5305921987001,
+          234.6204674034925,
+          174.40959232908244,
+          352.7456559788734,
+          144.1617472818034,
+          174.8494838283532,
+          327.25739833810803,
+          151.89038994078692,
+          179.16565463107872,
+          305.9992779598051,
+          272.69496476279164
+        ]
+      },
+      "decoder-head2-z2048": {
+        "label": "Two pairs, 2048 code",
+        "parameters": 111725312,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.004,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 1.0,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 0,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 2,
+          "vector_decoder_skip": false,
+          "projected_decoder_votes": false
+        },
+        "training_sse": 242.83179301524572,
+        "test_sse": 242.35242711151767,
+        "panel_edge_error": 0.3911280035972595,
+        "panel_edge_spread": 0.794590950012207,
+        "panel_attribute_contrast": {
+          "Male": 0.7735956311225891,
+          "Facial hair": 0.7340682148933411,
+          "Eyeglasses": 0.5465909838676453,
+          "Open-mouth smile": 0.5755084753036499,
+          "Oval face": 0.6879262924194336,
+          "Nose offset above 0.28 eye spans": 0.8651405572891235
+        },
+        "panel_attribute_sse": {
+          "Male": 255.70558491273772,
+          "Facial hair": 257.1627858864532,
+          "Eyeglasses": 275.694396749501,
+          "Open-mouth smile": 231.7133731017727,
+          "Oval face": 227.5934812825388,
+          "Nose offset above 0.28 eye spans": 263.6835678270437
+        },
+        "montage_sse": [
+          193.0486238313042,
+          102.79699217964298,
+          268.34268369432175,
+          256.75999990400305,
+          132.84529844625285,
+          411.12609874736336,
+          202.79087764361248,
+          244.1531564235138,
+          260.62978889245096,
+          169.71907246012597,
+          434.8106669119934,
+          144.58750637574667,
+          216.82431083110168,
+          310.69349049100674,
+          209.70128101341834,
+          177.28568549283955,
+          325.60163487066166,
+          367.9512097011793
+        ]
+      },
+      "decoder-head2-z1024": {
+        "label": "Two pairs, 1024 code",
+        "parameters": 60606208,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.004,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 1.0,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 0,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 1024,
+          "select_on_training": true,
+          "vector_output_class_width": 2,
+          "vector_decoder_skip": false,
+          "projected_decoder_votes": false
+        },
+        "training_sse": 268.429100843949,
+        "test_sse": 267.58770251303315,
+        "panel_edge_error": 0.4340432286262512,
+        "panel_edge_spread": 0.7480618357658386,
+        "panel_attribute_contrast": {
+          "Male": 0.7160598635673523,
+          "Facial hair": 0.67303466796875,
+          "Eyeglasses": 0.4981932044029236,
+          "Open-mouth smile": 0.47441810369491577,
+          "Oval face": 0.6287134885787964,
+          "Nose offset above 0.28 eye spans": 0.8038327097892761
+        },
+        "panel_attribute_sse": {
+          "Male": 283.2742195809055,
+          "Facial hair": 285.3316372208851,
+          "Eyeglasses": 305.5977754099237,
+          "Open-mouth smile": 254.9893368505301,
+          "Oval face": 251.65920689829474,
+          "Nose offset above 0.28 eye spans": 290.49423408166024
+        },
+        "montage_sse": [
+          209.17206914257258,
+          118.5904571754636,
+          325.65313641472494,
+          294.0170099346815,
+          149.27445758152862,
+          494.7559536349454,
+          211.61946730271302,
+          256.85311863582865,
+          286.5565260160438,
+          195.13511391020802,
+          478.90907770536796,
+          158.4263074527771,
+          241.09168627329564,
+          352.82645747288916,
+          246.0478731032763,
+          183.54715477182617,
+          366.1969462649413,
+          372.95776115702756
+        ]
+      },
+      "decoder-deep-z2048": {
+        "label": "Sequential layer",
+        "parameters": 65671940,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.004,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 1.0,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 342,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 1,
+          "vector_decoder_skip": false,
+          "projected_decoder_votes": false
+        },
+        "training_sse": 644.9752398992255,
+        "test_sse": 638.0323711391344,
+        "panel_edge_error": 0.8057936429977417,
+        "panel_edge_spread": 0.6704739332199097,
+        "panel_attribute_contrast": {
+          "Male": 0.24413706362247467,
+          "Facial hair": 0.21983851492404938,
+          "Eyeglasses": 0.3508129119873047,
+          "Open-mouth smile": -0.011500232852995396,
+          "Oval face": 0.12007520347833633,
+          "Nose offset above 0.28 eye spans": 0.2689473330974579
+        },
+        "panel_attribute_sse": {
+          "Male": 678.1669067301757,
+          "Facial hair": 683.3603022210089,
+          "Eyeglasses": 711.0114526818315,
+          "Open-mouth smile": 623.1692628851117,
+          "Oval face": 624.3064525431001,
+          "Nose offset above 0.28 eye spans": 697.2071508785388
+        },
+        "montage_sse": [
+          777.0019996760366,
+          241.37977658029195,
+          628.6585090773206,
+          1048.9301971027544,
+          237.20150722585277,
+          1018.3205990553724,
+          1117.6736989982874,
+          507.5913586905408,
+          485.0829633680278,
+          472.47084851942964,
+          1028.562130323935,
+          602.7342742774908,
+          741.6381071527576,
+          887.1283718908908,
+          1164.9076223384382,
+          798.9475000485763,
+          693.7203505962261,
+          1088.9214195561963
+        ]
+      },
+      "decoder-deep-projected": {
+        "label": "Sequential + local votes",
+        "parameters": 65671940,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.004,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 0.15,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 342,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 1,
+          "vector_decoder_skip": false,
+          "projected_decoder_votes": true
+        },
+        "training_sse": 248.61782688536567,
+        "test_sse": 247.81696054530792,
+        "panel_edge_error": 0.4174191355705261,
+        "panel_edge_spread": 0.8069575428962708,
+        "panel_attribute_contrast": {
+          "Male": 0.6998952031135559,
+          "Facial hair": 0.6476345062255859,
+          "Eyeglasses": 0.45019468665122986,
+          "Open-mouth smile": 0.49079278111457825,
+          "Oval face": 0.6338579058647156,
+          "Nose offset above 0.28 eye spans": 0.843833327293396
+        },
+        "panel_attribute_sse": {
+          "Male": 262.0227608305263,
+          "Facial hair": 263.2496258828048,
+          "Eyeglasses": 282.02932774303093,
+          "Open-mouth smile": 237.03961823051935,
+          "Oval face": 232.43564890880504,
+          "Nose offset above 0.28 eye spans": 270.92636526774794
+        },
+        "montage_sse": [
+          169.9805406421492,
+          127.20369903914434,
+          220.36285820522608,
+          241.3250580728618,
+          132.65710919646153,
+          445.615911221008,
+          212.89948269026536,
+          211.52511858412072,
+          256.81934643604654,
+          175.96523957445243,
+          417.6963714212234,
+          162.58274025657556,
+          213.33663675912067,
+          372.46930344301654,
+          192.93417537041933,
+          194.07396852648344,
+          368.4663980393416,
+          364.99108687322587
+        ]
+      },
+      "decoder-skip768": {
+        "label": "Hidden layer with skip",
+        "parameters": 81817088,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.004,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 0.15,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 128,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 1,
+          "vector_decoder_skip": true,
+          "projected_decoder_votes": true
+        },
+        "training_sse": 208.6961316845049,
+        "test_sse": 208.24563828452497,
+        "panel_edge_error": 0.3461873531341553,
+        "panel_edge_spread": 0.8894714713096619,
+        "panel_attribute_contrast": {
+          "Male": 0.7406701445579529,
+          "Facial hair": 0.6922956705093384,
+          "Eyeglasses": 0.5474182367324829,
+          "Open-mouth smile": 0.6576777100563049,
+          "Oval face": 0.6986949443817139,
+          "Nose offset above 0.28 eye spans": 0.9196125864982605
+        },
+        "panel_attribute_sse": {
+          "Male": 219.2671711970387,
+          "Facial hair": 220.8534210129988,
+          "Eyeglasses": 237.11311796718542,
+          "Open-mouth smile": 199.3302180333574,
+          "Oval face": 194.48975158153712,
+          "Nose offset above 0.28 eye spans": 228.56310258348736
+        },
+        "montage_sse": [
+          146.66198527886445,
+          109.7939632587204,
+          174.4434864712548,
+          205.92836286658894,
+          128.84651331979694,
+          338.60715509341753,
+          166.5799720836003,
+          189.7979050228496,
+          227.76781102058885,
+          168.22063311329111,
+          322.4840324343004,
+          128.4174785981886,
+          168.4794255439101,
+          293.60260221337376,
+          149.59753330335843,
+          168.98972197431613,
+          293.5703042314399,
+          277.48536872932345
+        ]
+      },
+      "decoder-continue-control": {
+        "label": "Low-rate baseline pass",
+        "parameters": 61369088,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.0005,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 1.0,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 0,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 1,
+          "vector_decoder_skip": false,
+          "projected_decoder_votes": false,
+          "initialize_from": "runs/celeba-capacity/fixed768x2048/full/selected.npz"
+        },
+        "training_sse": 215.1664708073382,
+        "test_sse": 214.5604174222192,
+        "panel_edge_error": 0.35700517892837524,
+        "panel_edge_spread": 0.873964250087738,
+        "panel_attribute_contrast": {
+          "Male": 0.7314717769622803,
+          "Facial hair": 0.6693532466888428,
+          "Eyeglasses": 0.579921543598175,
+          "Open-mouth smile": 0.6181762218475342,
+          "Oval face": 0.6964840888977051,
+          "Nose offset above 0.28 eye spans": 0.8804234862327576
+        },
+        "panel_attribute_sse": {
+          "Male": 225.82910410839634,
+          "Facial hair": 227.00387136390006,
+          "Eyeglasses": 243.0117217218557,
+          "Open-mouth smile": 204.72642942635346,
+          "Oval face": 199.36882732393116,
+          "Nose offset above 0.28 eye spans": 236.0205910132027
+        },
+        "montage_sse": [
+          158.47784152248096,
+          114.04279104674606,
+          163.86544651466102,
+          200.80307226776495,
+          132.527882364393,
+          385.25666177119274,
+          173.06183282999154,
+          185.5305921987001,
+          234.6204674034925,
+          174.40959232908244,
+          352.7456559788734,
+          144.1617472818034,
+          174.8494838283532,
+          327.25739833810803,
+          151.89038994078692,
+          179.16565463107872,
+          305.9992779598051,
+          272.69496476279164
+        ]
+      },
+      "decoder-continue-skip": {
+        "label": "Low-rate added skip",
+        "parameters": 81817088,
+        "config": {
+          "epochs": 1,
+          "seed": 7,
+          "lr": 0.0005,
+          "encoder_rate": 0.15,
+          "rule": "signsgd",
+          "depth": 6,
+          "gate_width": null,
+          "images": 162770,
+          "validation_images": 512,
+          "coordinate_scale": 1.0,
+          "decoder_rate_decay": 0.15,
+          "encoder_gate_widths": [
+            0.5,
+            0.5
+          ],
+          "decoder_class_width": 32,
+          "shared_coordinates": false,
+          "center_encoder": true,
+          "images_per_batch": 32,
+          "pixels_per_image": 32,
+          "decoder": "vector",
+          "decoder_init_scale": 1.0,
+          "projected_latent_votes": false,
+          "bottleneck_pool_size": null,
+          "projected_encoder_votes": true,
+          "center_each_input": false,
+          "vector_hidden_width": 128,
+          "normalize_each_input": false,
+          "paired_decoder_init": false,
+          "encoder_votes_per_pair": null,
+          "encoder_width": 768,
+          "latent_width": 2048,
+          "select_on_training": true,
+          "vector_output_class_width": 1,
+          "vector_decoder_skip": true,
+          "projected_decoder_votes": true,
+          "initialize_from": "runs/celeba-capacity/decoder-comparison/skip-initial.npz"
+        },
+        "training_sse": 213.63936908988296,
+        "test_sse": 213.09436027658273,
+        "panel_edge_error": 0.354745477437973,
+        "panel_edge_spread": 0.8831987380981445,
+        "panel_attribute_contrast": {
+          "Male": 0.7434296011924744,
+          "Facial hair": 0.6797763109207153,
+          "Eyeglasses": 0.5770816206932068,
+          "Open-mouth smile": 0.6348720192909241,
+          "Oval face": 0.7155017852783203,
+          "Nose offset above 0.28 eye spans": 0.8974090218544006
+        },
+        "panel_attribute_sse": {
+          "Male": 224.41201701886257,
+          "Facial hair": 225.66508705061833,
+          "Eyeglasses": 241.53832271835293,
+          "Open-mouth smile": 203.66567926213355,
+          "Oval face": 198.36206650838128,
+          "Nose offset above 0.28 eye spans": 233.94256076991869
+        },
+        "montage_sse": [
+          142.01906311683706,
+          115.92271413012713,
+          161.8795794553571,
+          201.50658644671603,
+          124.1825068827875,
+          369.77844475781967,
+          168.2078689553091,
+          184.55673604384538,
+          232.23133998494086,
+          172.04548591829916,
+          355.82986991287544,
+          137.16460713077686,
+          177.2980191496008,
+          321.4500317672628,
+          148.4158029056871,
+          176.1683300409677,
+          304.9079738250148,
+          269.3363792065775
+        ]
+      }
+    }
+  },
+  "runs": {
+    "fixed768x2048": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2048,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1029799.8023621311,
+          "shuffled_sse": 1028163.2732078577,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 109149.51464758982,
+          "shuffled_sse": 869601.1632582729,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 109149.51464758982,
+        "shuffled_sse": 869601.1632582729,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 35022646.45331044,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 112287.60629500764,
+        "shuffled_sse": 879845.9550889223,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4283055.052582339,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 61369088,
+      "label": "Published baseline",
+      "selected_checkpoint": "runs/celeba-capacity/fixed768x2048/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "decoder_weight_0": [
+          2049,
+          24576
+        ]
+      },
+      "export_sha256": "8857d6d05fb1b4dc169e19787c76fc883fc0a5c4a1da19f68ede7d9c338bf6f2",
+      "export_path": "runs/celeba-capacity/fixed768x2048/full/decoder-mixture.npz"
+    },
+    "decoder-head2-z2048": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 2,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2048,
+          "outputs": 12288,
+          "width": 2,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 795908.2324074394,
+          "shuffled_sse": 797023.2521460815,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 123327.20197457365,
+          "shuffled_sse": 816407.426503479,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 123327.20197457365,
+        "shuffled_sse": 816407.426503479,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 39525730.949091546,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 126760.0786607339,
+        "shuffled_sse": 825220.561586827,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4837839.150000116,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 111725312,
+      "label": "Two output pairs, 2,048-value code",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-head2-z2048/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "decoder_weight_0": [
+          2049,
+          49152
+        ]
+      },
+      "export_sha256": "5fb7ec4fc7b435c76c8d6d324d0452dc1a8a0f5d3c6b74ed95301aaa965951a2",
+      "export_path": "runs/celeba-capacity/decoder-head2-z2048/full/decoder-mixture.npz"
+    },
+    "decoder-head2-z1024": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 1024,
+        "select_on_training": true,
+        "vector_output_class_width": 2,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 512,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 1024,
+          "outputs": 12288,
+          "width": 2,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 805871.5820061761,
+          "shuffled_sse": 806555.4917692963,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 136551.38619117136,
+          "shuffled_sse": 809429.1447378127,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 136551.38619117136,
+        "shuffled_sse": 809429.1447378127,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 43692204.74436958,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 139717.154156058,
+        "shuffled_sse": 822258.2008382108,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 5341585.717565168,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 60606208,
+      "label": "Two output pairs, 1,024-value code",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-head2-z1024/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          1024
+        ],
+        "decoder_weight_0": [
+          1025,
+          49152
+        ]
+      }
+    },
+    "decoder-deep-z2048": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 342,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 342,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2052,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1008704.2873000412,
+          "shuffled_sse": 1007606.206423443,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 331362.8152670596,
+          "shuffled_sse": 777699.0124841573,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 331362.8152670596,
+        "shuffled_sse": 777699.0124841573,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 104982619.79839693,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 337987.84157968493,
+        "shuffled_sse": 793448.1010585644,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 12736402.192679401,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 65671940,
+      "label": "Sequential decoder layer",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-deep-z2048/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          2052
+        ],
+        "decoder_weight_0": [
+          2053,
+          24576
+        ]
+      }
+    },
+    "decoder-deep-projected": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 342,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 342,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2052,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1008704.2873000412,
+          "shuffled_sse": 1007606.206423443,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 126220.28546165864,
+          "shuffled_sse": 838555.5466692918,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 126220.28546165864,
+        "shuffled_sse": 838555.5466692918,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 40467523.68213097,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 129599.43418784112,
+        "shuffled_sse": 854542.4412037454,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4946922.166405437,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 65671940,
+      "label": "Sequential layer with projected votes",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-deep-projected/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          2052
+        ],
+        "decoder_weight_0": [
+          2053,
+          24576
+        ]
+      }
+    },
+    "decoder-skip768": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2816,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1020407.965513486,
+          "shuffled_sse": 1021442.9745755295,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 105814.11843713064,
+          "shuffled_sse": 869286.9377823141,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 105814.11843713064,
+        "shuffled_sse": 869286.9377823141,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 33969469.354286864,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 109009.72478970863,
+        "shuffled_sse": 881399.6899572546,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4156999.4314356875,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 81817088,
+      "label": "Decoder layer with skip connection",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-skip768/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          768
+        ],
+        "decoder_weight_0": [
+          2817,
+          24576
+        ]
+      },
+      "export_sha256": "919b76eb73296b6ef0ec19150c544e7d7e8516d04b3f368e6a4f8dc6d8d0ea07",
+      "export_path": "runs/celeba-capacity/decoder-skip768/full/decoder-mixture.npz"
+    },
+    "decoder-continue-control": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0005,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "initialize_from": "runs/celeba-capacity/fixed768x2048/full/selected.npz"
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2048,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 109149.51464758982,
+          "shuffled_sse": 869601.1632582729,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 109943.88746050224,
+          "shuffled_sse": 867984.7775892104,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 0,
+        "reconstruction_sse": 109149.51464758982,
+        "shuffled_sse": 869601.1632582729,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 35022646.45331044,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 112287.60629500764,
+        "shuffled_sse": 879845.9550889223,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4283055.052582339,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 61369088,
+      "label": "Baseline with a low-rate extra pass",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-continue-control/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "decoder_weight_0": [
+          2049,
+          24576
+        ]
+      }
+    },
+    "decoder-continue-skip": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0005,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true,
+        "initialize_from": "runs/celeba-capacity/decoder-comparison/skip-initial.npz"
+      },
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2816,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 109149.51464758982,
+          "shuffled_sse": 869601.1632582729,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 108116.12437084632,
+          "shuffled_sse": 869225.7888226808,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 108116.12437084632,
+        "shuffled_sse": 869225.7888226808,
+        "mean_sse": 477231.78175544797
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 34774080.10676025,
+        "mean_sse": 152293882.14791515
+      },
+      "validation": {
+        "images": 512,
+        "reconstruction_sse": 111528.84256482788,
+        "shuffled_sse": 879099.6823481107,
+        "mean_sse": 479605.04445925937
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4253789.619841144,
+        "mean_sse": 18580975.536038436
+      },
+      "parameters": 81817088,
+      "label": "Skip layer added for the low-rate pass",
+      "selected_checkpoint": "runs/celeba-capacity/decoder-continue-skip/full/selected.npz",
+      "weight_shapes": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          768
+        ],
+        "decoder_weight_0": [
+          2817,
+          24576
+        ]
+      }
+    }
+  },
+  "generated_comparison": {
+    "settings": {
+      "local_scale": 0.85,
+      "components": 16,
+      "directions": 64
+    },
+    "seed_blocks": [
+      [
+        0,
+        215
+      ],
+      [
+        216,
+        431
+      ]
+    ],
+    "runs": {
+      "fixed768x2048": {
+        "reference_metrics": {
+          "config": {
+            "epochs": 1,
+            "seed": 7,
+            "lr": 0.004,
+            "encoder_rate": 0.15,
+            "rule": "signsgd",
+            "depth": 6,
+            "gate_width": null,
+            "images": 162770,
+            "validation_images": 512,
+            "coordinate_scale": 1.0,
+            "decoder_rate_decay": 1.0,
+            "encoder_gate_widths": [
+              0.5,
+              0.5
+            ],
+            "decoder_class_width": 32,
+            "shared_coordinates": false,
+            "center_encoder": true,
+            "images_per_batch": 32,
+            "pixels_per_image": 32,
+            "decoder": "vector",
+            "decoder_init_scale": 1.0,
+            "projected_latent_votes": false,
+            "bottleneck_pool_size": null,
+            "projected_encoder_votes": true,
+            "center_each_input": false,
+            "vector_hidden_width": 0,
+            "normalize_each_input": false,
+            "paired_decoder_init": false,
+            "encoder_votes_per_pair": null,
+            "encoder_width": 768,
+            "latent_width": 2048,
+            "select_on_training": true,
+            "vector_output_class_width": 1
+          },
+          "generator_prior": "mixture",
+          "selected_epoch": 1,
+          "validation_sse": 219.3117310449368,
+          "top_code_variance": 0.7195373485217595,
+          "effective_code_rank": 1.9013606057160097,
+          "generated_edge_spread": 0.7327064275741577,
+          "generated_high_frequency_chroma": 0.0768360123038292,
+          "generated_nearest_validation_edge_error": 0.3081768751144409,
+          "generated_brightness_quantile_error": 0.0098985177905936,
+          "generated_contrast_quantile_error": 0.03674714065303928,
+          "recon_edge_spread": 0.8805431127548218,
+          "recon_edge_error": 0.3613229990005493,
+          "shuffled_edge_error": 1.131761908531189,
+          "recon_brightness_mae": 0.013899555429816246,
+          "recon_contrast_mae": 0.03578793630003929,
+          "attribute_contrast": {
+            "Male": 0.8326941132545471,
+            "Eyeglasses": 0.6522409915924072,
+            "Mouth_Slightly_Open": 0.7383050918579102,
+            "Smiling": 0.6108512878417969
+          },
+          "test_sse": 214.5604174222192,
+          "training_sse": 215.1664708073382
+        },
+        "components": 16,
+        "directions": 64,
+        "first_block": {
+          "edge_spread": 0.7327064275741577,
+          "chroma": 0.0768360123038292,
+          "brightness_error": 0.0098985177905936,
+          "contrast_error": 0.03674714065303928,
+          "nearest_validation_edge_error": 0.3081768751144409
+        },
+        "second_block": {
+          "edge_spread": 0.7280377149581909,
+          "chroma": 0.07760729640722275,
+          "brightness_error": 0.011253575823808964,
+          "contrast_error": 0.038437390837230176,
+          "nearest_validation_edge_error": 0.300558865070343
+        }
+      },
+      "decoder-skip768": {
+        "reference_metrics": {
+          "config": {
+            "epochs": 1,
+            "seed": 7,
+            "lr": 0.004,
+            "encoder_rate": 0.15,
+            "rule": "signsgd",
+            "depth": 6,
+            "gate_width": null,
+            "images": 162770,
+            "validation_images": 512,
+            "coordinate_scale": 1.0,
+            "decoder_rate_decay": 0.15,
+            "encoder_gate_widths": [
+              0.5,
+              0.5
+            ],
+            "decoder_class_width": 32,
+            "shared_coordinates": false,
+            "center_encoder": true,
+            "images_per_batch": 32,
+            "pixels_per_image": 32,
+            "decoder": "vector",
+            "decoder_init_scale": 1.0,
+            "projected_latent_votes": false,
+            "bottleneck_pool_size": null,
+            "projected_encoder_votes": true,
+            "center_each_input": false,
+            "vector_hidden_width": 128,
+            "normalize_each_input": false,
+            "paired_decoder_init": false,
+            "encoder_votes_per_pair": null,
+            "encoder_width": 768,
+            "latent_width": 2048,
+            "select_on_training": true,
+            "vector_output_class_width": 1,
+            "vector_decoder_skip": true,
+            "projected_decoder_votes": true
+          },
+          "generator_prior": "mixture",
+          "selected_epoch": 1,
+          "validation_sse": 212.90961872989968,
+          "top_code_variance": 0.6912741858328039,
+          "effective_code_rank": 2.052738646729222,
+          "generated_edge_spread": 0.7343370914459229,
+          "generated_high_frequency_chroma": 0.07736741006374359,
+          "generated_nearest_validation_edge_error": 0.29760831594467163,
+          "generated_brightness_quantile_error": 0.011090172278253665,
+          "generated_contrast_quantile_error": 0.034814880513831185,
+          "recon_edge_spread": 0.9013914465904236,
+          "recon_edge_error": 0.3475198447704315,
+          "shuffled_edge_error": 1.137512445449829,
+          "recon_brightness_mae": 0.013341590762138367,
+          "recon_contrast_mae": 0.033920012414455414,
+          "attribute_contrast": {
+            "Male": 0.8520110845565796,
+            "Eyeglasses": 0.6275502443313599,
+            "Mouth_Slightly_Open": 0.7781135439872742,
+            "Smiling": 0.6406415104866028
+          },
+          "test_sse": 208.24563828452497,
+          "training_sse": 208.6961316845049
+        },
+        "components": 16,
+        "directions": 64,
+        "first_block": {
+          "edge_spread": 0.7343370914459229,
+          "chroma": 0.07736741006374359,
+          "brightness_error": 0.011090172278253665,
+          "contrast_error": 0.034814880513831185,
+          "nearest_validation_edge_error": 0.29760831594467163
+        },
+        "second_block": {
+          "edge_spread": 0.6972478628158569,
+          "chroma": 0.07767987251281738,
+          "brightness_error": 0.010679266562587322,
+          "contrast_error": 0.04001181958929488,
+          "nearest_validation_edge_error": 0.3010387122631073
+        }
+      },
+      "decoder-head2-z2048": {
+        "reference_metrics": {
+          "config": {
+            "epochs": 1,
+            "seed": 7,
+            "lr": 0.004,
+            "encoder_rate": 0.15,
+            "rule": "signsgd",
+            "depth": 6,
+            "gate_width": null,
+            "images": 162770,
+            "validation_images": 512,
+            "coordinate_scale": 1.0,
+            "decoder_rate_decay": 1.0,
+            "encoder_gate_widths": [
+              0.5,
+              0.5
+            ],
+            "decoder_class_width": 32,
+            "shared_coordinates": false,
+            "center_encoder": true,
+            "images_per_batch": 32,
+            "pixels_per_image": 32,
+            "decoder": "vector",
+            "decoder_init_scale": 1.0,
+            "projected_latent_votes": false,
+            "bottleneck_pool_size": null,
+            "projected_encoder_votes": true,
+            "center_each_input": false,
+            "vector_hidden_width": 0,
+            "normalize_each_input": false,
+            "paired_decoder_init": false,
+            "encoder_votes_per_pair": null,
+            "encoder_width": 768,
+            "latent_width": 2048,
+            "select_on_training": true,
+            "vector_output_class_width": 2,
+            "vector_decoder_skip": false,
+            "projected_decoder_votes": false
+          },
+          "generator_prior": "mixture",
+          "selected_epoch": 1,
+          "validation_sse": 247.5782786342459,
+          "top_code_variance": 0.6605624416074845,
+          "effective_code_rank": 2.2050076426975695,
+          "generated_edge_spread": 0.7452093362808228,
+          "generated_high_frequency_chroma": 0.10211844742298126,
+          "generated_nearest_validation_edge_error": 0.3092309534549713,
+          "generated_brightness_quantile_error": 0.011803526313681346,
+          "generated_contrast_quantile_error": 0.05412218596198057,
+          "recon_edge_spread": 0.8111181259155273,
+          "recon_edge_error": 0.3956877589225769,
+          "shuffled_edge_error": 1.102931261062622,
+          "recon_brightness_mae": 0.015545855276286602,
+          "recon_contrast_mae": 0.04892696067690849,
+          "attribute_contrast": {
+            "Male": 0.8753436803817749,
+            "Eyeglasses": 0.6031721830368042,
+            "Mouth_Slightly_Open": 0.7096216082572937,
+            "Smiling": 0.5806095004081726
+          },
+          "test_sse": 242.35242711151767,
+          "training_sse": 242.83179301524572
+        },
+        "components": 16,
+        "directions": 64,
+        "first_block": {
+          "edge_spread": 0.7452093362808228,
+          "chroma": 0.10211844742298126,
+          "brightness_error": 0.011803526313681346,
+          "contrast_error": 0.05412218596198057,
+          "nearest_validation_edge_error": 0.3092309534549713
+        },
+        "second_block": {
+          "edge_spread": 0.7333877682685852,
+          "chroma": 0.1017957255244255,
+          "brightness_error": 0.007164917964684334,
+          "contrast_error": 0.05494298074198396,
+          "nearest_validation_edge_error": 0.3153645694255829
+        }
+      }
+    }
+  },
+  "best_reconstruction": "decoder-skip768",
+  "skip_decoder_continuation": {
+    "config": {
+      "epochs": 1,
+      "seed": 7,
+      "lr": 0.0004,
+      "encoder_rate": 0.15,
+      "rule": "signsgd",
+      "depth": 6,
+      "gate_width": null,
+      "images": 162770,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 0.15,
+      "encoder_gate_widths": [
+        0.5,
+        0.5
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 32,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 1.0,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 128,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 768,
+      "latent_width": 2048,
+      "select_on_training": true,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": true,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 4,
+      "initialize_from": "runs/celeba-capacity/decoder-skip768/full/selected.npz"
+    },
+    "checkpoint_panel_size": 512,
+    "curve": [
+      {
+        "epoch": 0,
+        "reconstruction_sse": 105814.11843713064,
+        "shuffled_sse": 869286.9377823141,
+        "mean_sse": 477231.78175544797
+      },
+      {
+        "epoch": 0.2500491448791036,
+        "reconstruction_sse": 106562.31750951435,
+        "shuffled_sse": 866514.9340820204,
+        "mean_sse": 477231.78175544797
+      },
+      {
+        "epoch": 0.5000982897582072,
+        "reconstruction_sse": 106759.07756146033,
+        "shuffled_sse": 865715.5196643834,
+        "mean_sse": 477231.78175544797
+      },
+      {
+        "epoch": 0.7501474346373108,
+        "reconstruction_sse": 106405.21146100842,
+        "shuffled_sse": 863788.5559065667,
+        "mean_sse": 477231.78175544797
+      },
+      {
+        "epoch": 1,
+        "reconstruction_sse": 106386.70693447787,
+        "shuffled_sse": 864785.5292699712,
+        "mean_sse": 477231.78175544797
+      }
+    ],
+    "selected": {
+      "epoch": 0,
+      "reconstruction_sse": 105814.11843713064,
+      "shuffled_sse": 869286.9377823141,
+      "mean_sse": 477231.78175544797
+    },
+    "initial_test": {
+      "images": 19962,
+      "reconstruction_sse": 4156999.4314356875,
+      "mean_sse": 18580975.536038436
+    },
+    "selected_test": {
+      "images": 19962,
+      "reconstruction_sse": 4156999.4314356875,
+      "mean_sse": 18580975.536038436
+    },
+    "end_of_pass_test": {
+      "images": 19962,
+      "reconstruction_sse": 4186955.860263346,
+      "mean_sse": 18580975.536038436
+    },
+    "selected_training": {
+      "images": 162770,
+      "reconstruction_sse": 33969469.354286864,
+      "mean_sse": 152293882.14791515
+    },
+    "selected_weights_match_input": true,
+    "checkpoint": "runs/celeba-capacity/decoder-skip768-refine/full/selected.npz",
+    "end_of_pass_checkpoint": "runs/celeba-capacity/decoder-skip768-refine/full/latest.npz",
+    "sampling": {
+      "seed_blocks": [
+        [
+          0,
+          215
+        ],
+        [
+          216,
+          431
+        ]
+      ],
+      "initial": {
+        "reference_metrics": {
+          "config": {
+            "epochs": 1,
+            "seed": 7,
+            "lr": 0.004,
+            "encoder_rate": 0.15,
+            "rule": "signsgd",
+            "depth": 6,
+            "gate_width": null,
+            "images": 162770,
+            "validation_images": 512,
+            "coordinate_scale": 1.0,
+            "decoder_rate_decay": 0.15,
+            "encoder_gate_widths": [
+              0.5,
+              0.5
+            ],
+            "decoder_class_width": 32,
+            "shared_coordinates": false,
+            "center_encoder": true,
+            "images_per_batch": 32,
+            "pixels_per_image": 32,
+            "decoder": "vector",
+            "decoder_init_scale": 1.0,
+            "projected_latent_votes": false,
+            "bottleneck_pool_size": null,
+            "projected_encoder_votes": true,
+            "center_each_input": false,
+            "vector_hidden_width": 128,
+            "normalize_each_input": false,
+            "paired_decoder_init": false,
+            "encoder_votes_per_pair": null,
+            "encoder_width": 768,
+            "latent_width": 2048,
+            "select_on_training": true,
+            "vector_output_class_width": 1,
+            "vector_decoder_skip": true,
+            "projected_decoder_votes": true
+          },
+          "generator_prior": "mixture",
+          "selected_epoch": 1,
+          "validation_sse": 212.90961872989968,
+          "top_code_variance": 0.6912741858328039,
+          "effective_code_rank": 2.052738646729222,
+          "generated_edge_spread": 0.7343370914459229,
+          "generated_high_frequency_chroma": 0.07736741006374359,
+          "generated_nearest_validation_edge_error": 0.29760831594467163,
+          "generated_brightness_quantile_error": 0.011090172278253665,
+          "generated_contrast_quantile_error": 0.034814880513831185,
+          "recon_edge_spread": 0.9013914465904236,
+          "recon_edge_error": 0.3475198447704315,
+          "shuffled_edge_error": 1.137512445449829,
+          "recon_brightness_mae": 0.013341590762138367,
+          "recon_contrast_mae": 0.033920012414455414,
+          "attribute_contrast": {
+            "Male": 0.8520110845565796,
+            "Eyeglasses": 0.6275502443313599,
+            "Mouth_Slightly_Open": 0.7781135439872742,
+            "Smiling": 0.6406415104866028
+          },
+          "test_sse": 208.24563828452497,
+          "training_sse": 208.6961316845049
+        },
+        "components": 16,
+        "directions": 64,
+        "first_block": {
+          "edge_spread": 0.7343370914459229,
+          "chroma": 0.07736741006374359,
+          "brightness_error": 0.011090172278253665,
+          "contrast_error": 0.034814880513831185,
+          "nearest_validation_edge_error": 0.29760831594467163
+        },
+        "second_block": {
+          "edge_spread": 0.6972478628158569,
+          "chroma": 0.07767987251281738,
+          "brightness_error": 0.010679266562587322,
+          "contrast_error": 0.04001181958929488,
+          "nearest_validation_edge_error": 0.3010387122631073
+        }
+      },
+      "selected": {
+        "reference_metrics": {
+          "config": {
+            "epochs": 1,
+            "seed": 7,
+            "lr": 0.0004,
+            "encoder_rate": 0.15,
+            "rule": "signsgd",
+            "depth": 6,
+            "gate_width": null,
+            "images": 162770,
+            "validation_images": 512,
+            "coordinate_scale": 1.0,
+            "decoder_rate_decay": 0.15,
+            "encoder_gate_widths": [
+              0.5,
+              0.5
+            ],
+            "decoder_class_width": 32,
+            "shared_coordinates": false,
+            "center_encoder": true,
+            "images_per_batch": 32,
+            "pixels_per_image": 32,
+            "decoder": "vector",
+            "decoder_init_scale": 1.0,
+            "projected_latent_votes": false,
+            "bottleneck_pool_size": null,
+            "projected_encoder_votes": true,
+            "center_each_input": false,
+            "vector_hidden_width": 128,
+            "normalize_each_input": false,
+            "paired_decoder_init": false,
+            "encoder_votes_per_pair": null,
+            "encoder_width": 768,
+            "latent_width": 2048,
+            "select_on_training": true,
+            "vector_output_class_width": 1,
+            "vector_decoder_skip": true,
+            "projected_decoder_votes": true,
+            "checks_per_epoch": 4,
+            "initialize_from": "runs/celeba-capacity/decoder-skip768/full/selected.npz"
+          },
+          "generator_prior": "mixture",
+          "selected_epoch": 0,
+          "validation_sse": 212.90961872989968,
+          "top_code_variance": 0.6912741858328039,
+          "effective_code_rank": 2.052738646729222,
+          "generated_edge_spread": 0.7343370914459229,
+          "generated_high_frequency_chroma": 0.07736741006374359,
+          "generated_nearest_validation_edge_error": 0.29760831594467163,
+          "generated_brightness_quantile_error": 0.011090172278253665,
+          "generated_contrast_quantile_error": 0.034814880513831185,
+          "recon_edge_spread": 0.9013914465904236,
+          "recon_edge_error": 0.3475198447704315,
+          "shuffled_edge_error": 1.137512445449829,
+          "recon_brightness_mae": 0.013341590762138367,
+          "recon_contrast_mae": 0.033920012414455414,
+          "attribute_contrast": {
+            "Male": 0.8520110845565796,
+            "Eyeglasses": 0.6275502443313599,
+            "Mouth_Slightly_Open": 0.7781135439872742,
+            "Smiling": 0.6406415104866028
+          },
+          "test_sse": 208.24563828452497,
+          "training_sse": 208.6961316845049
+        },
+        "components": 16,
+        "directions": 64,
+        "first_block": {
+          "edge_spread": 0.7343370914459229,
+          "chroma": 0.07736741006374359,
+          "brightness_error": 0.011090172278253665,
+          "contrast_error": 0.034814880513831185,
+          "nearest_validation_edge_error": 0.29760831594467163
+        },
+        "second_block": {
+          "edge_spread": 0.6972478628158569,
+          "chroma": 0.07767987251281738,
+          "brightness_error": 0.010679266562587322,
+          "contrast_error": 0.04001181958929488,
+          "nearest_validation_edge_error": 0.3010387122631073
+        }
+      }
+    },
+    "decoder_sha256": "919b76eb73296b6ef0ec19150c544e7d7e8516d04b3f368e6a4f8dc6d8d0ea07"
+  }
+}

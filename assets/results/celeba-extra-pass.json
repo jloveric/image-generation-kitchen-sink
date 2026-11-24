@@ -1,0 +1,377 @@
+{
+  "selection": "Lowest RGB reconstruction error on the same 512 training portraits, including the starting model.",
+  "base_step": 0.0002,
+  "earlier_step": 3e-05,
+  "seed_blocks": [
+    [
+      0,
+      215
+    ],
+    [
+      216,
+      431
+    ]
+  ],
+  "fresh_seed_blocks": [
+    [
+      432,
+      647
+    ],
+    [
+      648,
+      863
+    ]
+  ],
+  "components": 16,
+  "rank": 64,
+  "sampler_scale": 0.85,
+  "edge_spread_interval": "95% percentile interval over 2,000 paired bootstrap draws of seeds within each block; fixed training seed and fitted samplers.",
+  "runs": {
+    "decoder-skip768x2": {
+      "parameters": 101282048,
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0002,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 2,
+        "initialize_from": "runs/celeba-capacity/decoder-skip768x2/full/selected.npz"
+      },
+      "training_panel": [
+        [
+          0,
+          202.18980674238557
+        ],
+        [
+          0.2500491448791036,
+          203.0558807452718
+        ],
+        [
+          0.5000982897582072,
+          203.38864679308622
+        ],
+        [
+          0.7501474346373108,
+          202.96710819983642
+        ],
+        [
+          1,
+          202.9777196027969
+        ]
+      ],
+      "baseline": {
+        "test_error_per_portrait": 204.39689482105774,
+        "sampling": {
+          "0": {
+            "generated_edge_spread": 0.7813758254051208,
+            "generated_high_frequency_chroma": 0.07599794119596481,
+            "generated_nearest_validation_edge_error": 0.32887405157089233,
+            "generated_brightness_quantile_error": 0.014930634749563127,
+            "generated_contrast_quantile_error": 0.039010866143201525
+          },
+          "216": {
+            "generated_edge_spread": 0.7928979992866516,
+            "generated_high_frequency_chroma": 0.07637012004852295,
+            "generated_nearest_validation_edge_error": 0.31981319189071655,
+            "generated_brightness_quantile_error": 0.00566206911676809,
+            "generated_contrast_quantile_error": 0.0399540443561579
+          }
+        },
+        "generated_mean": {
+          "generated_edge_spread": 0.7871369123458862,
+          "generated_high_frequency_chroma": 0.07618403062224388,
+          "generated_nearest_validation_edge_error": 0.32434362173080444,
+          "generated_brightness_quantile_error": 0.010296351933165608,
+          "generated_contrast_quantile_error": 0.039482455249679714
+        }
+      },
+      "selected": {
+        "additional_pass": 0,
+        "train_error_per_portrait": 204.7973419693305,
+        "test_error_per_portrait": 204.39689482105774,
+        "decoder": "runs/celeba-capacity/decoder-skip768x2-pass2/full/decoder-mixture.npz"
+      },
+      "measured_checkpoints": {
+        "end": {
+          "additional_pass": 1,
+          "checkpoint": "runs/celeba-capacity/decoder-skip768x2-pass2/full/latest.npz",
+          "decoder": "runs/celeba-capacity/decoder-skip768x2-pass2/full/end-decoder-mixture.npz",
+          "sha256": "c64dc0092b01b2850cf9a95f56c2c18f5ef60f52ff241eb84c88fa0a3ac82131",
+          "blocks": {
+            "0": {
+              "generated_edge_spread": 0.818303644657135,
+              "generated_high_frequency_chroma": 0.0746217742562294,
+              "generated_nearest_validation_edge_error": 0.3264721632003784,
+              "generated_brightness_quantile_error": 0.007038211116665299,
+              "generated_contrast_quantile_error": 0.03662035647583635
+            },
+            "216": {
+              "generated_edge_spread": 0.8347503542900085,
+              "generated_high_frequency_chroma": 0.07485993206501007,
+              "generated_nearest_validation_edge_error": 0.3378469944000244,
+              "generated_brightness_quantile_error": 0.009823382841913334,
+              "generated_contrast_quantile_error": 0.042696223780512806
+            }
+          },
+          "edge_spread_change_paired_bootstrap_95": [
+            -0.011754419155094927,
+            0.08864447063933692
+          ],
+          "generated_mean": {
+            "generated_edge_spread": 0.8265269994735718,
+            "generated_high_frequency_chroma": 0.07474085316061974,
+            "generated_nearest_validation_edge_error": 0.3321595788002014,
+            "generated_brightness_quantile_error": 0.008430796979289317,
+            "generated_contrast_quantile_error": 0.03965829012817458
+          },
+          "test_error_per_portrait": 205.2898284368551
+        }
+      },
+      "fresh_seeds": {
+        "before": {
+          "432": {
+            "generated_edge_spread": 0.7723713517189026,
+            "generated_high_frequency_chroma": 0.07651781290769577
+          },
+          "648": {
+            "generated_edge_spread": 0.7950055599212646,
+            "generated_high_frequency_chroma": 0.07765240967273712
+          }
+        },
+        "after": {
+          "432": {
+            "generated_edge_spread": 0.7657403945922852,
+            "generated_high_frequency_chroma": 0.07300254702568054
+          },
+          "648": {
+            "generated_edge_spread": 0.6821804046630859,
+            "generated_high_frequency_chroma": 0.07446102052927017
+          }
+        }
+      },
+      "all_864_seeds": {
+        "before_spread": 0.7854126771926493,
+        "after_spread": 0.7752436678014,
+        "before_grain": 0.07663457095623016,
+        "after_grain": 0.07423631846904755,
+        "spread_change_95_percent_interval": [
+          -0.04957688964959606,
+          0.029082447372357205
+        ]
+      }
+    },
+    "decoder-skip768x3": {
+      "parameters": 120747008,
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.0002,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 4,
+        "vector_hidden_depth": 3,
+        "initialize_from": "runs/celeba-capacity/decoder-skip768x3/full/selected.npz"
+      },
+      "training_panel": [
+        [
+          0,
+          200.05451316343752
+        ],
+        [
+          0.2500491448791036,
+          201.24682781754046
+        ],
+        [
+          0.5000982897582072,
+          201.70442110158996
+        ],
+        [
+          0.7501474346373108,
+          201.31615287399836
+        ],
+        [
+          1,
+          201.33383430716646
+        ]
+      ],
+      "baseline": {
+        "test_error_per_portrait": 202.41606104979982,
+        "sampling": {
+          "0": {
+            "generated_edge_spread": 0.7372346520423889,
+            "generated_high_frequency_chroma": 0.0732673928141594,
+            "generated_nearest_validation_edge_error": 0.30584004521369934,
+            "generated_brightness_quantile_error": 0.009312363831620462,
+            "generated_contrast_quantile_error": 0.031319645321682875
+          },
+          "216": {
+            "generated_edge_spread": 0.7572622895240784,
+            "generated_high_frequency_chroma": 0.07327922433614731,
+            "generated_nearest_validation_edge_error": 0.3136358857154846,
+            "generated_brightness_quantile_error": 0.011759988414613813,
+            "generated_contrast_quantile_error": 0.03656852337482728
+          }
+        },
+        "generated_mean": {
+          "generated_edge_spread": 0.7472484707832336,
+          "generated_high_frequency_chroma": 0.07327330857515335,
+          "generated_nearest_validation_edge_error": 0.309737965464592,
+          "generated_brightness_quantile_error": 0.010536176123117138,
+          "generated_contrast_quantile_error": 0.03394408434825508
+        }
+      },
+      "selected": {
+        "additional_pass": 0,
+        "train_error_per_portrait": 202.90865980452384,
+        "test_error_per_portrait": 202.41606104979982,
+        "decoder": "runs/celeba-capacity/decoder-skip768x3-pass2/full/decoder-mixture.npz"
+      },
+      "measured_checkpoints": {
+        "end": {
+          "additional_pass": 1,
+          "checkpoint": "runs/celeba-capacity/decoder-skip768x3-pass2/full/latest.npz",
+          "decoder": "runs/celeba-capacity/decoder-skip768x3-pass2/full/end-decoder-mixture.npz",
+          "sha256": "af8107992cf467d81f2bdaff77e92c008c9d475839da54606aaf07be643a8b31",
+          "blocks": {
+            "0": {
+              "generated_edge_spread": 0.7200943827629089,
+              "generated_high_frequency_chroma": 0.0710052028298378,
+              "generated_nearest_validation_edge_error": 0.3001704812049866,
+              "generated_brightness_quantile_error": 0.00903499957762266,
+              "generated_contrast_quantile_error": 0.03180200022302176
+            },
+            "216": {
+              "generated_edge_spread": 0.7974249124526978,
+              "generated_high_frequency_chroma": 0.07071991264820099,
+              "generated_nearest_validation_edge_error": 0.31610405445098877,
+              "generated_brightness_quantile_error": 0.009138992193498086,
+              "generated_contrast_quantile_error": 0.03684419564118511
+            }
+          },
+          "edge_spread_change_paired_bootstrap_95": [
+            -0.02217017514905329,
+            0.045572764584521044
+          ],
+          "generated_mean": {
+            "generated_edge_spread": 0.7587596476078033,
+            "generated_high_frequency_chroma": 0.0708625577390194,
+            "generated_nearest_validation_edge_error": 0.30813726782798767,
+            "generated_brightness_quantile_error": 0.009086995885560372,
+            "generated_contrast_quantile_error": 0.03432309793210343
+          },
+          "test_error_per_portrait": 203.7882488952502
+        }
+      },
+      "fresh_seeds": {
+        "before": {
+          "432": {
+            "generated_edge_spread": 0.7793775796890259,
+            "generated_high_frequency_chroma": 0.07285162061452866
+          },
+          "648": {
+            "generated_edge_spread": 0.7867647409439087,
+            "generated_high_frequency_chroma": 0.07392663508653641
+          }
+        },
+        "after": {
+          "432": {
+            "generated_edge_spread": 0.8341229557991028,
+            "generated_high_frequency_chroma": 0.0728282704949379
+          },
+          "648": {
+            "generated_edge_spread": 0.8195688724517822,
+            "generated_high_frequency_chroma": 0.07246758043766022
+          }
+        }
+      },
+      "all_864_seeds": {
+        "before_spread": 0.7651598090962871,
+        "after_spread": 0.7928028003182879,
+        "before_grain": 0.07333121821284294,
+        "after_grain": 0.07175524160265923,
+        "spread_change_95_percent_interval": [
+          0.002315153559889608,
+          0.05367911837701666
+        ]
+      }
+    }
+  },
+  "display_seeds": [
+    0,
+    1,
+    2,
+    216,
+    217,
+    218,
+    432,
+    433,
+    434,
+    648,
+    649,
+    650
+  ]
+}

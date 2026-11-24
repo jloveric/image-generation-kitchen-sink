@@ -9,6 +9,7 @@ from hebbian_fit.autoencoder import (
     Autoencoder, EncoderLayer, Generator, encoder_configs, export_generator, rgb_bytes, signed_totals,
     vote_assignment, projected_votes,
 )
+from hebbian_fit.model import select
 
 
 class AutoencoderTest(unittest.TestCase):
@@ -83,21 +84,47 @@ class AutoencoderTest(unittest.TestCase):
                                  {f"weight_{i}" for i in range(6)})
 
     def test_vector_decoder_trains_and_exports(self):
-        cases = ((0, 64, 1, False), (16, 128, 2, False), (16, 64, 1, True))
-        for width, latent, output_width, skip in cases:
-            with self.subTest(hidden_width=width, code_width=latent, output_width=output_width, skip=skip):
+        cases = ((0, 64, 1, False, 1), (16, 128, 2, False, 1), (16, 64, 1, True, 1),
+                 (8, 64, 1, True, 2), (8, 64, 1, True, 3), (8, 64, 1, False, 2))
+        for width, latent, output_width, skip, depth in cases:
+            with self.subTest(hidden_width=width, code_width=latent, output_width=output_width, skip=skip, depth=depth):
                 model = Autoencoder(3, images_per_batch=4, inputs=12, decoder_kind="vector",
-                                    vector_hidden_width=width, latent_width=latent,
+                                    vector_hidden_width=width, vector_hidden_depth=depth, latent_width=latent,
                                     vector_output_class_width=output_width, vector_decoder_skip=skip,
-                                    projected_decoder_votes=skip, decoder_rate_decay=.15 if skip else 1.)
+                                    projected_decoder_votes=skip, decoder_rate_decay=.15 if skip else 1.,
+                                    vector_gate_width=.38)
+                self.assertEqual(model.decoder.config.gate_width, .38)
                 initial = model.state()
                 codes = model.encode(self.images)
                 self.assertEqual(codes.shape, (4, latent))
-                targets = -np.sign(model.decode(codes))
+                stages = [codes]
+                components = model.components()
+                for index in range(depth if width else 0):
+                    name = "hidden" if index == 0 else f"hidden{index + 1}"
+                    layer = components[name]
+                    presynaptic = stages[-1]
+                    self.assertEqual(layer.config.inputs, presynaptic.shape[1])
+                    raw = np.column_stack((presynaptic, np.ones(len(codes), np.float32))) @ layer.weights[0]
+                    stages.append(select(raw, layer.config)[0])
+                expected_inputs = np.concatenate(stages, axis=1) if skip else stages[-1]
+                expected_prediction = model.decoder.predict_values(expected_inputs).reshape(4, -1, 3)
+                np.testing.assert_array_equal(model.decode(codes), expected_prediction)
+                model.step(self.images, None, expected_prediction, .004)
+                for key, array in model.state().items():
+                    np.testing.assert_array_equal(array, initial[key], err_msg=key)
+                targets = -np.sign(expected_prediction)
                 model.step(self.images, None, targets, .004)
                 for key, array in model.state().items():
                     self.assertFalse(np.array_equal(array, initial[key]), key)
-                model.load(model.state())
+                trained = model.state()
+                model.load(initial)
+                model.step(self.images, None, targets / 2, .004)
+                for key, array in model.state().items():
+                    np.testing.assert_array_equal(array, trained[key], err_msg=key)
+                model.load(initial)
+                model.load(trained)
+                for key, restored in model.state().items():
+                    np.testing.assert_array_equal(restored, trained[key])
                 with TemporaryDirectory() as directory:
                     path = Path(directory) / "decoder.npz"
                     export_generator(path, model.decoder, model.encode(self.images), hidden=model.decoder_hidden,
@@ -172,11 +199,11 @@ class AutoencoderTest(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
     def test_gpu_small_pools_and_balanced_encoder_feedback(self):
-        for skip in (False, True):
-            with self.subTest(skip=skip):
+        for skip, depth in ((False, 1), (True, 1), (True, 2)):
+            with self.subTest(skip=skip, depth=depth):
                 settings = dict(images_per_batch=4, inputs=12, decoder_kind="vector",
                                 projected_encoder_votes=True, bottleneck_pool_size=8, center_each_input=True,
-                                vector_hidden_width=16, vector_decoder_skip=skip, projected_decoder_votes=skip,
+                                vector_hidden_width=16, vector_hidden_depth=depth, vector_decoder_skip=skip, projected_decoder_votes=skip,
                                 decoder_rate_decay=.15 if skip else 1.)
                 cpu, gpu = Autoencoder(3, **settings), Autoencoder(3, backend="mojo", **settings)
                 codes = cpu.encode(self.images)

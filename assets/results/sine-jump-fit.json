@@ -1,0 +1,2938 @@
+{
+  "target": "0.5*sin(2*pi*x) + 0.5*(x > 0.25)",
+  "jump_x": 0.25,
+  "jump_height": 0.5,
+  "split_sizes": {
+    "training": 4096,
+    "validation": 4096,
+    "test": 4096
+  },
+  "train_domain": [
+    -1,
+    1
+  ],
+  "jump_neighborhood_radius": 0.05,
+  "transition_search_radius": 0.1,
+  "selection_metric": "Median in-range validation RMSE",
+  "development_seeds": [
+    1,
+    2,
+    3
+  ],
+  "screening": {
+    "sine-crest-jump": {
+      "settings": {
+        "label": "sine-crest-jump",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 4,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.267,
+            0.213,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.03371950563025045
+    },
+    "sine-crest-jump-longer": {
+      "settings": {
+        "label": "sine-crest-jump-longer",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 4,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.267,
+            0.213,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ],
+          [
+            "lion",
+            0.00045,
+            64,
+            480,
+            0.9
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.03371950563025045
+    },
+    "sine-crest-jump-6-layers": {
+      "settings": {
+        "label": "sine-crest-jump-6-layers",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 6,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.288,
+            0.256,
+            0.224,
+            0.192,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.027715446098539768
+    },
+    "sine-crest-jump-8-layers": {
+      "settings": {
+        "label": "sine-crest-jump-8-layers",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 8,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.297,
+            0.274,
+            0.251,
+            0.229,
+            0.206,
+            0.183,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.033665564888772884
+    },
+    "sine-crest-jump-12-layers": {
+      "settings": {
+        "label": "sine-crest-jump-12-layers",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 12,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.305,
+            0.291,
+            0.276,
+            0.262,
+            0.247,
+            0.233,
+            0.218,
+            0.204,
+            0.189,
+            0.175,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.02113254146250492
+    },
+    "sine-crest-jump-24-layers-step-x0.64": {
+      "settings": {
+        "label": "sine-crest-jump-24-layers-step-x0.64",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 24,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.313,
+            0.306,
+            0.299,
+            0.292,
+            0.285,
+            0.278,
+            0.271,
+            0.264,
+            0.257,
+            0.25,
+            0.243,
+            0.237,
+            0.23,
+            0.223,
+            0.216,
+            0.209,
+            0.202,
+            0.195,
+            0.188,
+            0.181,
+            0.174,
+            0.167,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.00192,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0005120000000000001,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.000224,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            7.680000000000001e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.022236500680280786
+    },
+    "sine-crest-jump-1x512-gauss0.32-refined": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.32-refined",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00012374368670764582,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            4.2426406871192855e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.08283744013925384
+    }
+  },
+  "selected": "sine-crest-jump-12-layers",
+  "example_seed": 7,
+  "plotted_trials": [
+    "sine-crest-jump-12-layers",
+    "sine-crest-jump-24-layers-step-x0.64",
+    "sine-crest-jump-1x512-gauss0.32-refined"
+  ],
+  "selected_wide": "sine-crest-jump-1x512-gauss0.32-refined",
+  "wide_screen": {
+    "sine-crest-jump-1x512-gauss0.16": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.16",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.09608267926457985
+    },
+    "sine-crest-jump-1x512-gauss0.32": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.32",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.11558936791538453
+    },
+    "sine-crest-jump-1x2048-gauss0.16": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.16",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0005303300858899107,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0001414213562373095,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.2537011626688351
+    },
+    "sine-crest-jump-1x2048-gauss0.32": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.32",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0005303300858899107,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0001414213562373095,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.3465900553422755
+    },
+    "sine-crest-jump-1x8192-gauss0.16": {
+      "settings": {
+        "label": "sine-crest-jump-1x8192-gauss0.16",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 4096,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.00026516504294495536,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            7.071067811865475e-05,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.30392860321965304
+    },
+    "sine-crest-jump-1x8192-gauss0.32": {
+      "settings": {
+        "label": "sine-crest-jump-1x8192-gauss0.32",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 4096,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.00026516504294495536,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            7.071067811865475e-05,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.22504123714246094
+    },
+    "sine-crest-jump-1x512-gauss0.08-step0.0015": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.08-step0.0015",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.08
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0015,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0004,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.2611486830301229
+    },
+    "sine-crest-jump-1x2048-gauss0.08-step0.0015": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.08-step0.0015",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.08
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0015,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0004,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.35824543679009185
+    },
+    "sine-crest-jump-1x2048-gauss0.12-step0.003": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.12-step0.003",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.12
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.669076517619451
+    },
+    "sine-crest-jump-1x2048-gauss0.16-step0.003": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.16-step0.003",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.5141544941416103
+    },
+    "sine-crest-jump-1x8192-gauss0.10-step0.0015": {
+      "settings": {
+        "label": "sine-crest-jump-1x8192-gauss0.10-step0.0015",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 4096,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.1
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0015,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0004,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 1.6505217099152008
+    },
+    "sine-crest-jump-1x512-gauss0.16-normal-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.16-normal-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.000375,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0001,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.1049081716472842
+    },
+    "sine-crest-jump-1x2048-gauss0.16-normal-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.16-normal-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            9.375e-05,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            2.5e-05,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.2355662205509935
+    },
+    "sine-crest-jump-1x8192-gauss0.16-normal-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x8192-gauss0.16-normal-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 4096,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            2.34375e-05,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            6.25e-06,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.4573113186077005
+    },
+    "sine-crest-jump-1x512-gauss0.18-unit-sphere-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.18-unit-sphere-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.18
+          ],
+          "readout_layers": "all",
+          "initialization": "unit-sphere",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.000375,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0001,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.35341538139630185
+    },
+    "sine-crest-jump-1x2048-gauss0.18-unit-sphere-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.18-unit-sphere-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.18
+          ],
+          "readout_layers": "all",
+          "initialization": "unit-sphere",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            9.375e-05,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            2.5e-05,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.19005466887811176
+    },
+    "sine-crest-jump-1x2048-gauss0.10-normal-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x2048-gauss0.10-normal-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.1
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            9.375e-05,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            2.5e-05,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "validation_rmse": 0.7288729898995018
+    }
+  },
+  "wide_finalists": {
+    "sine-crest-jump-1x512-gauss0.16": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.16",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.1944568649467036,
+      "parent": null
+    },
+    "sine-crest-jump-1x512-gauss0.16-refined": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.16-refined",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00012374368670764582,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            4.2426406871192855e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.1630341168486596,
+      "parent": "sine-crest-jump-1x512-gauss0.16"
+    },
+    "sine-crest-jump-1x512-gauss0.16-normal-small-step": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.16-normal-small-step",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.000375,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0001,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.21064941070135895,
+      "parent": null
+    },
+    "sine-crest-jump-1x512-gauss0.16-normal-small-step-refined": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.16-normal-small-step-refined",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.000375,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0001,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00012374368670764582,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            4.2426406871192855e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.18040122221255997,
+      "parent": "sine-crest-jump-1x512-gauss0.16-normal-small-step"
+    },
+    "sine-crest-jump-1x512-gauss0.32": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.32",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.11558936791538453,
+      "parent": null
+    },
+    "sine-crest-jump-1x512-gauss0.32-refined": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.32-refined",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00012374368670764582,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            4.2426406871192855e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "median_validation_rmse": 0.08283744013925384,
+      "parent": "sine-crest-jump-1x512-gauss0.32"
+    }
+  },
+  "step_sweep_24": {
+    "trials": [
+      {
+        "factor": 1.0,
+        "settings": {
+          "label": "sine-crest-jump-24-layers",
+          "config": {
+            "inputs": 1,
+            "outputs": 1,
+            "width": 32,
+            "winners": 8,
+            "depth": 24,
+            "competition": "layer",
+            "readout": "class-sum",
+            "gate": "gaussian-smooth",
+            "gate_width": 0.5,
+            "layer_gate_widths": [
+              0.32,
+              0.313,
+              0.306,
+              0.299,
+              0.292,
+              0.285,
+              0.278,
+              0.271,
+              0.264,
+              0.257,
+              0.25,
+              0.243,
+              0.237,
+              0.23,
+              0.223,
+              0.216,
+              0.209,
+              0.202,
+              0.195,
+              0.188,
+              0.181,
+              0.174,
+              0.167,
+              0.16
+            ],
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "sine_omega": null,
+            "connection": "affine",
+            "hidden_rule": "lion",
+            "output_bound": null,
+            "output_levels": null,
+            "edge_transitions": null,
+            "clip_output": true,
+            "layer_rate_decay": 1.0
+          },
+          "phases": [
+            [
+              "signsgd",
+              0.003,
+              64,
+              80,
+              1.0
+            ],
+            [
+              "lion",
+              0.0008,
+              64,
+              100,
+              0.75
+            ],
+            [
+              "lion",
+              0.00035,
+              64,
+              220,
+              0.9
+            ],
+            [
+              "lion",
+              0.00012,
+              64,
+              240,
+              0.95
+            ]
+          ],
+          "backend": "numpy",
+          "schedule": "hold-cosine",
+          "task": "sine-jump",
+          "samples": 4096
+        },
+        "median_validation_rmse": 0.024443052091130665
+      },
+      {
+        "factor": 0.8,
+        "settings": {
+          "label": "sine-crest-jump-24-layers-step-x0.8",
+          "config": {
+            "inputs": 1,
+            "outputs": 1,
+            "width": 32,
+            "winners": 8,
+            "depth": 24,
+            "competition": "layer",
+            "readout": "class-sum",
+            "gate": "gaussian-smooth",
+            "gate_width": 0.5,
+            "layer_gate_widths": [
+              0.32,
+              0.313,
+              0.306,
+              0.299,
+              0.292,
+              0.285,
+              0.278,
+              0.271,
+              0.264,
+              0.257,
+              0.25,
+              0.243,
+              0.237,
+              0.23,
+              0.223,
+              0.216,
+              0.209,
+              0.202,
+              0.195,
+              0.188,
+              0.181,
+              0.174,
+              0.167,
+              0.16
+            ],
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "sine_omega": null,
+            "connection": "affine",
+            "hidden_rule": "lion",
+            "output_bound": null,
+            "output_levels": null,
+            "edge_transitions": null,
+            "clip_output": true,
+            "layer_rate_decay": 1.0
+          },
+          "phases": [
+            [
+              "signsgd",
+              0.0024000000000000002,
+              64,
+              80,
+              1.0
+            ],
+            [
+              "lion",
+              0.00064,
+              64,
+              100,
+              0.75
+            ],
+            [
+              "lion",
+              0.00028000000000000003,
+              64,
+              220,
+              0.9
+            ],
+            [
+              "lion",
+              9.6e-05,
+              64,
+              240,
+              0.95
+            ]
+          ],
+          "backend": "numpy",
+          "schedule": "hold-cosine",
+          "task": "sine-jump",
+          "samples": 4096
+        },
+        "median_validation_rmse": 0.023882083919565623
+      },
+      {
+        "factor": 0.64,
+        "settings": {
+          "label": "sine-crest-jump-24-layers-step-x0.64",
+          "config": {
+            "inputs": 1,
+            "outputs": 1,
+            "width": 32,
+            "winners": 8,
+            "depth": 24,
+            "competition": "layer",
+            "readout": "class-sum",
+            "gate": "gaussian-smooth",
+            "gate_width": 0.5,
+            "layer_gate_widths": [
+              0.32,
+              0.313,
+              0.306,
+              0.299,
+              0.292,
+              0.285,
+              0.278,
+              0.271,
+              0.264,
+              0.257,
+              0.25,
+              0.243,
+              0.237,
+              0.23,
+              0.223,
+              0.216,
+              0.209,
+              0.202,
+              0.195,
+              0.188,
+              0.181,
+              0.174,
+              0.167,
+              0.16
+            ],
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "sine_omega": null,
+            "connection": "affine",
+            "hidden_rule": "lion",
+            "output_bound": null,
+            "output_levels": null,
+            "edge_transitions": null,
+            "clip_output": true,
+            "layer_rate_decay": 1.0
+          },
+          "phases": [
+            [
+              "signsgd",
+              0.00192,
+              64,
+              80,
+              1.0
+            ],
+            [
+              "lion",
+              0.0005120000000000001,
+              64,
+              100,
+              0.75
+            ],
+            [
+              "lion",
+              0.000224,
+              64,
+              220,
+              0.9
+            ],
+            [
+              "lion",
+              7.680000000000001e-05,
+              64,
+              240,
+              0.95
+            ]
+          ],
+          "backend": "numpy",
+          "schedule": "hold-cosine",
+          "task": "sine-jump",
+          "samples": 4096
+        },
+        "median_validation_rmse": 0.022236500680280786
+      },
+      {
+        "factor": 0.512,
+        "settings": {
+          "label": "sine-crest-jump-24-layers-step-x0.512",
+          "config": {
+            "inputs": 1,
+            "outputs": 1,
+            "width": 32,
+            "winners": 8,
+            "depth": 24,
+            "competition": "layer",
+            "readout": "class-sum",
+            "gate": "gaussian-smooth",
+            "gate_width": 0.5,
+            "layer_gate_widths": [
+              0.32,
+              0.313,
+              0.306,
+              0.299,
+              0.292,
+              0.285,
+              0.278,
+              0.271,
+              0.264,
+              0.257,
+              0.25,
+              0.243,
+              0.237,
+              0.23,
+              0.223,
+              0.216,
+              0.209,
+              0.202,
+              0.195,
+              0.188,
+              0.181,
+              0.174,
+              0.167,
+              0.16
+            ],
+            "readout_layers": "all",
+            "initialization": "normal",
+            "unit_norm_updates": false,
+            "sine_omega": null,
+            "connection": "affine",
+            "hidden_rule": "lion",
+            "output_bound": null,
+            "output_levels": null,
+            "edge_transitions": null,
+            "clip_output": true,
+            "layer_rate_decay": 1.0
+          },
+          "phases": [
+            [
+              "signsgd",
+              0.001536,
+              64,
+              80,
+              1.0
+            ],
+            [
+              "lion",
+              0.00040960000000000004,
+              64,
+              100,
+              0.75
+            ],
+            [
+              "lion",
+              0.0001792,
+              64,
+              220,
+              0.9
+            ],
+            [
+              "lion",
+              6.144000000000001e-05,
+              64,
+              240,
+              0.95
+            ]
+          ],
+          "backend": "numpy",
+          "schedule": "hold-cosine",
+          "task": "sine-jump",
+          "samples": 4096
+        },
+        "median_validation_rmse": 0.02310001062676974
+      }
+    ],
+    "selected": "sine-crest-jump-24-layers-step-x0.64",
+    "rule": "Multiply each phase step by 0.8 per trial and stop at the first non-improvement",
+    "original_held_out": {
+      "runs": [
+        {
+          "seed": 7,
+          "test_rmse": 0.026915836043753312,
+          "away_from_jump_rmse": 0.012852090203369162,
+          "away_from_jump_slope_rmse": 10.627941639683366,
+          "near_jump_rmse": 0.10648935849024924,
+          "test_max_abs_error": 0.3379865288734436,
+          "transition": {
+            "x10": 0.23097892613976895,
+            "x50": 0.24305692017186797,
+            "x90": 0.26353613137262866,
+            "width_10_to_90": 0.03255720523285971
+          },
+          "phase_epochs": [
+            75,
+            95,
+            0,
+            0
+          ]
+        },
+        {
+          "seed": 8,
+          "test_rmse": 0.02089967095049348,
+          "away_from_jump_rmse": 0.012848990540843045,
+          "away_from_jump_slope_rmse": 9.244440657436797,
+          "near_jump_rmse": 0.07479163629041648,
+          "test_max_abs_error": 0.2931549549102783,
+          "transition": {
+            "x10": 0.24145093009065582,
+            "x50": 0.24806152875451076,
+            "x90": 0.2620077449928678,
+            "width_10_to_90": 0.02055681490221195
+          },
+          "phase_epochs": [
+            60,
+            70,
+            0,
+            0
+          ]
+        },
+        {
+          "seed": 9,
+          "test_rmse": 0.025703631746501098,
+          "away_from_jump_rmse": 0.013861702347853064,
+          "away_from_jump_slope_rmse": 7.227465123355267,
+          "near_jump_rmse": 0.09774253222048976,
+          "test_max_abs_error": 0.2907521724700928,
+          "transition": {
+            "x10": 0.23383800072543642,
+            "x50": 0.2544955496431042,
+            "x90": 0.2770809367505044,
+            "width_10_to_90": 0.04324293602506796
+          },
+          "phase_epochs": [
+            65,
+            30,
+            180,
+            135
+          ]
+        }
+      ],
+      "medians": {
+        "test_rmse": 0.025703631746501098,
+        "away_from_jump_rmse": 0.012852090203369162,
+        "away_from_jump_slope_rmse": 9.244440657436797,
+        "near_jump_rmse": 0.09774253222048976,
+        "test_max_abs_error": 0.2931549549102783,
+        "transition_width_10_to_90": 0.03255720523285971,
+        "measurable_transitions": 3
+      }
+    }
+  },
+  "held_out": {
+    "sine-crest-jump": {
+      "settings": {
+        "label": "sine-crest-jump",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 4,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.267,
+            0.213,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "parameters": 12608,
+      "runs": [
+        {
+          "seed": 7,
+          "test_rmse": 0.03334342414441533,
+          "away_from_jump_rmse": 0.011955217563150463,
+          "away_from_jump_slope_rmse": 0.364556741614674,
+          "near_jump_rmse": 0.1396465425269041,
+          "test_max_abs_error": 0.2638857364654541,
+          "transition": {
+            "x10": 0.20989312278442335,
+            "x50": 0.2475153099565215,
+            "x90": 0.29143140740502893,
+            "width_10_to_90": 0.08153828462060558
+          },
+          "phase_epochs": [
+            80,
+            80,
+            60,
+            0
+          ]
+        },
+        {
+          "seed": 8,
+          "test_rmse": 0.03102234552329797,
+          "away_from_jump_rmse": 0.00975273150548072,
+          "away_from_jump_slope_rmse": 0.4167560769950406,
+          "near_jump_rmse": 0.131998471303294,
+          "test_max_abs_error": 0.26816636323928833,
+          "transition": {
+            "x10": 0.19767461852858773,
+            "x50": 0.24749916091283722,
+            "x90": 0.2825225452764854,
+            "width_10_to_90": 0.08484792674789768
+          },
+          "phase_epochs": [
+            80,
+            90,
+            135,
+            0
+          ]
+        },
+        {
+          "seed": 9,
+          "test_rmse": 0.03167582455732548,
+          "away_from_jump_rmse": 0.011016412688669017,
+          "away_from_jump_slope_rmse": 0.4402703468959304,
+          "near_jump_rmse": 0.13320691392588901,
+          "test_max_abs_error": 0.276511013507843,
+          "transition": {
+            "x10": 0.2150036660218276,
+            "x50": 0.254447456526696,
+            "x90": 0.2883180585919773,
+            "width_10_to_90": 0.07331439257014968
+          },
+          "phase_epochs": [
+            80,
+            70,
+            0,
+            0
+          ]
+        }
+      ],
+      "medians": {
+        "test_rmse": 0.03167582455732548,
+        "away_from_jump_rmse": 0.011016412688669017,
+        "away_from_jump_slope_rmse": 0.4167560769950406,
+        "near_jump_rmse": 0.13320691392588901,
+        "test_max_abs_error": 0.26816636323928833,
+        "transition_width_10_to_90": 0.08153828462060558,
+        "measurable_transitions": 3
+      }
+    },
+    "sine-crest-jump-longer": {
+      "settings": {
+        "label": "sine-crest-jump-longer",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 4,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.267,
+            0.213,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ],
+          [
+            "lion",
+            0.00045,
+            64,
+            480,
+            0.9
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "parameters": 12608,
+      "runs": [
+        {
+          "seed": 7,
+          "test_rmse": 0.03334342414441533,
+          "away_from_jump_rmse": 0.011955217563150463,
+          "away_from_jump_slope_rmse": 0.364556741614674,
+          "near_jump_rmse": 0.1396465425269041,
+          "test_max_abs_error": 0.2638857364654541,
+          "transition": {
+            "x10": 0.20989312278442335,
+            "x50": 0.2475153099565215,
+            "x90": 0.29143140740502893,
+            "width_10_to_90": 0.08153828462060558
+          },
+          "phase_epochs": [
+            80,
+            80,
+            60,
+            0,
+            0
+          ]
+        },
+        {
+          "seed": 8,
+          "test_rmse": 0.029510015706236882,
+          "away_from_jump_rmse": 0.006327526575287301,
+          "away_from_jump_slope_rmse": 0.29235621446099375,
+          "near_jump_rmse": 0.12899571885248037,
+          "test_max_abs_error": 0.2747064232826233,
+          "transition": {
+            "x10": 0.2186746029895679,
+            "x50": 0.24632707332630768,
+            "x90": 0.2879035515124115,
+            "width_10_to_90": 0.06922894852284359
+          },
+          "phase_epochs": [
+            80,
+            90,
+            135,
+            0,
+            480
+          ]
+        },
+        {
+          "seed": 9,
+          "test_rmse": 0.02985451961770074,
+          "away_from_jump_rmse": 0.013385795982998517,
+          "away_from_jump_slope_rmse": 0.44486077709234945,
+          "near_jump_rmse": 0.12003141588831633,
+          "test_max_abs_error": 0.28717899322509766,
+          "transition": {
+            "x10": 0.21882787770577491,
+            "x50": 0.2547488770636018,
+            "x90": 0.2796415884959573,
+            "width_10_to_90": 0.06081371079018241
+          },
+          "phase_epochs": [
+            80,
+            70,
+            0,
+            0,
+            225
+          ]
+        }
+      ],
+      "medians": {
+        "test_rmse": 0.02985451961770074,
+        "away_from_jump_rmse": 0.011955217563150463,
+        "away_from_jump_slope_rmse": 0.364556741614674,
+        "near_jump_rmse": 0.12899571885248037,
+        "test_max_abs_error": 0.2747064232826233,
+        "transition_width_10_to_90": 0.06922894852284359,
+        "measurable_transitions": 3
+      }
+    },
+    "sine-crest-jump-12-layers": {
+      "settings": {
+        "label": "sine-crest-jump-12-layers",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 12,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.305,
+            0.291,
+            0.276,
+            0.262,
+            0.247,
+            0.233,
+            0.218,
+            0.204,
+            0.189,
+            0.175,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.003,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0008,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00035,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            0.00012,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "parameters": 45888,
+      "runs": [
+        {
+          "seed": 7,
+          "test_rmse": 0.026343271269227836,
+          "away_from_jump_rmse": 0.015922174045994848,
+          "away_from_jump_slope_rmse": 1.5958473245680491,
+          "near_jump_rmse": 0.09515233959869751,
+          "test_max_abs_error": 0.29902029037475586,
+          "transition": {
+            "x10": 0.23171442047014695,
+            "x50": 0.2537995538097773,
+            "x90": 0.2672196391319314,
+            "width_10_to_90": 0.035505218661784466
+          },
+          "phase_epochs": [
+            70,
+            75,
+            0,
+            0
+          ]
+        },
+        {
+          "seed": 8,
+          "test_rmse": 0.027314355118178275,
+          "away_from_jump_rmse": 0.006883081731828816,
+          "away_from_jump_slope_rmse": 0.9110702988992172,
+          "near_jump_rmse": 0.11835407608650757,
+          "test_max_abs_error": 0.26391106843948364,
+          "transition": {
+            "x10": 0.22338492254239367,
+            "x50": 0.25228520051050773,
+            "x90": 0.27642332656375623,
+            "width_10_to_90": 0.05303840402136256
+          },
+          "phase_epochs": [
+            80,
+            75,
+            0,
+            0
+          ]
+        },
+        {
+          "seed": 9,
+          "test_rmse": 0.020628840297022187,
+          "away_from_jump_rmse": 0.0109593187558117,
+          "away_from_jump_slope_rmse": 1.1923385145966596,
+          "near_jump_rmse": 0.0788859588542828,
+          "test_max_abs_error": 0.2838127613067627,
+          "transition": {
+            "x10": 0.23335036125121822,
+            "x50": 0.24834794123176365,
+            "x90": 0.2582415412643839,
+            "width_10_to_90": 0.024891180013165703
+          },
+          "phase_epochs": [
+            80,
+            55,
+            0,
+            10
+          ]
+        }
+      ],
+      "medians": {
+        "test_rmse": 0.026343271269227836,
+        "away_from_jump_rmse": 0.0109593187558117,
+        "away_from_jump_slope_rmse": 1.1923385145966596,
+        "near_jump_rmse": 0.09515233959869751,
+        "test_max_abs_error": 0.2838127613067627,
+        "transition_width_10_to_90": 0.035505218661784466,
+        "measurable_transitions": 3
+      }
+    },
+    "sine-crest-jump-24-layers-step-x0.64": {
+      "settings": {
+        "label": "sine-crest-jump-24-layers-step-x0.64",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 32,
+          "winners": 8,
+          "depth": 24,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32,
+            0.313,
+            0.306,
+            0.299,
+            0.292,
+            0.285,
+            0.278,
+            0.271,
+            0.264,
+            0.257,
+            0.25,
+            0.243,
+            0.237,
+            0.23,
+            0.223,
+            0.216,
+            0.209,
+            0.202,
+            0.195,
+            0.188,
+            0.181,
+            0.174,
+            0.167,
+            0.16
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.00192,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.0005120000000000001,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.000224,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            7.680000000000001e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "parameters": 95808,
+      "runs": [
+        {
+          "seed": 7,
+          "test_rmse": 0.02860273320844374,
+          "away_from_jump_rmse": 0.01277005202801915,
+          "away_from_jump_slope_rmse": 9.582459947499723,
+          "near_jump_rmse": 0.11511357558114892,
+          "test_max_abs_error": 0.32638025283813477,
+          "transition": {
+            "x10": 0.21681672449490183,
+            "x50": 0.2451959838165998,
+            "x90": 0.26435193582357114,
+            "width_10_to_90": 0.04753521132866931
+          },
+          "phase_epochs": [
+            65,
+            90,
+            25,
+            0
+          ]
+        },
+        {
+          "seed": 8,
+          "test_rmse": 0.019681177750101527,
+          "away_from_jump_rmse": 0.011106930926778068,
+          "away_from_jump_slope_rmse": 6.040514738369703,
+          "near_jump_rmse": 0.07347046924597285,
+          "test_max_abs_error": 0.3555014133453369,
+          "transition": {
+            "x10": 0.23901798519432685,
+            "x50": 0.24689671740952573,
+            "x90": 0.2542632530649914,
+            "width_10_to_90": 0.015245267870664575
+          },
+          "phase_epochs": [
+            80,
+            55,
+            0,
+            0
+          ]
+        },
+        {
+          "seed": 9,
+          "test_rmse": 0.01953598896288839,
+          "away_from_jump_rmse": 0.011804112758495201,
+          "away_from_jump_slope_rmse": 4.409296857180308,
+          "near_jump_rmse": 0.07057594959287038,
+          "test_max_abs_error": 0.2829042673110962,
+          "transition": {
+            "x10": 0.24048585409395623,
+            "x50": 0.2486932313432617,
+            "x90": 0.26277145534561575,
+            "width_10_to_90": 0.022285601251659515
+          },
+          "phase_epochs": [
+            75,
+            45,
+            125,
+            0
+          ]
+        }
+      ],
+      "medians": {
+        "test_rmse": 0.019681177750101527,
+        "away_from_jump_rmse": 0.011804112758495201,
+        "away_from_jump_slope_rmse": 6.040514738369703,
+        "near_jump_rmse": 0.07347046924597285,
+        "test_max_abs_error": 0.32638025283813477,
+        "transition_width_10_to_90": 0.022285601251659515,
+        "measurable_transitions": 3
+      }
+    },
+    "sine-crest-jump-1x512-gauss0.32-refined": {
+      "settings": {
+        "label": "sine-crest-jump-1x512-gauss0.32-refined",
+        "config": {
+          "inputs": 1,
+          "outputs": 1,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "layer",
+          "readout": "class-sum",
+          "gate": "gaussian-smooth",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.32
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "phases": [
+          [
+            "signsgd",
+            0.0010606601717798214,
+            64,
+            80,
+            1.0
+          ],
+          [
+            "lion",
+            0.000282842712474619,
+            64,
+            100,
+            0.75
+          ],
+          [
+            "lion",
+            0.00012374368670764582,
+            64,
+            220,
+            0.9
+          ],
+          [
+            "lion",
+            4.2426406871192855e-05,
+            64,
+            240,
+            0.95
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "hold-cosine",
+        "task": "sine-jump",
+        "samples": 4096
+      },
+      "parameters": 1024,
+      "runs": [
+        {
+          "seed": 7,
+          "test_rmse": 0.12702644908070176,
+          "away_from_jump_rmse": 0.10830677074336731,
+          "away_from_jump_slope_rmse": 1.4771250253389834,
+          "near_jump_rmse": 0.31583483317453737,
+          "test_max_abs_error": 0.4777241349220276,
+          "transition": {
+            "x10": null,
+            "x50": null,
+            "x90": null,
+            "width_10_to_90": null
+          },
+          "phase_epochs": [
+            80,
+            25,
+            105,
+            0
+          ]
+        },
+        {
+          "seed": 8,
+          "test_rmse": 0.07223328397027773,
+          "away_from_jump_rmse": 0.061398304870034344,
+          "away_from_jump_slope_rmse": 1.098489864830456,
+          "near_jump_rmse": 0.18082978091643415,
+          "test_max_abs_error": 0.285152405500412,
+          "transition": {
+            "x10": 0.1809726752440423,
+            "x50": 0.25716284555690433,
+            "x90": 0.32317931050811416,
+            "width_10_to_90": 0.14220663526407185
+          },
+          "phase_epochs": [
+            80,
+            85,
+            40,
+            75
+          ]
+        },
+        {
+          "seed": 9,
+          "test_rmse": 0.09044115711340922,
+          "away_from_jump_rmse": 0.08486468883549354,
+          "away_from_jump_slope_rmse": 1.3724360839083314,
+          "near_jump_rmse": 0.16350746255342033,
+          "test_max_abs_error": 0.2856655716896057,
+          "transition": {
+            "x10": 0.18994966994906753,
+            "x50": 0.24133090241952376,
+            "x90": 0.2921623027839512,
+            "width_10_to_90": 0.10221263283488369
+          },
+          "phase_epochs": [
+            60,
+            95,
+            40,
+            15
+          ]
+        }
+      ],
+      "medians": {
+        "test_rmse": 0.09044115711340922,
+        "away_from_jump_rmse": 0.08486468883549354,
+        "away_from_jump_slope_rmse": 1.3724360839083314,
+        "near_jump_rmse": 0.18082978091643415,
+        "test_max_abs_error": 0.2856655716896057,
+        "transition_width_10_to_90": 0.12220963404947777,
+        "measurable_transitions": 2
+      }
+    }
+  }
+}

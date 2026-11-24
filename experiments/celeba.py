@@ -145,11 +145,13 @@ def train(train_images, validation, path, args):
                         bottleneck_pool_size=args.bottleneck_pool_size,
                         projected_encoder_votes=args.projected_encoder_votes,
                         center_each_input=args.center_each_input, vector_hidden_width=args.vector_hidden_width,
+                        vector_hidden_depth=args.vector_hidden_depth,
                         normalize_each_input=args.normalize_each_input, paired_decoder_init=args.paired_decoder_init,
                         encoder_votes_per_pair=args.encoder_votes_per_pair,
                         encoder_width=args.encoder_width, latent_width=args.latent_width,
                         vector_output_class_width=args.vector_output_class_width,
-                        vector_decoder_skip=args.vector_decoder_skip, projected_decoder_votes=args.projected_decoder_votes)
+                        vector_decoder_skip=args.vector_decoder_skip, projected_decoder_votes=args.projected_decoder_votes,
+                        vector_gate_width=args.vector_gate_width, zero_init_bias=args.zero_init_bias)
     rng = np.random.default_rng(args.seed)
     latest, best = path / "latest.npz", path / "selected.npz"
     tuning = dict(coordinate_scale=1., decoder_rate_decay=1., encoder_gate_widths=[.24, .18],
@@ -159,13 +161,16 @@ def train(train_images, validation, path, args):
                   projected_encoder_votes=False, center_each_input=False, vector_hidden_width=0,
                   normalize_each_input=False, paired_decoder_init=False, encoder_votes_per_pair=None,
                   encoder_width=ENCODER_WIDTH, latent_width=LATENT, select_on_training=False,
-                  vector_output_class_width=1, vector_decoder_skip=False, projected_decoder_votes=False)
+                  vector_output_class_width=1, vector_decoder_skip=False, projected_decoder_votes=False,
+                  checks_per_epoch=1, vector_hidden_depth=1, vector_gate_width=.24,
+                  zero_init_bias=False)
     config = dict(epochs=args.epochs, seed=args.seed, lr=args.rate, encoder_rate=args.encoder_rate,
                   rule=args.rule, depth=args.depth, gate_width=args.gate_width, images=len(train_images),
                   validation_images=len(validation), **{key: getattr(args, key) for key in tuning})
     config["encoder_gate_widths"] = list(config["encoder_gate_widths"])
     if args.initialize_from:
         config["initialize_from"] = str(args.initialize_from)
+    start_step, resume_order = 0, None
     if latest.exists():
         progress = load_checkpoint(latest, model)
         previous = {**tuning, "validation_images": VALIDATION, **progress["config"]}
@@ -175,6 +180,8 @@ def train(train_images, validation, path, args):
         curve = progress["curve"]
         selected = progress["best"]
         start = progress["epoch"]
+        start_step = progress.get("step", 0)
+        resume_order = progress.get("order")
     else:
         if args.initialize_from:
             state = model.state()
@@ -189,9 +196,14 @@ def train(train_images, validation, path, args):
     steps_per_epoch = (len(train_images) + images_per_batch - 1) // images_per_batch
     total_steps = steps_per_epoch * args.epochs
     evaluate_every = 1 if args.select_on_training and args.epochs <= 12 else 5
+    checks = min(args.checks_per_epoch, steps_per_epoch)
+    check_steps = {(steps_per_epoch * check + checks - 1) // checks for check in range(1, checks + 1)}
     for epoch in range(start, args.epochs):
-        order = rng.permutation(len(train_images))
-        for step, first in enumerate(range(0, len(train_images), images_per_batch)):
+        first_step = start_step if epoch == start else 0
+        order = np.asarray(resume_order, dtype=np.intp) if first_step else rng.permutation(len(train_images))
+        check_epoch = checks > 1 or (epoch + 1) % evaluate_every == 0 or epoch + 1 == args.epochs
+        for step in range(first_step, steps_per_epoch):
+            first = step * images_per_batch
             images = scale(train_images[order[first:first + images_per_batch]])
             coordinates = None
             targets = images
@@ -207,16 +219,24 @@ def train(train_images, validation, path, args):
             phase = (epoch * steps_per_epoch + step) / max(1, total_steps - 1)
             rate = args.rate * .5 * (1 + np.cos(np.pi * max(0, (phase - .2) / .8)))
             model.step(images.reshape(len(images), -1), coordinates, targets, rate, args.encoder_rate)
-        print(f"Epoch {epoch + 1}/{args.epochs} complete", flush=True)
-        if (epoch + 1) % evaluate_every == 0 or epoch + 1 == args.epochs:
-            row = dict(epoch=epoch + 1, **evaluate(model, evaluation, mean_image))
+            completed = step + 1
+            end_of_epoch = completed == steps_per_epoch
+            if end_of_epoch:
+                print(f"Epoch {epoch + 1}/{args.epochs} complete", flush=True)
+            if not check_epoch or completed not in check_steps:
+                continue
+            position = epoch + 1 if end_of_epoch else epoch + completed / steps_per_epoch
+            row = dict(epoch=position, **evaluate(model, evaluation, mean_image))
             curve.append(row)
             print(row, flush=True)
             if row["reconstruction_sse"] < selected["reconstruction_sse"]:
                 selected = row
                 save_checkpoint(best, model, selected)
-            save_checkpoint(latest, model, dict(config=config, rng=rng.bit_generator.state,
-                                                curve=curve, best=selected, epoch=epoch + 1))
+            progress = dict(config=config, rng=rng.bit_generator.state, curve=curve, best=selected,
+                            epoch=epoch + 1 if end_of_epoch else epoch)
+            if not end_of_epoch:
+                progress.update(step=completed, order=order.tolist())
+            save_checkpoint(latest, model, progress)
     load_checkpoint(best, model)
     return model, dict(config=config, curve=curve, selected=selected), mean_image
 
@@ -243,22 +263,23 @@ def figure(images, output):
                                     for row in np.split(images, 6)], axis=0)).save(output)
 
 
-def report(path, model, stats, training, validation, test=None, mean_image=None):
+def report(path, model, stats, training, validation, test=None, mean_image=None, *, reconstruction_only=False):
     path.mkdir(parents=True, exist_ok=True)
-    codes = encode(model, training)
-    export_generator(path / "decoder.npz", model.decoder, codes, model.coordinate_scale, model.decoder_hidden,
-                     skip=model.decoder_skip)
-    generator = Generator(path / "decoder.npz")
-    generated = np.stack([generator.generate(seed) for seed in range(36)])
-    figure(generated, path / "faces.png")
-    closest, distances = nearest(training, generated)
-    examples = training[closest].reshape(generated.shape)
-    figure(np.concatenate((generated, examples), axis=2), path / "nearest-local.png")
     stats["architecture"] = {name: asdict(component.config) for name, component in model.components().items()}
     stats["parameters"] = sum(array.size for key, array in model.state().items() if "_weight_" in key)
-    stats["nearest_training_sse"] = distances.tolist()
-    stats["latent_std"] = codes.std(axis=0).tolist()
-    stats["generated_mean_pixel_std"] = float(generated.astype(np.float32).std(axis=0).mean() / 255)
+    codes = None if reconstruction_only else encode(model, training)
+    if codes is not None:
+        export_generator(path / "decoder.npz", model.decoder, codes, model.coordinate_scale, model.decoder_hidden,
+                         skip=model.decoder_skip)
+        generator = Generator(path / "decoder.npz")
+        generated = np.stack([generator.generate(seed) for seed in range(36)])
+        figure(generated, path / "faces.png")
+        closest, distances = nearest(training, generated)
+        examples = training[closest].reshape(generated.shape)
+        figure(np.concatenate((generated, examples), axis=2), path / "nearest-local.png")
+        stats["nearest_training_sse"] = distances.tolist()
+        stats["latent_std"] = codes.std(axis=0).tolist()
+        stats["generated_mean_pixel_std"] = float(generated.astype(np.float32).std(axis=0).mean() / 255)
     if stats["config"]["select_on_training"]:
         stats["training"] = dict(images=len(training), **evaluate(model, training, mean_image, shuffle=False,
                                                                    codes=codes))
@@ -294,8 +315,14 @@ def main():
     parser.add_argument("--initialize-from", type=Path,
                         help="Start a pilot-only or full-only run from another run's selected weights")
     parser.add_argument("--epochs", type=int, default=40)
+    parser.add_argument("--pilot-images", type=int, default=PILOT,
+                        help="Number of portraits drawn from the official training split for a pilot")
     parser.add_argument("--full-epochs", type=int,
                         help="Override the epoch budget for the full split")
+    parser.add_argument("--checks-per-epoch", type=int, default=1,
+                        help="Evaluate at this many evenly spaced checkpoints per epoch when greater than one")
+    parser.add_argument("--reconstruction-only", action="store_true",
+                        help="Save checkpoints and error scores without fitting a sampler")
     parser.add_argument("--rate", type=float, default=.004)
     parser.add_argument("--encoder-rate", type=float, default=1.)
     parser.add_argument("--rule", choices=("signsgd", "lion"), default="signsgd")
@@ -313,12 +340,18 @@ def main():
                         help="Give bottleneck pairs fixed signed subsets of output votes")
     parser.add_argument("--paired-decoder-init", action="store_true",
                         help="Initialize each RGB output pair with opposite affine coefficients")
+    parser.add_argument("--zero-init-bias", action="store_true",
+                        help="Initialize every dense bias to zero")
     parser.add_argument("--decoder-init-scale", type=float, default=1.)
     parser.add_argument("--decoder", choices=("coordinate", "vector"), default="coordinate")
     parser.add_argument("--vector-hidden-width", type=int, default=0,
                         help="Add a shared decoder hidden layer with this width per RGB class")
+    parser.add_argument("--vector-hidden-depth", type=int, default=1,
+                        help="Number of sequential hidden layers when --vector-hidden-width is positive")
     parser.add_argument("--vector-output-class-width", type=int, default=1,
                         help="Neurons per increase or decrease class for each vector output scalar")
+    parser.add_argument("--vector-gate-width", type=float, default=.24,
+                        help="Gaussian competition width in the image-vector output layer")
     parser.add_argument("--vector-decoder-skip", action="store_true",
                         help="Give the output layer both the code and the decoder hidden activations")
     parser.add_argument("--projected-decoder-votes", action="store_true",
@@ -348,6 +381,8 @@ def main():
         parser.error("Epoch count, rates and coordinate scale must be positive")
     if args.images_per_batch < 1 or not 1 <= args.pixels_per_image <= len(COORDINATES):
         parser.error("Invalid minibatch dimensions")
+    if args.checks_per_epoch < 1:
+        parser.error("--checks-per-epoch must be positive")
     args.output.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(args.archive) as archive:
         train_names, val_names, test_names = manifest(archive, args.partitions)
@@ -355,7 +390,9 @@ def main():
                                  args.output / "validation.npy")
         eligible = True
         if not args.full_only:
-            training = load_images(archive, subset(train_names, PILOT, SEED),
+            if not 1 <= args.pilot_images <= len(train_names):
+                parser.error("--pilot-images must be in the official training split size")
+            training = load_images(archive, subset(train_names, args.pilot_images, SEED),
                                    args.output / "pilot-train.npy")
             path = args.output / "pilot"
             model, stats, mean_image = train(training, validation, path, args)
@@ -363,7 +400,8 @@ def main():
             eligible = (best["reconstruction_sse"] < best["mean_sse"]
                         and best["shuffled_sse"] >= 1.1 * best["reconstruction_sse"])
             stats["passes_scale_criterion"] = eligible
-            report(path, model, stats, training, validation, mean_image=mean_image)
+            report(path, model, stats, training, validation, mean_image=mean_image,
+                   reconstruction_only=args.reconstruction_only)
             print(f"Pilot qualifies for full run: {eligible}", flush=True)
         if eligible and not args.pilot_only:
             training = load_images(archive, train_names, args.output / "full-train.npy")
@@ -371,7 +409,8 @@ def main():
             full_args = argparse.Namespace(**{**vars(args), "epochs": args.full_epochs or args.epochs})
             model, stats, mean_image = train(training, validation, path, full_args)
             test = load_images(archive, test_names, args.output / "test.npy")
-            report(path, model, stats, training, validation, test, mean_image)
+            report(path, model, stats, training, validation, test, mean_image,
+                   reconstruction_only=args.reconstruction_only)
 
 
 if __name__ == "__main__":

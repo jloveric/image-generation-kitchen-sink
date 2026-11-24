@@ -8,6 +8,7 @@ import numpy as np
 
 from experiments.celeba import encode, load_checkpoint
 from experiments.celeba_diversity import model_for
+from hebbian_fit.autoencoder import export_generator
 
 
 def fit_components(codes, components, local_scale, local_rank=None):
@@ -55,27 +56,26 @@ def main():
     parser.add_argument("--local-scale", type=float, default=.6)
     parser.add_argument("--local-rank", type=int, help="Keep this many leading directions in each component")
     parser.add_argument("--output", type=Path, required=True, help="Mixture decoder export")
+    parser.add_argument("--checkpoint", choices=("selected", "latest"), default="selected",
+                        help="Fit codes and export decoder weights from this checkpoint")
     args = parser.parse_args()
     if args.components < 2 or not np.isfinite(args.local_scale) or args.local_scale <= 0:
         parser.error("Choose at least two components and a positive finite local scale")
     if args.local_rank is not None and args.local_rank < 1:
         parser.error("Local rank must be positive")
-    source = args.run / "decoder.npz"
-    if source.resolve() == args.output.resolve():
-        parser.error("Choose an output path distinct from the original decoder")
+    if args.output.resolve() in {(args.run / name).resolve()
+                                 for name in ("decoder.npz", "selected.npz", "latest.npz")}:
+        parser.error("Choose an export path distinct from the decoder and training checkpoints")
     config = json.loads((args.run / "results.json").read_text())["config"]
     model = model_for(config, args.run)
     if args.local_rank is not None and args.local_rank > model.latent_width:
         parser.error("Local rank cannot exceed code width")
-    load_checkpoint(args.run / "selected.npz", model)
+    load_checkpoint(args.run / f"{args.checkpoint}.npz", model)
     data = args.run.parent / ("full-train.npy" if args.run.name == "full" else "pilot-train.npy")
     codes = encode(model, np.load(data, mmap_mode="r")).astype(np.float64)
     mixture = fit_components(codes, args.components, args.local_scale, args.local_rank)
-    with np.load(source, allow_pickle=False) as saved:
-        export = {**dict(saved), **mixture}
-    temporary = args.output.with_suffix(".tmp.npz")
-    np.savez_compressed(temporary, **export)
-    temporary.replace(args.output)
+    export_generator(args.output, model.decoder, codes, model.coordinate_scale,
+                     model.decoder_hidden, skip=model.decoder_skip, mixture=mixture)
     print(f"Exported {len(mixture['mixture_weights'])} Gaussian components to {args.output}")
 
 

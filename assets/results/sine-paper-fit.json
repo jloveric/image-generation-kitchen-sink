@@ -1,0 +1,125 @@
+{
+  "settings": {
+    "label": "sine-paper-4x64-refined-twice",
+    "config": {
+      "inputs": 1,
+      "outputs": 1,
+      "width": 32,
+      "winners": 8,
+      "depth": 4,
+      "competition": "layer",
+      "readout": "class-sum",
+      "gate": "gaussian-smooth",
+      "gate_width": 0.5,
+      "layer_gate_widths": [
+        0.32,
+        0.267,
+        0.213,
+        0.16
+      ],
+      "readout_layers": "all",
+      "initialization": "normal",
+      "unit_norm_updates": false,
+      "sine_omega": null,
+      "connection": "affine",
+      "hidden_rule": "lion",
+      "output_bound": null,
+      "output_levels": null,
+      "edge_transitions": null,
+      "clip_output": true,
+      "layer_rate_decay": 1.0
+    },
+    "phases": [
+      [
+        "signsgd",
+        0.003,
+        64,
+        80,
+        1.0
+      ],
+      [
+        "lion",
+        0.0008,
+        64,
+        100,
+        0.75
+      ],
+      [
+        "lion",
+        0.00035,
+        64,
+        220,
+        0.9
+      ],
+      [
+        "lion",
+        0.00012,
+        64,
+        240,
+        0.95
+      ]
+    ],
+    "backend": "numpy",
+    "schedule": "hold-cosine",
+    "task": "sine",
+    "samples": 4096
+  },
+  "parameters": 12608,
+  "target": "sin(2*pi*x)",
+  "development_seeds": [
+    1,
+    2,
+    3
+  ],
+  "train_domain": [
+    -1,
+    1
+  ],
+  "train_samples": 4096,
+  "validation_samples": 4096,
+  "test_samples": 4096,
+  "example_seed": 9,
+  "runs": [
+    {
+      "seed": 7,
+      "test_rmse": 0.00930779653603064,
+      "test_max_abs_error": 0.08693777536973357,
+      "test_slope_rmse": 0.43079832236234855,
+      "phase_epochs": [
+        80,
+        0,
+        175,
+        225
+      ]
+    },
+    {
+      "seed": 8,
+      "test_rmse": 0.005934151619963638,
+      "test_max_abs_error": 0.03020640363683924,
+      "test_slope_rmse": 0.28407907759369994,
+      "phase_epochs": [
+        80,
+        0,
+        85,
+        240
+      ]
+    },
+    {
+      "seed": 9,
+      "test_rmse": 0.007176229292260915,
+      "test_max_abs_error": 0.04747374868020415,
+      "test_slope_rmse": 0.44792881641392407,
+      "phase_epochs": [
+        80,
+        100,
+        0,
+        170
+      ]
+    }
+  ],
+  "medians": {
+    "test_rmse": 0.007176229292260915,
+    "test_max_abs_error": 0.04747374868020415,
+    "test_slope_rmse": 0.43079832236234855
+  }
+}

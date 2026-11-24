@@ -10,7 +10,7 @@ from zipfile import ZipFile
 import numpy as np
 from PIL import Image, ImageFilter
 
-from experiments.celeba import SEED, encode, figure, load_checkpoint, manifest, subset
+from experiments.celeba import IMAGES_PER_BATCH, SEED, encode, figure, load_checkpoint, manifest, subset
 from hebbian_fit.autoencoder import Autoencoder, ENCODER_WIDTH, Generator, LATENT, SIZE, rgb_bytes
 
 GRID_SEEDS = tuple(range(36))
@@ -79,6 +79,7 @@ def attribute_contrast(reconstructed, targets, labels):
 def model_for(config, path, backend="numpy"):
     center = np.load(path / "encoder-center.npy") if config.get("center_encoder") else None
     return Autoencoder(config["seed"], decoder_kind="vector", backend=backend,
+                       images_per_batch=config.get("images_per_batch", IMAGES_PER_BATCH),
                        encoder_gate_widths=config.get("encoder_gate_widths", (.24, .18)),
                        projected_latent_votes=config.get("projected_latent_votes", False),
                        bottleneck_pool_size=config.get("bottleneck_pool_size"),
@@ -93,10 +94,12 @@ def model_for(config, path, backend="numpy"):
                        projected_decoder_votes=config.get("projected_decoder_votes", False),
                        decoder_rate_decay=config.get("decoder_rate_decay", 1.),
                        input_center=center, rule=config["rule"],
-                       vector_hidden_width=config.get("vector_hidden_width", 0))
+                       vector_hidden_width=config.get("vector_hidden_width", 0),
+                       vector_hidden_depth=config.get("vector_hidden_depth", 1),
+                       vector_gate_width=config.get("vector_gate_width", .24))
 
 
-def compare(path, validation, target_edges, labels, decoder_path=None):
+def compare(path, validation, target_edges, labels, decoder_path=None, seed_start=0):
     result = json.loads((path / "results.json").read_text())
     config = result["config"]
     model = model_for(config, path)
@@ -104,7 +107,7 @@ def compare(path, validation, target_edges, labels, decoder_path=None):
     reconstruction = rgb_bytes(model.decode(encode(model, validation)))
     recon_edges = portrait_edges(reconstruction)
     generator = Generator(decoder_path or path / "decoder.npz")
-    generated = np.stack([generator.generate(seed) for seed in MEASUREMENT_SEEDS])
+    generated = np.stack([generator.generate(seed_start + offset) for offset in MEASUREMENT_SEEDS])
     sample_edges = portrait_edges(generated)
     distances = ((sample_edges**2).sum(axis=1)[:, None] + (target_edges**2).sum(axis=1)
                  - 2 * (sample_edges @ target_edges.T))
@@ -150,22 +153,26 @@ def main():
     parser.add_argument("--validation", type=Path, default=Path("runs/celeba/validation.npy"))
     parser.add_argument("--archive", type=Path, help="Aligned CelebA archive with the attribute CSV")
     parser.add_argument("--output", type=Path, default=Path("runs/celeba-diversity/comparison"))
+    parser.add_argument("--seed-start", type=int, default=0, help="First of 216 consecutive generator seeds")
     parser.add_argument("runs", nargs="+",
                         help="Results directories or decoder exports as label=path")
     args = parser.parse_args()
+    if args.seed_start < 0:
+        parser.error("--seed-start must be nonnegative")
     args.output.mkdir(parents=True, exist_ok=True)
     validation = np.load(args.validation, mmap_mode="r")
     target_edges = portrait_edges(validation)
     labels = validation_attributes(args.archive, len(validation)) if args.archive else {}
-    report = {"validation_portraits": len(validation), "measurement_seeds": list(MEASUREMENT_SEEDS),
-              "grid_seeds": list(GRID_SEEDS),
+    report = {"validation_portraits": len(validation), "measurement_seeds": [args.seed_start + i for i in MEASUREMENT_SEEDS],
+              "grid_seeds": [args.seed_start + i for i in GRID_SEEDS],
               "validation_edge_spread": spread(target_edges),
               "validation_high_frequency_chroma": high_frequency_chroma(validation), "runs": {}}
     for spec in args.runs:
         label, value = spec.split("=", 1)
         path = Path(value)
-        score, generated, reconstruction = (compare(path.parent, validation, target_edges, labels, path)
-                                             if path.is_file() else compare(path, validation, target_edges, labels))
+        decoder_path = path if path.is_file() else None
+        run = path.parent if decoder_path else path
+        score, generated, reconstruction = compare(run, validation, target_edges, labels, decoder_path, args.seed_start)
         report["runs"][label] = score
         figure(generated, args.output / f"{label}-generated.png")
         figure(reconstruction, args.output / f"{label}-reconstruction.png")

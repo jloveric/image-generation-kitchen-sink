@@ -1,0 +1,1178 @@
+{
+  "training": {
+    "seed": 7,
+    "epochs": 1,
+    "training_portraits": 162770,
+    "test_portraits": 19962,
+    "selection": "minimum squared RGB error on fixed 512 training portraits",
+    "sampler": {
+      "components": 16,
+      "rank": 64,
+      "scale": 0.85
+    }
+  },
+  "seed_blocks": [
+    [
+      0,
+      215
+    ],
+    [
+      216,
+      431
+    ]
+  ],
+  "visually_compared_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    216,
+    217,
+    218,
+    219,
+    220,
+    221
+  ],
+  "runs": {
+    "fixed768x2048": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1
+      },
+      "parameters": 61369088,
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 109149.51464758982,
+        "shuffled_sse": 869601.1632582729,
+        "mean_sse": 477231.78175544797
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1029799.8023621311,
+          "shuffled_sse": 1028163.2732078577,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 109149.51464758982,
+          "shuffled_sse": 869601.1632582729,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2048,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 35022646.45331044,
+        "mean_sse": 152293882.14791515
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4283055.052582339,
+        "mean_sse": 18580975.536038436
+      },
+      "checkpoint": "runs/celeba-capacity/fixed768x2048/full/selected.npz",
+      "generator": "runs/celeba-capacity/fixed768x2048/full/decoder-mixture.npz",
+      "export_sha256": "8857d6d05fb1b4dc169e19787c76fc883fc0a5c4a1da19f68ede7d9c338bf6f2",
+      "weight_shapes_including_bias": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "decoder_weight_0": [
+          2049,
+          24576
+        ]
+      },
+      "seed_blocks": {
+        "0": {
+          "generated_edge_spread": 0.7327064275741577,
+          "generated_high_frequency_chroma": 0.0768360123038292,
+          "generated_nearest_validation_edge_error": 0.30817681550979614,
+          "generated_brightness_quantile_error": 0.0098985177905936,
+          "generated_contrast_quantile_error": 0.03674714065303928
+        },
+        "216": {
+          "generated_edge_spread": 0.7280377149581909,
+          "generated_high_frequency_chroma": 0.07760729640722275,
+          "generated_nearest_validation_edge_error": 0.300558865070343,
+          "generated_brightness_quantile_error": 0.011253575823808964,
+          "generated_contrast_quantile_error": 0.038437390837230176
+        }
+      },
+      "reconstructed_face_edge_error": 0.3613232970237732,
+      "real_validation_face_edge_spread": 1.300920009613037,
+      "real_validation_high_frequency_chroma": 0.022948049008846283,
+      "generated_mean": {
+        "generated_edge_spread": 0.7303720712661743,
+        "generated_high_frequency_chroma": 0.07722165435552597,
+        "generated_nearest_validation_edge_error": 0.3043678402900696,
+        "generated_brightness_quantile_error": 0.010576046807201282,
+        "generated_contrast_quantile_error": 0.03759226574513473
+      },
+      "average_squared_rgb_error": {
+        "training": 215.1664708073382,
+        "test": 214.5604174222192
+      }
+    },
+    "decoder-skip768": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true
+      },
+      "parameters": 81817088,
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 105814.11843713064,
+        "shuffled_sse": 869286.9377823141,
+        "mean_sse": 477231.78175544797
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1020407.965513486,
+          "shuffled_sse": 1021442.9745755295,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 105814.11843713064,
+          "shuffled_sse": 869286.9377823141,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 2816,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 33969469.354286864,
+        "mean_sse": 152293882.14791515
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4156999.4314356875,
+        "mean_sse": 18580975.536038436
+      },
+      "checkpoint": "runs/celeba-capacity/decoder-skip768/full/selected.npz",
+      "generator": "runs/celeba-capacity/decoder-skip768/full/decoder-mixture.npz",
+      "export_sha256": "919b76eb73296b6ef0ec19150c544e7d7e8516d04b3f368e6a4f8dc6d8d0ea07",
+      "weight_shapes_including_bias": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          768
+        ],
+        "decoder_weight_0": [
+          2817,
+          24576
+        ]
+      },
+      "seed_blocks": {
+        "0": {
+          "generated_edge_spread": 0.7343370914459229,
+          "generated_high_frequency_chroma": 0.07736741006374359,
+          "generated_nearest_validation_edge_error": 0.29760831594467163,
+          "generated_brightness_quantile_error": 0.011090172278253665,
+          "generated_contrast_quantile_error": 0.034814880513831185
+        },
+        "216": {
+          "generated_edge_spread": 0.6972478628158569,
+          "generated_high_frequency_chroma": 0.07767987251281738,
+          "generated_nearest_validation_edge_error": 0.3010387122631073,
+          "generated_brightness_quantile_error": 0.010679266562587322,
+          "generated_contrast_quantile_error": 0.04001181958929488
+        }
+      },
+      "reconstructed_face_edge_error": 0.3475198447704315,
+      "real_validation_face_edge_spread": 1.300920009613037,
+      "real_validation_high_frequency_chroma": 0.022948049008846283,
+      "generated_mean": {
+        "generated_edge_spread": 0.7157924771308899,
+        "generated_high_frequency_chroma": 0.07752364128828049,
+        "generated_nearest_validation_edge_error": 0.29932351410388947,
+        "generated_brightness_quantile_error": 0.010884719420420495,
+        "generated_contrast_quantile_error": 0.03741335005156303
+      },
+      "average_squared_rgb_error": {
+        "training": 208.6961316845049,
+        "test": 208.24563828452497
+      }
+    },
+    "decoder-skip1536-control": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1
+      },
+      "parameters": 102265088,
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 103379.02404403637,
+        "shuffled_sse": 868097.9758849269,
+        "mean_sse": 477231.78175544797
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1020708.2947203978,
+          "shuffled_sse": 1020452.8431037529,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 103379.02404403637,
+          "shuffled_sse": 868097.9758849269,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 256,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 3584,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 33237278.283628844,
+        "mean_sse": 152293882.14791515
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4064149.206571361,
+        "mean_sse": 18580975.536038436
+      },
+      "checkpoint": "runs/celeba-capacity/decoder-skip1536-control/full/selected.npz",
+      "generator": "runs/celeba-capacity/decoder-skip1536-control/full/decoder-mixture.npz",
+      "export_sha256": "873b0d04db246f0b0bfae3c984d928434c8b0af42576e531f5b14852ff47a78b",
+      "weight_shapes_including_bias": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          1536
+        ],
+        "decoder_weight_0": [
+          3585,
+          24576
+        ]
+      },
+      "seed_blocks": {
+        "0": {
+          "generated_edge_spread": 0.7680422067642212,
+          "generated_high_frequency_chroma": 0.07758192718029022,
+          "generated_nearest_validation_edge_error": 0.31944698095321655,
+          "generated_brightness_quantile_error": 0.014170379544559271,
+          "generated_contrast_quantile_error": 0.0340660455979799
+        },
+        "216": {
+          "generated_edge_spread": 0.7975088357925415,
+          "generated_high_frequency_chroma": 0.07849710434675217,
+          "generated_nearest_validation_edge_error": 0.32354986667633057,
+          "generated_brightness_quantile_error": 0.008055388770605389,
+          "generated_contrast_quantile_error": 0.03802780379590235
+        }
+      },
+      "reconstructed_face_edge_error": 0.34164583683013916,
+      "real_validation_face_edge_spread": 1.300920009613037,
+      "real_validation_high_frequency_chroma": 0.022948049008846283,
+      "generated_mean": {
+        "generated_edge_spread": 0.7827755212783813,
+        "generated_high_frequency_chroma": 0.0780395157635212,
+        "generated_nearest_validation_edge_error": 0.32149842381477356,
+        "generated_brightness_quantile_error": 0.011112884157582329,
+        "generated_contrast_quantile_error": 0.036046924696941124
+      },
+      "average_squared_rgb_error": {
+        "training": 204.19781460729155,
+        "test": 203.59428947857734
+      }
+    },
+    "decoder-skip768x2": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 2
+      },
+      "parameters": 101282048,
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 103521.18105210141,
+        "shuffled_sse": 866625.2335586876,
+        "mean_sse": 477231.78175544797
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1024987.930626364,
+          "shuffled_sse": 1025183.1495463985,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 103521.18105210141,
+          "shuffled_sse": 866625.2335586876,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden2": {
+          "inputs": 768,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 3584,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 33334863.35234792,
+        "mean_sse": 152293882.14791515
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4080170.8144179545,
+        "mean_sse": 18580975.536038436
+      },
+      "checkpoint": "runs/celeba-capacity/decoder-skip768x2/full/selected.npz",
+      "generator": "runs/celeba-capacity/decoder-skip768x2/full/decoder-mixture.npz",
+      "export_sha256": "46c9d02fa624004beb9c451393bb1e10dd8a1e9f3d5d718aaf0d5a67b10062c4",
+      "weight_shapes_including_bias": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          768
+        ],
+        "hidden2_weight_0": [
+          769,
+          768
+        ],
+        "decoder_weight_0": [
+          3585,
+          24576
+        ]
+      },
+      "seed_blocks": {
+        "0": {
+          "generated_edge_spread": 0.7813758254051208,
+          "generated_high_frequency_chroma": 0.07599794119596481,
+          "generated_nearest_validation_edge_error": 0.32887405157089233,
+          "generated_brightness_quantile_error": 0.014930634749563127,
+          "generated_contrast_quantile_error": 0.039010866143201525
+        },
+        "216": {
+          "generated_edge_spread": 0.7928979992866516,
+          "generated_high_frequency_chroma": 0.07637012004852295,
+          "generated_nearest_validation_edge_error": 0.31981319189071655,
+          "generated_brightness_quantile_error": 0.00566206911676809,
+          "generated_contrast_quantile_error": 0.0399540443561579
+        }
+      },
+      "reconstructed_face_edge_error": 0.3384639024734497,
+      "real_validation_face_edge_spread": 1.300920009613037,
+      "real_validation_high_frequency_chroma": 0.022948049008846283,
+      "generated_mean": {
+        "generated_edge_spread": 0.7871369123458862,
+        "generated_high_frequency_chroma": 0.07618403062224388,
+        "generated_nearest_validation_edge_error": 0.32434362173080444,
+        "generated_brightness_quantile_error": 0.010296351933165608,
+        "generated_contrast_quantile_error": 0.039482455249679714
+      },
+      "average_squared_rgb_error": {
+        "training": 204.7973419693305,
+        "test": 204.39689482105774
+      }
+    },
+    "decoder-skip768x3": {
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 2048,
+        "select_on_training": true,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": true,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 3
+      },
+      "parameters": 120747008,
+      "selected": {
+        "epoch": 1,
+        "reconstruction_sse": 102427.91073968001,
+        "shuffled_sse": 864603.653873007,
+        "mean_sse": 477231.78175544797
+      },
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1011887.0311149703,
+          "shuffled_sse": 1012147.2880949962,
+          "mean_sse": 477231.78175544797
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 102427.91073968001,
+          "shuffled_sse": 864603.653873007,
+          "mean_sse": 477231.78175544797
+        }
+      ],
+      "architecture": {
+        "encoder_0": {
+          "inputs": 12288,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "encoder_1": {
+          "inputs": 768,
+          "outputs": 1,
+          "width": 1024,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden": {
+          "inputs": 2048,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden2": {
+          "inputs": 768,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "hidden3": {
+          "inputs": 768,
+          "outputs": 3,
+          "width": 128,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "fixed",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": null,
+          "output_levels": null,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        },
+        "decoder": {
+          "inputs": 4352,
+          "outputs": 12288,
+          "width": 1,
+          "winners": 8,
+          "depth": 1,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.24,
+          "layer_gate_widths": null,
+          "readout_layers": "last",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "signsgd",
+          "output_bound": 1,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0
+        }
+      },
+      "training": {
+        "images": 162770,
+        "reconstruction_sse": 33027442.556382343,
+        "mean_sse": 152293882.14791515
+      },
+      "test": {
+        "images": 19962,
+        "reconstruction_sse": 4040629.410676104,
+        "mean_sse": 18580975.536038436
+      },
+      "checkpoint": "runs/celeba-capacity/decoder-skip768x3/full/selected.npz",
+      "generator": "runs/celeba-capacity/decoder-skip768x3/full/decoder-mixture.npz",
+      "export_sha256": "484b99ac5da18f66cdb1fc2a73f89f13e573041427f5e319d79297f409956b11",
+      "weight_shapes_including_bias": {
+        "encoder_0_weight_0": [
+          12289,
+          768
+        ],
+        "encoder_1_weight_0": [
+          769,
+          2048
+        ],
+        "hidden_weight_0": [
+          2049,
+          768
+        ],
+        "hidden2_weight_0": [
+          769,
+          768
+        ],
+        "hidden3_weight_0": [
+          769,
+          768
+        ],
+        "decoder_weight_0": [
+          4353,
+          24576
+        ]
+      },
+      "seed_blocks": {
+        "0": {
+          "generated_edge_spread": 0.7372346520423889,
+          "generated_high_frequency_chroma": 0.0732673928141594,
+          "generated_nearest_validation_edge_error": 0.30584004521369934,
+          "generated_brightness_quantile_error": 0.009312363831620462,
+          "generated_contrast_quantile_error": 0.031319645321682875
+        },
+        "216": {
+          "generated_edge_spread": 0.7572622895240784,
+          "generated_high_frequency_chroma": 0.07327922433614731,
+          "generated_nearest_validation_edge_error": 0.3136358857154846,
+          "generated_brightness_quantile_error": 0.011759988414613813,
+          "generated_contrast_quantile_error": 0.03656852337482728
+        }
+      },
+      "reconstructed_face_edge_error": 0.3333882987499237,
+      "real_validation_face_edge_spread": 1.300920009613037,
+      "real_validation_high_frequency_chroma": 0.022948049008846283,
+      "generated_mean": {
+        "generated_edge_spread": 0.7472484707832336,
+        "generated_high_frequency_chroma": 0.07327330857515335,
+        "generated_nearest_validation_edge_error": 0.309737965464592,
+        "generated_brightness_quantile_error": 0.010536176123117138,
+        "generated_contrast_quantile_error": 0.03394408434825508
+      },
+      "average_squared_rgb_error": {
+        "training": 202.90865980452384,
+        "test": 202.41606104979982
+      }
+    }
+  }
+}

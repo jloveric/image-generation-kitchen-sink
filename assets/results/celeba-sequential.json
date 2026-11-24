@@ -1,0 +1,2696 @@
+{
+  "pilot": {
+    "direct-1024": {
+      "path": "runs/celeba-sequential/screen/direct-1024/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 302.2474035649337,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1046144.5174002688,
+          "shuffled_sse": 1045476.7949569273,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 181757.77870572073,
+          "shuffled_sse": 861661.4406520486,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 155627.89737156715,
+          "shuffled_sse": 863871.5571638984,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 154750.67062524604,
+          "shuffled_sse": 864261.348331055,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-1024-broad": {
+      "path": "runs/celeba-sequential/screen/direct-1024-broad/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 260.6612706097666,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 943866.6275449726,
+          "shuffled_sse": 943084.2628235782,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 157974.89393504412,
+          "shuffled_sse": 865704.3191231444,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 134187.5841812278,
+          "shuffled_sse": 857882.6296667487,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 133458.5705522005,
+          "shuffled_sse": 859217.8660091645,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-1024-broad-fast": {
+      "path": "runs/celeba-sequential/screen/direct-1024-broad-fast/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.009,
+        "encoder_rate": 0.08,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 205.20774073172086,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 943866.6275449726,
+          "shuffled_sse": 943084.2628235782,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 116308.58408064996,
+          "shuffled_sse": 868033.6584093136,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 105728.17962005961,
+          "shuffled_sse": 850325.8776621806,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 105066.36325464108,
+          "shuffled_sse": 853215.196119111,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-1024-broad-paired": {
+      "path": "runs/celeba-sequential/screen/direct-1024-broad-paired/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": true,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 210.6616336793617,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 572477.9187891455,
+          "shuffled_sse": 572477.9187891455,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 116789.53849184254,
+          "shuffled_sse": 855022.7337953544,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 108234.16648790882,
+          "shuffled_sse": 843399.7428880716,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 107858.75644383319,
+          "shuffled_sse": 842881.0481530149,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-1024-broad09": {
+      "path": "runs/celeba-sequential/screen/direct-1024-broad09/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.9
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 244.5270812249753,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 883592.3100804003,
+          "shuffled_sse": 882761.8571869998,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 145474.3058590334,
+          "shuffled_sse": 855815.0545539628,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 125751.00090301054,
+          "shuffled_sse": 843388.057786609,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 125197.86558718735,
+          "shuffled_sse": 844067.1501914581,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-1024-fast": {
+      "path": "runs/celeba-sequential/screen/direct-1024-fast/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.012,
+        "encoder_rate": 0.1,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 234.25384580089016,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1046144.5174002688,
+          "shuffled_sse": 1045476.7949569273,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 141726.49026025817,
+          "shuffled_sse": 883097.9518540214,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 120897.0173655332,
+          "shuffled_sse": 880965.2371409833,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 119937.96905005576,
+          "shuffled_sse": 884911.1398386237,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-1024-slow": {
+      "path": "runs/celeba-sequential/screen/direct-1024-slow/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.0015,
+        "encoder_rate": 0.3,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 498.80974636550576,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1046144.5174002688,
+          "shuffled_sse": 1045476.7949569273,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 291980.63267461926,
+          "shuffled_sse": 825055.3112471382,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 256535.6397589869,
+          "shuffled_sse": 821575.8613266413,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 255390.59013913895,
+          "shuffled_sse": 821362.4977757873,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-2048-neck": {
+      "path": "runs/celeba-sequential/screen/direct-2048-neck/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 3072,
+        "latent_width": 2048,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        3072,
+        2048,
+        24576
+      ],
+      "parameters": 94401536,
+      "validation_sse": 270.5248988655284,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 999906.1175644647,
+          "shuffled_sse": 999486.8664565295,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 162421.49293182537,
+          "shuffled_sse": 876190.8650003587,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 139441.9531528303,
+          "shuffled_sse": 872781.174686687,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 138508.74821915056,
+          "shuffled_sse": 874374.3215719394,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-2048-neck-broad": {
+      "path": "runs/celeba-sequential/screen/direct-2048-neck-broad/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 3072,
+        "latent_width": 2048,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        3072,
+        2048,
+        24576
+      ],
+      "parameters": 94401536,
+      "validation_sse": 227.87712210740236,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 906869.7210143178,
+          "shuffled_sse": 906474.2567632126,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 138722.8834881173,
+          "shuffled_sse": 876869.2497275021,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 117475.3340565814,
+          "shuffled_sse": 868584.8036238627,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 116673.08651899,
+          "shuffled_sse": 869779.951158025,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-2048-neck-fast": {
+      "path": "runs/celeba-sequential/screen/direct-2048-neck-fast/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.012,
+        "encoder_rate": 0.08,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 3072,
+        "latent_width": 2048,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        3072,
+        2048,
+        24576
+      ],
+      "parameters": 94401536,
+      "validation_sse": 201.7728992180931,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 999906.1175644647,
+          "shuffled_sse": 999486.8664565295,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 128721.08495616721,
+          "shuffled_sse": 905362.614180328,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 105044.07434702993,
+          "shuffled_sse": 899748.0777955785,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 103307.72439966367,
+          "shuffled_sse": 899324.7898416803,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-512": {
+      "path": "runs/celeba-sequential/screen/direct-512/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        24576
+      ],
+      "parameters": 22439168,
+      "validation_sse": 333.6095692578249,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1064876.4906542874,
+          "shuffled_sse": 1065773.2098790703,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 200907.3665957131,
+          "shuffled_sse": 850443.4373733973,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 171588.2026781818,
+          "shuffled_sse": 853633.1265023609,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 170808.09946000634,
+          "shuffled_sse": 853799.0804904465,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-512-broad": {
+      "path": "runs/celeba-sequential/screen/direct-512-broad/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        24576
+      ],
+      "parameters": 22439168,
+      "validation_sse": 296.1942615332043,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 961098.7077173016,
+          "shuffled_sse": 961714.0980493639,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 178107.28112338678,
+          "shuffled_sse": 849451.5933604081,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 152346.276129163,
+          "shuffled_sse": 850694.3688082766,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 151651.46190500061,
+          "shuffled_sse": 851092.6493989378,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-512-narrow": {
+      "path": "runs/celeba-sequential/screen/direct-512-narrow/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.12
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        24576
+      ],
+      "parameters": 22439168,
+      "validation_sse": 355.4800395427702,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1126016.7239875614,
+          "shuffled_sse": 1127073.88057424,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 216330.08351457887,
+          "shuffled_sse": 844456.4947107964,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 182956.26745554028,
+          "shuffled_sse": 849335.3598394432,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 182005.78024589835,
+          "shuffled_sse": 849075.6453519684,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "direct-512-paired": {
+      "path": "runs/celeba-sequential/screen/direct-512-paired/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": true,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        24576
+      ],
+      "parameters": 22439168,
+      "validation_sse": 227.74999512876227,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 572477.9187891455,
+          "shuffled_sse": 572477.9187891455,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 126076.91717774335,
+          "shuffled_sse": 858989.6345140041,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 116889.58189656601,
+          "shuffled_sse": 852847.984840846,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 116607.99750592628,
+          "shuffled_sse": 855013.9849001317,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "one-1536": {
+      "path": "runs/celeba-sequential/screen/one-1536/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        24576
+      ],
+      "parameters": 58224128,
+      "validation_sse": 289.4098731100677,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 999589.0919948958,
+          "shuffled_sse": 1001803.0110647767,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 167836.64205221573,
+          "shuffled_sse": 866577.7865753615,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 148890.4463809159,
+          "shuffled_sse": 867467.7870627756,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 148177.85503235465,
+          "shuffled_sse": 867908.0523384378,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "one-1536-1024": {
+      "path": "runs/celeba-sequential/screen/one-1536-1024/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        1536,
+        24576
+      ],
+      "parameters": 59797504,
+      "validation_sse": 293.42234356071384,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 997062.234903308,
+          "shuffled_sse": 999767.7046503092,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 171603.44645067438,
+          "shuffled_sse": 863300.0988015308,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 151035.46075448993,
+          "shuffled_sse": 862234.2551572473,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 150232.2399030855,
+          "shuffled_sse": 862741.7915025629,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "one-1536-broad": {
+      "path": "runs/celeba-sequential/screen/one-1536-broad/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        24576
+      ],
+      "parameters": 58224128,
+      "validation_sse": 255.49600792043503,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 904628.6104443605,
+          "shuffled_sse": 906577.3009505171,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 148136.88833071146,
+          "shuffled_sse": 861547.2092869873,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 131375.668104799,
+          "shuffled_sse": 846742.0340565362,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 130813.95605526274,
+          "shuffled_sse": 847444.7681851982,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "one-1536-fast": {
+      "path": "runs/celeba-sequential/screen/one-1536-fast/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.012,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.3,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        24576
+      ],
+      "parameters": 58224128,
+      "validation_sse": 285.84747855307444,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 999589.0919948958,
+          "shuffled_sse": 1001803.0110647767,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 182024.5201576728,
+          "shuffled_sse": 889477.0959335266,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 148565.51303598232,
+          "shuffled_sse": 850922.9104255388,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 146353.9090191741,
+          "shuffled_sse": 852780.6678441501,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "one-3072": {
+      "path": "runs/celeba-sequential/screen/one-3072/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 512,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        3072,
+        24576
+      ],
+      "parameters": 96760832,
+      "validation_sse": 260.18295693593063,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 990554.2933343579,
+          "shuffled_sse": 990193.1656936344,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 151616.49653473,
+          "shuffled_sse": 885181.4087787858,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 133787.8758186711,
+          "shuffled_sse": 875627.6687809001,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 133213.67395119648,
+          "shuffled_sse": 875877.6563392074,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "reference": {
+      "path": "runs/celeba-sequential/screen/reference/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 3
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        768,
+        768,
+        768,
+        24576
+      ],
+      "parameters": 30305792,
+      "validation_sse": 354.2141144267759,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 985861.1923588499,
+          "shuffled_sse": 987394.5784031831,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 203651.77813037593,
+          "shuffled_sse": 853365.346696249,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 182129.7437046577,
+          "shuffled_sse": 843814.7350184901,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 181357.62658650926,
+          "shuffled_sse": 844704.0638972409,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "reference-fast": {
+      "path": "runs/celeba-sequential/screen/reference-fast/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.012,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.3,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 3,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        768,
+        768,
+        768,
+        24576
+      ],
+      "parameters": 30305792,
+      "validation_sse": 398.8462671786223,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 985861.1923588499,
+          "shuffled_sse": 987394.5784031831,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 309950.71859500546,
+          "shuffled_sse": 861506.1810416152,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 210260.6103281128,
+          "shuffled_sse": 792883.7492952055,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 204209.28879545463,
+          "shuffled_sse": 785834.0807370084,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "reference-slow": {
+      "path": "runs/celeba-sequential/screen/reference-slow/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.0015,
+        "encoder_rate": 0.2,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.2,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 128,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 3,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        768,
+        768,
+        768,
+        24576
+      ],
+      "parameters": 30305792,
+      "validation_sse": 448.56320423284933,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 985861.1923588499,
+          "shuffled_sse": 987394.5784031831,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 250523.80455601928,
+          "shuffled_sse": 815349.557291748,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 230234.320018076,
+          "shuffled_sse": 818828.870843176,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 229664.36056721886,
+          "shuffled_sse": 818965.3530072991,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "three-1536": {
+      "path": "runs/celeba-sequential/screen/three-1536/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 3,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        1536,
+        1536,
+        24576
+      ],
+      "parameters": 62945792,
+      "validation_sse": 325.5600780124779,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 989814.9187660366,
+          "shuffled_sse": 989593.0196912427,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 190477.65213363428,
+          "shuffled_sse": 860980.5494729651,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 167770.79475994615,
+          "shuffled_sse": 855460.0674824021,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 166686.7599423887,
+          "shuffled_sse": 854974.0784056763,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "two-1536": {
+      "path": "runs/celeba-sequential/screen/two-1536/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 2,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        1536,
+        24576
+      ],
+      "parameters": 60584960,
+      "validation_sse": 310.72160377657326,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 983964.7883902593,
+          "shuffled_sse": 985269.2422752897,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 179773.71223642316,
+          "shuffled_sse": 868252.1558098218,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 159933.57011677593,
+          "shuffled_sse": 859768.3364413102,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 159089.4611336055,
+          "shuffled_sse": 859995.8869506977,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "two-1536-broad": {
+      "path": "runs/celeba-sequential/screen/two-1536-broad/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.15,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 2,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        1536,
+        24576
+      ],
+      "parameters": 60584960,
+      "validation_sse": 283.34475206629435,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 892827.8958548012,
+          "shuffled_sse": 893629.0760598609,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 158293.67044319358,
+          "shuffled_sse": 844711.1451154045,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 145603.68211241544,
+          "shuffled_sse": 824143.9571626788,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 145072.5130579427,
+          "shuffled_sse": 824792.619620057,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    },
+    "two-1536-fast": {
+      "path": "runs/celeba-sequential/screen/two-1536-fast/pilot",
+      "config": {
+        "epochs": 12,
+        "seed": 7,
+        "lr": 0.012,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 4096,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 0.3,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 256,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": true,
+        "checks_per_epoch": 1,
+        "vector_hidden_depth": 2,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        512,
+        1536,
+        1536,
+        24576
+      ],
+      "parameters": 60584960,
+      "validation_sse": 347.385501851851,
+      "selected_epoch": 12,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 983964.7883902593,
+          "shuffled_sse": 985269.2422752897,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 5,
+          "reconstruction_sse": 298103.3681153146,
+          "shuffled_sse": 903904.657846495,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 10,
+          "reconstruction_sse": 182792.68061369823,
+          "shuffled_sse": 829232.3199452233,
+          "mean_sse": 479724.3829409589
+        },
+        {
+          "epoch": 12,
+          "reconstruction_sse": 177861.37694814772,
+          "shuffled_sse": 827199.0349280791,
+          "mean_sse": 479724.3829409589
+        }
+      ]
+    }
+  },
+  "full": {
+    "direct-1536-1024-broad-fast": {
+      "path": "runs/celeba-sequential/full/direct-1536-1024-broad-fast/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.009,
+        "encoder_rate": 0.08,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 238.50513088495745,
+      "selected_epoch": 1,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 943788.7021247469,
+          "shuffled_sse": 942991.8876625973,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 0.5000982897582072,
+          "reconstruction_sse": 132711.36107699835,
+          "shuffled_sse": 854215.8599221944,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 122114.62701309822,
+          "shuffled_sse": 855097.0351621016,
+          "mean_sse": 479605.04445925937
+        }
+      ],
+      "test_sse": 234.59991589029883
+    },
+    "direct-1536-1024-fast": {
+      "path": "runs/celeba-sequential/full/direct-1536-1024-fast/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.012,
+        "encoder_rate": 0.1,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 1536,
+        "latent_width": 1024,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        1536,
+        1024,
+        24576
+      ],
+      "parameters": 45640192,
+      "validation_sse": 307.30008858829177,
+      "selected_epoch": 0.5000982897582072,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 1046040.666495211,
+          "shuffled_sse": 1045360.7473822797,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 0.5000982897582072,
+          "reconstruction_sse": 157337.6453572054,
+          "shuffled_sse": 867174.4481107079,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 159256.32412226687,
+          "shuffled_sse": 885915.5834027831,
+          "mean_sse": 479605.04445925937
+        }
+      ],
+      "test_sse": 303.7351318415639
+    },
+    "direct-3072-2048": {
+      "path": "runs/celeba-sequential/full/direct-3072-2048/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 3072,
+        "latent_width": 2048,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1
+      },
+      "widths": [
+        12288,
+        3072,
+        2048,
+        24576
+      ],
+      "parameters": 94401536,
+      "validation_sse": 234.3686922888672,
+      "selected_epoch": 1,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 999834.7820789262,
+          "shuffled_sse": 999413.1425461117,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 0.5000982897582072,
+          "reconstruction_sse": 125147.44384959259,
+          "shuffled_sse": 870644.4624923243,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 119996.77045190001,
+          "shuffled_sse": 874487.84225452,
+          "mean_sse": 479605.04445925937
+        }
+      ],
+      "test_sse": 229.46655282253204
+    },
+    "direct-3072-2048-broad": {
+      "path": "runs/celeba-sequential/full/direct-3072-2048-broad/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": false,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 3072,
+        "latent_width": 2048,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.5
+      },
+      "widths": [
+        12288,
+        3072,
+        2048,
+        24576
+      ],
+      "parameters": 94401536,
+      "validation_sse": 221.83954323958181,
+      "selected_epoch": 1,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 906801.5570433176,
+          "shuffled_sse": 906411.528494401,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 0.5000982897582072,
+          "reconstruction_sse": 119280.74079981068,
+          "shuffled_sse": 839810.5883623005,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 113581.84613866589,
+          "shuffled_sse": 837406.5303343139,
+          "mean_sse": 479605.04445925937
+        }
+      ],
+      "test_sse": 217.9777224775332
+    },
+    "direct-3072-2048-paired": {
+      "path": "runs/celeba-sequential/full/direct-3072-2048-paired/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": true,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 3072,
+        "latent_width": 2048,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        3072,
+        2048,
+        24576
+      ],
+      "parameters": 94401536,
+      "validation_sse": 193.37479170272852,
+      "selected_epoch": 1,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 572477.9187891455,
+          "shuffled_sse": 572477.9187891455,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 0.5000982897582072,
+          "reconstruction_sse": 105037.62293423578,
+          "shuffled_sse": 868100.9916481619,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 99007.893351797,
+          "shuffled_sse": 853062.7778592445,
+          "mean_sse": 479605.04445925937
+        }
+      ],
+      "test_sse": 188.68238652263278
+    },
+    "direct-768-512-paired": {
+      "path": "runs/celeba-sequential/full/direct-768-512-paired/full",
+      "config": {
+        "epochs": 1,
+        "seed": 7,
+        "lr": 0.004,
+        "encoder_rate": 0.15,
+        "rule": "signsgd",
+        "depth": 6,
+        "gate_width": null,
+        "images": 162770,
+        "validation_images": 512,
+        "coordinate_scale": 1.0,
+        "decoder_rate_decay": 1.0,
+        "encoder_gate_widths": [
+          0.5,
+          0.5
+        ],
+        "decoder_class_width": 32,
+        "shared_coordinates": false,
+        "center_encoder": true,
+        "images_per_batch": 32,
+        "pixels_per_image": 32,
+        "decoder": "vector",
+        "decoder_init_scale": 1.0,
+        "projected_latent_votes": false,
+        "bottleneck_pool_size": null,
+        "projected_encoder_votes": true,
+        "center_each_input": false,
+        "vector_hidden_width": 0,
+        "normalize_each_input": false,
+        "paired_decoder_init": true,
+        "encoder_votes_per_pair": null,
+        "encoder_width": 768,
+        "latent_width": 512,
+        "select_on_training": false,
+        "vector_output_class_width": 1,
+        "vector_decoder_skip": false,
+        "projected_decoder_votes": false,
+        "checks_per_epoch": 2,
+        "vector_hidden_depth": 1,
+        "vector_gate_width": 0.24
+      },
+      "widths": [
+        12288,
+        768,
+        512,
+        24576
+      ],
+      "parameters": 22439168,
+      "validation_sse": 237.34166066896267,
+      "selected_epoch": 0.5000982897582072,
+      "curve": [
+        {
+          "epoch": 0,
+          "reconstruction_sse": 572477.9187891455,
+          "shuffled_sse": 572477.9187891455,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 0.5000982897582072,
+          "reconstruction_sse": 121518.93026250889,
+          "shuffled_sse": 861999.7785749392,
+          "mean_sse": 479605.04445925937
+        },
+        {
+          "epoch": 1,
+          "reconstruction_sse": 123291.29304493824,
+          "shuffled_sse": 861374.9225298455,
+          "mean_sse": 479605.04445925937
+        }
+      ],
+      "test_sse": 232.90171937193068
+    }
+  },
+  "selected": "direct-3072-2048-paired",
+  "test_portraits": 19962,
+  "baseline_three_layer_test_sse": 353.29876507859836,
+  "baseline_direct_test_sse": 214.5604174222192,
+  "sampling": {
+    "Prior three-layer decoder": {
+      "export": "runs/celeba-capacity/decoder-neck512-pass2/full/end-decoder-mixture.npz",
+      "sha256": "8560d223b0187ff8a4c63ac0bed2aa7560a775a16cba56012fc3c2f8fb29ee7d",
+      "components": 16,
+      "code_width": 512,
+      "rank": 64,
+      "blocks": [
+        {
+          "start": 0,
+          "count": 216,
+          "edge_spread": 0.6046269536018372,
+          "chroma": 0.09826366603374481
+        },
+        {
+          "start": 216,
+          "count": 216,
+          "edge_spread": 0.5218443274497986,
+          "chroma": 0.09746483713388443
+        },
+        {
+          "start": 432,
+          "count": 216,
+          "edge_spread": 0.5667924284934998,
+          "chroma": 0.09740474075078964
+        },
+        {
+          "start": 648,
+          "count": 216,
+          "edge_spread": 0.5472350716590881,
+          "chroma": 0.09697235375642776
+        }
+      ],
+      "edge_spread": 0.5601246953010559,
+      "chroma": 0.09752639941871166
+    },
+    "Prior direct decoder": {
+      "export": "runs/celeba-capacity/fixed768x2048/full/decoder-mixture.npz",
+      "sha256": "8857d6d05fb1b4dc169e19787c76fc883fc0a5c4a1da19f68ede7d9c338bf6f2",
+      "components": 16,
+      "code_width": 2048,
+      "rank": 64,
+      "blocks": [
+        {
+          "start": 0,
+          "count": 216,
+          "edge_spread": 0.7327064275741577,
+          "chroma": 0.0768360123038292
+        },
+        {
+          "start": 216,
+          "count": 216,
+          "edge_spread": 0.7280377149581909,
+          "chroma": 0.07760729640722275
+        },
+        {
+          "start": 432,
+          "count": 216,
+          "edge_spread": 0.7727209329605103,
+          "chroma": 0.07817685604095459
+        },
+        {
+          "start": 648,
+          "count": 216,
+          "edge_spread": 0.7987653613090515,
+          "chroma": 0.07989295572042465
+        }
+      ],
+      "edge_spread": 0.7580576092004776,
+      "chroma": 0.0781282801181078
+    },
+    "Tuned compact model": {
+      "export": "runs/celeba-sequential/full/direct-768-512-paired/full/decoder-mixture.npz",
+      "sha256": "595c9e4c9b8ed74582acda32aef7590d6e7da6c07f8bbfe20206dea5b4e431ba",
+      "components": 16,
+      "code_width": 512,
+      "rank": 64,
+      "blocks": [
+        {
+          "start": 0,
+          "count": 216,
+          "edge_spread": 0.7321993112564087,
+          "chroma": 0.0872800275683403
+        },
+        {
+          "start": 216,
+          "count": 216,
+          "edge_spread": 0.7334445118904114,
+          "chroma": 0.08935824781656265
+        },
+        {
+          "start": 432,
+          "count": 216,
+          "edge_spread": 0.6798320412635803,
+          "chroma": 0.08756396919488907
+        },
+        {
+          "start": 648,
+          "count": 216,
+          "edge_spread": 0.7429311871528625,
+          "chroma": 0.09002934396266937
+        }
+      ],
+      "edge_spread": 0.7221017628908157,
+      "chroma": 0.08855789713561535
+    },
+    "Tuned sequential model": {
+      "export": "runs/celeba-sequential/full/direct-3072-2048-paired/full/decoder-mixture.npz",
+      "sha256": "41d7622826cdc754e7a7db2addc35e11450fa447b41cbb69bc0634d3932b4d5b",
+      "components": 16,
+      "code_width": 2048,
+      "rank": 64,
+      "blocks": [
+        {
+          "start": 0,
+          "count": 216,
+          "edge_spread": 0.736363410949707,
+          "chroma": 0.05914868414402008
+        },
+        {
+          "start": 216,
+          "count": 216,
+          "edge_spread": 0.8070048689842224,
+          "chroma": 0.06207902729511261
+        },
+        {
+          "start": 432,
+          "count": 216,
+          "edge_spread": 0.7400871515274048,
+          "chroma": 0.059182897210121155
+        },
+        {
+          "start": 648,
+          "count": 216,
+          "edge_spread": 0.7394919395446777,
+          "chroma": 0.059922922402620316
+        }
+      ],
+      "edge_spread": 0.755736842751503,
+      "chroma": 0.06008338276296854
+    }
+  },
+  "displayed_draws": [
+    0,
+    1,
+    2,
+    216,
+    217,
+    218,
+    432,
+    433,
+    434,
+    648,
+    649,
+    650
+  ],
+  "reconstruction_indices": [
+    0,
+    1814,
+    3629,
+    5443,
+    7258,
+    9073,
+    10887,
+    12702,
+    14517,
+    16331,
+    18146,
+    19961
+  ]
+}

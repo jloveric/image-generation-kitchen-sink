@@ -27,10 +27,10 @@ def decoder_config(rule="signsgd", depth=6, gate_widths=None, rate_decay=1., cla
                        output_bound=1, output_levels=256, layer_rate_decay=rate_decay)
 
 
-def vector_decoder_config(rule, inputs=LATENT, class_width=1):
+def vector_decoder_config(rule, inputs=LATENT, class_width=1, gate_width=.24):
     # The model sees a code as one input vector and a portrait as one output vector.
     return ModelConfig(inputs=inputs, outputs=SIZE * SIZE * 3, width=class_width, depth=1,
-                       competition="output", gate="gaussian", gate_width=.24,
+                       competition="output", gate="gaussian", gate_width=gate_width,
                        readout="class-sum" if class_width == 1 else "fixed",
                        hidden_rule=rule, output_bound=1, output_levels=256)
 
@@ -153,12 +153,30 @@ def decode(decoder, codes, coordinates=COORDINATES, batch=1024, coordinate_scale
 
 
 def vector_decoder_features(codes, hidden, skip):
+    # Every hidden layer sees the preceding stage. Only the output gets skip inputs.
+    features = codes
+    stages = [codes]
+    traces = []
+    for layer in hidden_layers(hidden):
+        features, trace = layer.forward(features)
+        stages.append(features)
+        traces.append(trace)
+    if skip and len(stages) > 1:
+        features = np.concatenate(stages, axis=1)
+    return features, traces
+
+
+def hidden_layers(hidden):
     if hidden is None:
-        return codes, None
-    features, trace = hidden.forward(codes)
-    if skip:
-        features = np.concatenate((codes, features), axis=1)
-    return features, trace
+        return ()
+    if isinstance(hidden, EncoderLayer):
+        return (hidden,)
+    return hidden
+
+
+def hidden_name(index):
+    # The first layer keeps its original checkpoint and decoder export keys.
+    return "hidden" if index == 0 else f"hidden{index + 1}"
 
 
 def decode_vector(decoder, codes, batch, hidden=None, skip=False):
@@ -178,9 +196,12 @@ class Autoencoder:
                  projected_encoder_votes=False, center_each_input=False, vector_hidden_width=0,
                  normalize_each_input=False, paired_decoder_init=False, encoder_votes_per_pair=None,
                  encoder_width=ENCODER_WIDTH, latent_width=LATENT, vector_output_class_width=1,
-                 vector_decoder_skip=False, projected_decoder_votes=False):
+                 vector_decoder_skip=False, projected_decoder_votes=False, vector_hidden_depth=1,
+                 vector_gate_width=.24, zero_init_bias=False):
         if decoder_kind not in ("coordinate", "vector"):
             raise ValueError("Unknown decoder kind")
+        if vector_hidden_depth < 1 or (vector_hidden_depth > 1 and not vector_hidden_width):
+            raise ValueError("Stacking decoder layers requires a positive vector hidden width and depth")
         if vector_hidden_width < 0 or (vector_hidden_width and decoder_kind != "vector"):
             raise ValueError("Extra decoder width requires the image-vector decoder")
         if (vector_decoder_skip or projected_decoder_votes) and not vector_hidden_width:
@@ -222,25 +243,29 @@ class Autoencoder:
                          pool_size=bottleneck_pool_size if i == 1 else None)
             for i, config in enumerate(encoder_configs(inputs, rule, encoder_gate_widths, encoder_width, latent_width))
         ]
-        self.decoder_hidden = None
         self.decoder_skip = vector_decoder_skip
         self.decoder_hidden_rate = decoder_rate_decay
-        self.decoder_projection = None
-        if vector_hidden_width:
-            hidden_config = ModelConfig(inputs=latent_width, outputs=3, width=vector_hidden_width, depth=1,
-                                        competition="output", gate="gaussian", gate_width=.5,
-                                        hidden_rule=rule)
-            self.decoder_hidden = EncoderLayer(hidden_config, seed + 3, images_per_batch, backend, False)
+        self.decoder_projections = []
+        if projected_decoder_votes:
+            pairs = 3 * vector_hidden_width
+            self.decoder_pairs = np.broadcast_to(np.arange(pairs).reshape(3, 1, vector_hidden_width),
+                                                 (3, 2, vector_hidden_width)).ravel()
+        layers = []
+        previous_width = latent_width
+        for index in range(vector_hidden_depth if vector_hidden_width else 0):
+            hidden_config = ModelConfig(inputs=previous_width, outputs=3, width=vector_hidden_width, depth=1,
+                                        competition="output", gate="gaussian", gate_width=.5, hidden_rule=rule)
+            layers.append(EncoderLayer(hidden_config, seed + 3 + index, images_per_batch, backend, False))
+            previous_width = hidden_config.units
             if projected_decoder_votes:
-                pairs = hidden_config.units // 2
-                self.decoder_projection = vote_assignment(pairs, 2, True)
-                self.decoder_pairs = np.broadcast_to(np.arange(pairs).reshape(3, 1, vector_hidden_width),
-                                                     (3, 2, vector_hidden_width)).ravel()
+                self.decoder_projections.append(vote_assignment(pairs, 2 + index, True))
+        self.decoder_hidden = layers[0] if len(layers) == 1 else tuple(layers) or None
         if decoder_kind == "vector":
-            decoder_inputs = self.decoder_hidden.config.units if self.decoder_hidden else latent_width
+            decoder_inputs = previous_width
             if self.decoder_skip:
-                decoder_inputs += latent_width
-            config, capacity = vector_decoder_config(rule, decoder_inputs, vector_output_class_width), images_per_batch
+                decoder_inputs = latent_width + sum(layer.config.units for layer in layers)
+            config = vector_decoder_config(rule, decoder_inputs, vector_output_class_width, vector_gate_width)
+            capacity = images_per_batch
         else:
             config = decoder_config(rule, depth, gate_widths, decoder_rate_decay, decoder_class_width, latent_width)
             capacity = queries_per_batch
@@ -260,6 +285,13 @@ class Autoencoder:
                 weight = state["weight_0"].reshape(-1, config.outputs, 2, config.width)
                 weight[:, :, 1] = -weight[:, :, 0]
             self.decoder.load(state)
+        if zero_init_bias:
+            for component in self.components().values():
+                state = component.state()
+                for key, values in state.items():
+                    if key.startswith("weight_"):
+                        values[-1].fill(0)
+                component.load(state)
 
     def encoder_inputs(self, images):
         if self.input_center is not None:
@@ -315,10 +347,11 @@ class Autoencoder:
         targets_flat = targets.reshape(len(queries), self.decoder.config.outputs)
         teaching = self.decoder.step(queries, targets_flat, rate, return_signs=True)
         signs, counts = signed_totals(teaching.reshape(targets.shape))
-        if self.decoder_hidden is not None:
-            hidden_signs, hidden_counts = (signs, counts) if self.decoder_projection is None else projected_votes(
-                teaching, self.decoder_projection, self.decoder_pairs)
-            self.decoder_hidden.update(decoder_trace, hidden_signs, hidden_counts, rate * self.decoder_hidden_rate)
+        for index, layer in enumerate(hidden_layers(self.decoder_hidden)):
+            hidden_signs, hidden_counts = signs, counts
+            if self.decoder_projections:
+                hidden_signs, hidden_counts = projected_votes(teaching, self.decoder_projections[index], self.decoder_pairs)
+            layer.update(decoder_trace[index], hidden_signs, hidden_counts, rate * self.decoder_hidden_rate)
         encoder_rate = rate * encoder_rate_scale
         first_signs, first_counts = (signs, counts) if self.first_projection is None else projected_votes(
             teaching, self.first_projection, self.first_pairs)
@@ -329,8 +362,8 @@ class Autoencoder:
 
     def components(self):
         models = {f"encoder_{i}": layer.model for i, layer in enumerate(self.encoder)}
-        if self.decoder_hidden is not None:
-            models["hidden"] = self.decoder_hidden.model
+        for index, layer in enumerate(hidden_layers(self.decoder_hidden)):
+            models[hidden_name(index)] = layer.model
         models["decoder"] = self.decoder
         return models
 
@@ -348,22 +381,23 @@ def rgb_bytes(values):
     return np.rint(np.clip((values + 1) * 127.5, 0, 255)).astype(np.uint8)
 
 
-def export_generator(path, model, codes, coordinate_scale=1., hidden=None, skip=False):
+def export_generator(path, model, codes, coordinate_scale=1., hidden=None, skip=False, *, mixture=None):
     covariance = np.cov(codes, rowvar=False)
     eigenvalues, eigenvectors = np.linalg.eigh(covariance)
     root = eigenvectors * np.sqrt(np.maximum(eigenvalues, 0))
     weights = {key: value for key, value in model.state().items() if key.startswith("weight_")}
     config = {**asdict(model.config), "hidden_rule": "signsgd"}
-    if hidden is not None:
-        hidden_config = {**asdict(hidden.config), "hidden_rule": "signsgd"}
-        weights["hidden_config"] = json.dumps(hidden_config)
-        weights["hidden_weight"] = hidden.model.state()["weight_0"]
+    for index, layer in enumerate(hidden_layers(hidden)):
+        name = hidden_name(index)
+        hidden_config = {**asdict(layer.config), "hidden_rule": "signsgd"}
+        weights[f"{name}_config"] = json.dumps(hidden_config)
+        weights[f"{name}_weight"] = layer.model.state()["weight_0"]
     if skip:
         weights["decoder_skip"] = True
     path = Path(path)
     temporary = path.with_suffix(".tmp.npz")
     np.savez_compressed(temporary, config=json.dumps(config), mean=codes.mean(axis=0, dtype=np.float64),
-                        root=root, coordinate_scale=coordinate_scale, **weights)
+                        root=root, coordinate_scale=coordinate_scale, **weights, **(mixture or {}))
     temporary.replace(path)
 
 
@@ -372,12 +406,15 @@ class Generator:
         with np.load(path, allow_pickle=False) as data:
             self.decoder = NumpyModel(ModelConfig(**json.loads(data["config"].item())), 0)
             self.decoder.load({key: data[key] for key in data.files if key.startswith("weight_")})
-            self.decoder_hidden = None
             self.decoder_skip = bool(data["decoder_skip"].item()) if "decoder_skip" in data else False
-            if "hidden_config" in data:
-                config = ModelConfig(**json.loads(data["hidden_config"].item()))
-                self.decoder_hidden = EncoderLayer(config, 0, 1, "numpy", False)
-                self.decoder_hidden.model.load({"weight_0": data["hidden_weight"]})
+            layers = []
+            while f"{hidden_name(len(layers))}_config" in data:
+                name = hidden_name(len(layers))
+                config = ModelConfig(**json.loads(data[f"{name}_config"].item()))
+                layer = EncoderLayer(config, 0, 1, "numpy", False)
+                layer.model.load({"weight_0": data[f"{name}_weight"]})
+                layers.append(layer)
+            self.decoder_hidden = layers[0] if len(layers) == 1 else tuple(layers) or None
             self.mean = data["mean"]
             self.root = data["root"]
             self.mixture = None
