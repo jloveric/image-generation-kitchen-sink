@@ -37,6 +37,7 @@ class ModelConfig:
     edge_transitions: tuple[float, ...] | None = None
     clip_output: bool = True
     layer_rate_decay: float = 1.
+    top_k: int | None = None  # exact number kept per competition pool
 
     def __post_init__(self):
         if self.hidden_rule not in HIDDEN_RULES:
@@ -45,12 +46,16 @@ class ModelConfig:
             raise ValueError("Unknown connection type")
         if min(self.inputs, self.outputs, self.width, self.depth) < 1:
             raise ValueError("Input size, output size, width and depth must be positive")
-        if self.gate == "hard" and not 1 <= self.winners <= self.width:
-            raise ValueError("Winner count must be between 1 and the class width")
         if self.competition not in COMPETITIONS or self.readout not in READOUTS:
             raise ValueError("Unknown competition or readout")
         if self.gate not in GATES:
             raise ValueError("Unknown competition gate")
+        if self.top_k is None:
+            if self.gate == "hard" and not 1 <= self.winners <= self.width:
+                raise ValueError("Winner count must be between 1 and the class width")
+        elif (self.gate != "hard" or not isinstance(self.top_k, (int, np.integer))
+              or not 1 <= self.top_k <= self.units // self.competition_groups):
+            raise ValueError("Top-K requires a hard gate and a count within the competition pool")
         if self.gate == "gaussian-dual" and self.width % 2:
             raise ValueError("Two Gaussian widths require an even number of neurons per class")
         if self.layer_gate_widths is not None:
@@ -92,6 +97,10 @@ class ModelConfig:
         return {"class": self.classes, "output": self.outputs, "layer": 1}[self.competition]
 
     @property
+    def keep_per_pool(self):
+        return self.top_k if self.top_k is not None else self.winners * self.classes // self.competition_groups
+
+    @property
     def heads(self):
         return self.depth if self.readout_layers == "all" else 1
 
@@ -103,6 +112,8 @@ class ModelConfig:
     def readout_divisor(self):
         if self.readout == "class-sum":
             return 1
+        if self.top_k is not None:
+            return max(1, self.top_k * self.competition_groups / self.classes)
         return self.winners if self.gate == "hard" else self.width
 
     @property
@@ -164,35 +175,40 @@ def select(z, config):
         return z, np.ones(z.shape, dtype=bool)
     groups = config.competition_groups
     grouped = z.reshape(len(z), groups, -1)
+    if config.gate == "hard":
+        activity, mask = top_k_activity(grouped, config.keep_per_pool)
+        return activity.reshape(z.shape), mask.reshape(z.shape)
     magnitude = np.abs(grouped)
-    if config.gate != "hard":
-        peak = magnitude.max(axis=-1, keepdims=True)
-        if config.gate == "gaussian-smooth":
-            # The max only stabilizes the ratio of even moments.
-            relative = magnitude / np.where(peak > 0, peak, np.float32(1))
-            weights = relative ** 14
-            denominator = weights.sum(axis=-1, keepdims=True)
-            numerator = (weights * relative ** 2).sum(axis=-1, keepdims=True)
-            peak = peak * np.sqrt(numerator / np.where(denominator > 0, denominator, np.float32(1)))
-        gap = (peak - magnitude) / np.where(peak > 0, peak, np.float32(1))
-        scaled_gap = gap / np.float32(config.gate_width)
-        if config.gate == "gaussian-dual":
-            scaled_gap[..., ::2] /= np.float32(.75)
-            scaled_gap[..., 1::2] /= np.float32(1.25)
-        if config.gate in ("gaussian", "gaussian-smooth", "gaussian-dual"):
-            # Keep the multiplier positive even at extreme widths in float32.
-            scaled_gap = np.minimum(np.abs(scaled_gap), np.float32(13))
-            gate = np.exp(np.float32(-0.5) * scaled_gap * scaled_gap)
-        else:
-            gate = np.maximum(TENT_FLOOR, np.float32(1) - scaled_gap)
-        return (grouped * gate).reshape(z.shape), np.ones(z.shape, dtype=bool)
-    count = config.winners * config.classes // groups
+    peak = magnitude.max(axis=-1, keepdims=True)
+    if config.gate == "gaussian-smooth":
+        # The max only stabilizes the ratio of even moments.
+        relative = magnitude / np.where(peak > 0, peak, np.float32(1))
+        weights = relative ** 14
+        denominator = weights.sum(axis=-1, keepdims=True)
+        numerator = (weights * relative ** 2).sum(axis=-1, keepdims=True)
+        peak = peak * np.sqrt(numerator / np.where(denominator > 0, denominator, np.float32(1)))
+    gap = (peak - magnitude) / np.where(peak > 0, peak, np.float32(1))
+    scaled_gap = gap / np.float32(config.gate_width)
+    if config.gate == "gaussian-dual":
+        scaled_gap[..., ::2] /= np.float32(.75)
+        scaled_gap[..., 1::2] /= np.float32(1.25)
+    if config.gate in ("gaussian", "gaussian-smooth", "gaussian-dual"):
+        # Keep the multiplier positive even at extreme widths in float32.
+        scaled_gap = np.minimum(np.abs(scaled_gap), np.float32(13))
+        gate = np.exp(np.float32(-0.5) * scaled_gap * scaled_gap)
+    else:
+        gate = np.maximum(TENT_FLOOR, np.float32(1) - scaled_gap)
+    return (grouped * gate).reshape(z.shape), np.ones(z.shape, dtype=bool)
+
+
+def top_k_activity(grouped, count):
+    if count >= grouped.shape[-1]:
+        return grouped.copy(), np.ones(grouped.shape, dtype=bool)
     # Stable sorting makes ties go to the smaller neuron index.
-    indices = np.argsort(-magnitude, axis=-1, kind="stable")[..., :count]
+    indices = np.argsort(-np.abs(grouped), axis=-1, kind="stable")[..., :count]
     mask = np.zeros(grouped.shape, dtype=bool)
     np.put_along_axis(mask, indices, True, axis=-1)
-    mask = mask.reshape(z.shape)
-    return np.where(mask, z, np.float32(0)), mask
+    return np.where(mask, grouped, np.float32(0)), mask
 
 
 class NumpyModel:

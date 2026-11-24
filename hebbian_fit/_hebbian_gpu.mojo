@@ -64,6 +64,7 @@ def pass_activity(z: Read, activity: Write, mask: Write, size_arg: Int32):
 
 def compete(z: Read, activity: Write, mask: Write, batch_arg: Int32, units_arg: Int32,
             group_size_arg: Int32, keep_arg: Int32):
+    comptime assert z.flat_rank == 1 and activity.flat_rank == 1 and mask.flat_rank == 1
     var batch = Int(batch_arg)
     var units = Int(units_arg)
     var group_size = Int(group_size_arg)
@@ -71,10 +72,12 @@ def compete(z: Read, activity: Write, mask: Write, batch_arg: Int32, units_arg: 
     var i = global_idx.x
     if i >= batch * units:
         return
-    var first = (i // group_size) * group_size
+    var group_start = (i % units // group_size) * group_size
+    var first = (i // units) * units + group_start
+    var end = first + min(group_size, units - group_start)
     var score = abs(z[i])
     var rank = 0
-    for other in range(first, first + group_size):
+    for other in range(first, end):
         var candidate = abs(z[other])
         if candidate > score or (candidate == score and other < i):
             rank += 1
@@ -86,6 +89,47 @@ def compete(z: Read, activity: Write, mask: Write, batch_arg: Int32, units_arg: 
     else:
         activity[i] = 0
         mask[i] = 0
+
+
+def top_k_key(value: Float32, index: Int, count: Int) -> UInt64:
+    # Positive float bits sort by magnitude. The low bits break ties by index.
+    var magnitude = abs(value)
+    var bits = Pointer(to=magnitude).unsafe_bitcast[UInt32]()[]
+    return (UInt64(bits) << 32) | UInt64(count - 1 - index)
+
+
+def compete_wide(z: Read, activity: Write, mask: Write, batch_arg: Int32, units_arg: Int32,
+                 group_size_arg: Int32, keep: Int32):
+    comptime assert z.flat_rank == 1 and activity.flat_rank == 1 and mask.flat_rank == 1
+    var batch = Int(batch_arg)
+    var units = Int(units_arg)
+    var group_size = Int(group_size_arg)
+    var groups = ceildiv(units, group_size)
+    var group = global_idx.x // WARP_SIZE
+    if group >= batch * groups:
+        return
+    var group_start = (group % groups) * group_size
+    var first = (group // groups) * units + group_start
+    var count = min(group_size, units - group_start)
+    var lane = lane_id()
+    var cutoff: UInt64 = 0
+    if Int(keep) < count:
+        # Find the Kth largest key without sorting or storing the complete pool.
+        for bit in range(62, -1, -1):
+            var digit = UInt64(1) << UInt64(bit)
+            if bit < 32 and digit >= UInt64(count):
+                continue
+            var candidate = cutoff | digit
+            var above: Int32 = 0
+            for j in range(lane, count, WARP_SIZE):
+                above += Int32(top_k_key(z[first + j], j, count) >= candidate)
+            if warp.broadcast(warp.sum(above)) >= keep:
+                cutoff = candidate
+    for j in range(lane, count, WARP_SIZE):
+        var value = z[first + j]
+        var selected = top_k_key(value, j, count) >= cutoff
+        activity[first + j] = value if selected else 0
+        mask[first + j] = 1 if selected else 0
 
 
 def pool_maxima(z: Read, peaks: Write, pool_count_arg: Int32, group_size_arg: Int32):
@@ -175,13 +219,12 @@ def output_code(value: Float32, bound: Float32, half_span: Float32, clip: Int32)
 
 
 def predict(activity: Read, prediction: Write, batch_arg: Int32,
-            outputs_arg: Int32, width_arg: Int32, divisor_arg: Int32, sum_arg: Int32,
+            outputs_arg: Int32, width_arg: Int32, divisor: Float32, sum_arg: Int32,
             head_arg: Int32, heads_arg: Int32, bound: Float32, half_span: Float32, clip: Int32,
             class_energy: Int32):
     var batch = Int(batch_arg)
     var outputs = Int(outputs_arg)
     var width = Int(width_arg)
-    var divisor = Int(divisor_arg)
     var i = global_idx.x
     if i >= batch * outputs:
         return
@@ -204,7 +247,7 @@ def predict(activity: Read, prediction: Write, batch_arg: Int32,
             else:
                 up += abs(increase)
                 down += abs(decrease)
-        value = (up - down) / Float32(divisor)
+        value = (up - down) / divisor
     if head_arg > 0:
         value += prediction[i]
     if head_arg + 1 == heads_arg:
@@ -412,7 +455,7 @@ struct Network(Movable, Writable):
     var gate: Int32
     var gate_widths: List[Float32]
     var rate_multipliers: List[Float32]
-    var readout_divisor: Int32
+    var readout_divisor: Float32
     var class_energy: Int32
     var heads: Int
     var unit_norm_updates: Bool
@@ -440,20 +483,19 @@ struct Network(Movable, Writable):
         self.outputs = Int(py=args[1])
         self.width = Int(py=args[2])
         self.depth = Int(py=args[3])
-        var winners = Int(py=args[4])
+        self.keep = Int(py=args[4])
         self.raw_sum = Bool(py=args[5])
         self.capacity = Int(py=args[6])
         self.units = 2 * self.outputs * self.width
         var groups = Int(py=args[7])
         self.group_size = self.units // groups
-        self.keep = 2 * self.outputs * winners // groups
         self.gate = Int32(Int(py=args[8]))
         self.gate_widths = List[Float32]()
         self.rate_multipliers = List[Float32]()
         for i in range(self.depth):
             self.gate_widths.append(Float32(Float64(py=args[9][i])))
             self.rate_multipliers.append(Float32(Float64(py=args[21][i])))
-        self.readout_divisor = Int32(Int(py=args[10]))
+        self.readout_divisor = Float32(Float64(py=args[10]))
         self.class_energy = Int32(Bool(py=args[22]))
         self.heads = Int(py=args[11])
         self.unit_norm_updates = Bool(py=args[12])
@@ -527,15 +569,27 @@ struct Network(Movable, Writable):
             self.ctx.enqueue_function[dense](
                 incoming, read(self.weights), write(self.logits), Int32(batch), Int32(inputs), Int32(self.units),
                 Int32(offset), self.omega, grid_dim=blocks, block_dim=Block)
-            if bottleneck_pool != 0:
+            if self.gate == 0:
+                var pool = bottleneck_pool if bottleneck_pool != 0 else self.group_size
+                if self.keep >= pool:
+                    self.ctx.enqueue_function[pass_activity](
+                        read(self.logits), write(self.activity[layer]), write(self.masks[layer]),
+                        Int32(batch * self.units), grid_dim=blocks, block_dim=Block)
+                elif pool >= Block:
+                    var pools = batch * ceildiv(self.units, pool)
+                    self.ctx.enqueue_function[compete_wide](
+                        read(self.logits), write(self.activity[layer]), write(self.masks[layer]),
+                        Int32(batch), Int32(self.units), Int32(pool), Int32(self.keep),
+                        grid_dim=ceildiv(pools * WARP_SIZE, Block), block_dim=Block)
+                else:
+                    self.ctx.enqueue_function[compete](
+                        read(self.logits), write(self.activity[layer]), write(self.masks[layer]),
+                        Int32(batch), Int32(self.units), Int32(pool), Int32(self.keep),
+                        grid_dim=blocks, block_dim=Block)
+            elif bottleneck_pool != 0:
                 self.ctx.enqueue_function[bottleneck_gate](
                     read(self.logits), write(self.activity[layer]), Int32(batch), Int32(self.units),
                     self.gate_widths[layer], Int32(bottleneck_pool), grid_dim=blocks, block_dim=Block)
-            elif self.gate == 0:
-                self.ctx.enqueue_function[compete](
-                    read(self.logits), write(self.activity[layer]), write(self.masks[layer]),
-                    Int32(batch), Int32(self.units), Int32(self.group_size), Int32(self.keep),
-                    grid_dim=blocks, block_dim=Block)
             elif self.gate == 3:
                 self.ctx.enqueue_function[pass_activity](
                     read(self.logits), write(self.activity[layer]), write(self.masks[layer]),

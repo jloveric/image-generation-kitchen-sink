@@ -46,7 +46,7 @@ class MojoModel:
         self.config = config
         self.capacity = capacity
         self.network = load_extension().Network(
-            config.inputs, config.outputs, config.width, config.depth, config.winners,
+            config.inputs, config.outputs, config.width, config.depth, config.keep_per_pool,
             config.readout == "sum", capacity, config.competition_groups,
             GATES.index(config.gate), config.gate_widths, config.readout_divisor, config.heads,
             config.unit_norm_updates, config.sine_omega or 0.0, config.basis_size,

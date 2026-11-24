@@ -9,7 +9,7 @@ import numpy as np
 from PIL import Image
 
 from .gpu import MojoModel, batch_array
-from .model import ModelConfig, NumpyModel, select, with_bias
+from .model import ModelConfig, NumpyModel, select, top_k_activity, with_bias
 
 SIZE = 64
 LATENT = 64
@@ -27,21 +27,25 @@ def decoder_config(rule="signsgd", depth=6, gate_widths=None, rate_decay=1., cla
                        output_bound=1, output_levels=256, layer_rate_decay=rate_decay)
 
 
-def vector_decoder_config(rule, inputs=LATENT, class_width=1, gate_width=.24):
+def vector_decoder_config(rule, inputs=LATENT, class_width=1, gate_width=.24, top_k=0):
     # The model sees a code as one input vector and a portrait as one output vector.
     return ModelConfig(inputs=inputs, outputs=SIZE * SIZE * 3, width=class_width, depth=1,
-                       competition="output", gate="gaussian", gate_width=gate_width,
+                       competition="output", gate="hard" if top_k else "gaussian",
+                       gate_width=gate_width, top_k=top_k or None,
                        readout="class-sum" if class_width == 1 else "fixed",
                        hidden_rule=rule, output_bound=1, output_levels=256)
 
 
-def encoder_configs(inputs, rule, gate_widths=(.24, .18), encoder_width=ENCODER_WIDTH, latent_width=LATENT):
+def encoder_configs(inputs, rule, gate_widths=(.24, .18), encoder_width=ENCODER_WIDTH, latent_width=LATENT,
+                    top_k=(0, 0)):
     return (
         ModelConfig(inputs=inputs, outputs=3, width=encoder_width // 6, depth=1,
-                    competition="output", gate="gaussian", gate_width=gate_widths[0],
+                    competition="output", gate="hard" if top_k[0] else "gaussian", gate_width=gate_widths[0],
+                    top_k=top_k[0] or None,
                     hidden_rule=rule),
         ModelConfig(inputs=encoder_width, outputs=1, width=latent_width // 2, depth=1,
-                    competition="output", gate="gaussian", gate_width=gate_widths[1],
+                    competition="output", gate="hard" if top_k[1] else "gaussian", gate_width=gate_widths[1],
+                    top_k=top_k[1] or None,
                     hidden_rule=rule),
     )
 
@@ -79,13 +83,13 @@ def projected_votes(teaching, projection, pair_index):
 
 class EncoderLayer:
     def __init__(self, config, seed, capacity, backend, bottleneck, pool_size=None):
-        self.model = (MojoModel(config, seed, capacity, encoder=True)
-                      if backend == "mojo" else NumpyModel(config, seed))
         self.config = config
         self.bottleneck = bottleneck
         if bottleneck:
             self.channel_width = 2 * ((config.width + 2) // 3)
             self.pool_size = pool_size if pool_size is not None else self.channel_width
+            if config.gate == "hard" and config.keep_per_pool > self.pool_size:
+                raise ValueError("Top-K count exceeds the bottleneck competition pool")
             self.groups = tuple(slice(i, i + self.pool_size) for i in range(0, config.units, self.pool_size))
             self.channels = np.arange(config.units) // self.channel_width
             self.polarity = (1 - 2 * (np.arange(config.units) % 2)).astype(np.float32)
@@ -94,6 +98,8 @@ class EncoderLayer:
             nodes = np.arange(config.units)
             self.channels = nodes // (2 * config.width)
             self.polarity = (1 - 2 * (nodes // config.width % 2)).astype(np.float32)
+        self.model = (MojoModel(config, seed, capacity, encoder=True)
+                      if backend == "mojo" else NumpyModel(config, seed))
 
     def forward(self, x):
         x = batch_array(x, self.config.inputs)
@@ -107,10 +113,13 @@ class EncoderLayer:
             out = np.empty_like(z)
             for group in self.groups:
                 values = z[:, group]
-                magnitudes = np.abs(values)
-                peak = magnitudes.max(axis=1, keepdims=True)
-                distance = (peak - magnitudes) / np.where(peak > 0, peak * self.config.gate_width, 1)
-                out[:, group] = values * np.exp(-.5 * np.minimum(distance, 13) ** 2)
+                if self.config.gate == "hard":
+                    out[:, group], _ = top_k_activity(values, self.config.keep_per_pool)
+                else:
+                    magnitudes = np.abs(values)
+                    peak = magnitudes.max(axis=1, keepdims=True)
+                    distance = (peak - magnitudes) / np.where(peak > 0, peak * self.config.gate_width, 1)
+                    out[:, group] = values * np.exp(-.5 * np.minimum(distance, 13) ** 2)
         else:
             out, _ = select(z, self.config)
         return out, (incoming, out)
@@ -197,7 +206,7 @@ class Autoencoder:
                  normalize_each_input=False, paired_decoder_init=False, encoder_votes_per_pair=None,
                  encoder_width=ENCODER_WIDTH, latent_width=LATENT, vector_output_class_width=1,
                  vector_decoder_skip=False, projected_decoder_votes=False, vector_hidden_depth=1,
-                 vector_gate_width=.24, zero_init_bias=False):
+                 vector_gate_width=.24, zero_init_bias=False, encoder_top_k=(0, 0), vector_top_k=0):
         if decoder_kind not in ("coordinate", "vector"):
             raise ValueError("Unknown decoder kind")
         if vector_hidden_depth < 1 or (vector_hidden_depth > 1 and not vector_hidden_width):
@@ -210,6 +219,10 @@ class Autoencoder:
             raise ValueError("Vector hidden layer rate multiplier must be in (0, 1]")
         if vector_output_class_width < 1 or (vector_output_class_width != 1 and decoder_kind != "vector"):
             raise ValueError("Extra output class width requires the image-vector decoder")
+        if len(encoder_top_k) != 2 or min(*encoder_top_k, vector_top_k) < 0:
+            raise ValueError("Supply two nonnegative encoder Top-K counts and a nonnegative output count")
+        if vector_top_k and decoder_kind != "vector":
+            raise ValueError("Output Top-K requires the image-vector decoder")
         if encoder_width < 6 or encoder_width % 6 or latent_width < 6 or latent_width % 2:
             raise ValueError("Encoder width must be a positive multiple of six and code width an even integer of at least six")
         self.decoder_kind = decoder_kind
@@ -238,10 +251,11 @@ class Autoencoder:
             raise ValueError("Encoder input center must match the flattened input")
         self.images_per_batch = images_per_batch
         self.queries_per_batch = queries_per_batch
+        encoder_settings = encoder_configs(inputs, rule, encoder_gate_widths, encoder_width, latent_width, encoder_top_k)
         self.encoder = [
             EncoderLayer(config, seed + i, images_per_batch, backend, bottleneck=i == 1,
                          pool_size=bottleneck_pool_size if i == 1 else None)
-            for i, config in enumerate(encoder_configs(inputs, rule, encoder_gate_widths, encoder_width, latent_width))
+            for i, config in enumerate(encoder_settings)
         ]
         self.decoder_skip = vector_decoder_skip
         self.decoder_hidden_rate = decoder_rate_decay
@@ -264,7 +278,7 @@ class Autoencoder:
             decoder_inputs = previous_width
             if self.decoder_skip:
                 decoder_inputs = latent_width + sum(layer.config.units for layer in layers)
-            config = vector_decoder_config(rule, decoder_inputs, vector_output_class_width, vector_gate_width)
+            config = vector_decoder_config(rule, decoder_inputs, vector_output_class_width, vector_gate_width, vector_top_k)
             capacity = images_per_batch
         else:
             config = decoder_config(rule, depth, gate_widths, decoder_rate_decay, decoder_class_width, latent_width)

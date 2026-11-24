@@ -151,7 +151,8 @@ def train(train_images, validation, path, args):
                         encoder_width=args.encoder_width, latent_width=args.latent_width,
                         vector_output_class_width=args.vector_output_class_width,
                         vector_decoder_skip=args.vector_decoder_skip, projected_decoder_votes=args.projected_decoder_votes,
-                        vector_gate_width=args.vector_gate_width, zero_init_bias=args.zero_init_bias)
+                        vector_gate_width=args.vector_gate_width, zero_init_bias=args.zero_init_bias,
+                        encoder_top_k=args.encoder_top_k, vector_top_k=args.vector_top_k)
     rng = np.random.default_rng(args.seed)
     latest, best = path / "latest.npz", path / "selected.npz"
     tuning = dict(coordinate_scale=1., decoder_rate_decay=1., encoder_gate_widths=[.24, .18],
@@ -163,7 +164,7 @@ def train(train_images, validation, path, args):
                   encoder_width=ENCODER_WIDTH, latent_width=LATENT, select_on_training=False,
                   vector_output_class_width=1, vector_decoder_skip=False, projected_decoder_votes=False,
                   checks_per_epoch=1, vector_hidden_depth=1, vector_gate_width=.24,
-                  zero_init_bias=False)
+                  zero_init_bias=False, encoder_top_k=[0, 0], vector_top_k=0)
     config = dict(epochs=args.epochs, seed=args.seed, lr=args.rate, encoder_rate=args.encoder_rate,
                   rule=args.rule, depth=args.depth, gate_width=args.gate_width, images=len(train_images),
                   validation_images=len(validation), **{key: getattr(args, key) for key in tuning})
@@ -352,6 +353,8 @@ def main():
                         help="Neurons per increase or decrease class for each vector output scalar")
     parser.add_argument("--vector-gate-width", type=float, default=.24,
                         help="Gaussian competition width in the image-vector output layer")
+    parser.add_argument("--vector-top-k", type=int, default=0,
+                        help="Keep this many neurons per RGB output pool. Zero uses Gaussian competition.")
     parser.add_argument("--vector-decoder-skip", action="store_true",
                         help="Give the output layer both the code and the decoder hidden activations")
     parser.add_argument("--projected-decoder-votes", action="store_true",
@@ -366,6 +369,8 @@ def main():
     parser.add_argument("--gate-width", type=float)
     parser.add_argument("--coordinate-scale", type=float, default=1.)
     parser.add_argument("--encoder-gate-widths", nargs=2, type=float, default=(.24, .18))
+    parser.add_argument("--encoder-top-k", nargs=2, type=int, default=[0, 0], metavar=("FIRST", "CODE"),
+                        help="Keep this many neurons per pool in each encoder layer. Zero uses Gaussian competition.")
     parser.add_argument("--encoder-width", type=int, default=ENCODER_WIDTH,
                         help="Total number of neurons in the first encoder layer, a multiple of six")
     parser.add_argument("--latent-width", type=int, default=LATENT,

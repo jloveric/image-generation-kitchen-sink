@@ -69,6 +69,24 @@ class AutoencoderTest(unittest.TestCase):
         for key, array in model.state().items():
             np.testing.assert_array_equal(array, before[key])
 
+    def test_top_k_autoencoder_uses_signed_updates_in_each_layer(self):
+        model = Autoencoder(3, images_per_batch=4, inputs=12, decoder_kind="vector",
+                            encoder_width=24, latent_width=26, encoder_top_k=(5, 6), vector_top_k=1)
+        first, code = model.encoder
+        activity, _ = first.forward(self.images)
+        np.testing.assert_array_equal(np.count_nonzero(activity.reshape(4, 3, 8), axis=-1), 5)
+        codes = model.encode(self.images)
+        for pool in code.groups:
+            np.testing.assert_array_equal(np.count_nonzero(codes[:, pool], axis=1), 6)
+        prediction, traces = model.decoder.forward(codes)
+        mask = traces[0][2]
+        np.testing.assert_array_equal(mask.reshape(4, -1, 2).sum(axis=2), 1)
+        initial = model.state()
+        signed_targets = np.where(prediction < 0, 1., -1.).reshape(4, -1, 3)
+        model.step(self.images, None, signed_targets, .004)
+        for key, values in model.state().items():
+            self.assertFalse(np.array_equal(values, initial[key]), key)
+
     def test_decoder_export(self):
         model = self.model()
         with TemporaryDirectory() as directory:
@@ -219,6 +237,37 @@ class AutoencoderTest(unittest.TestCase):
                         continue
                     np.testing.assert_allclose(actual[key], expected, atol=3e-6, err_msg=key)
                 np.testing.assert_allclose(cpu.decode(codes), gpu.decode(codes), atol=2 / 255 + 1e-6)
+
+    @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
+    def test_gpu_top_k_matches_numpy_with_ties_and_a_short_final_pool(self):
+        for width, latent in ((24, 26), (768, 770)):
+            first, code = encoder_configs(12, "signsgd", encoder_width=width, latent_width=latent,
+                                          top_k=(width // 12, latent // 6))
+            for index, config in enumerate((first, code)):
+                with self.subTest(width=config.units, bottleneck=bool(index)):
+                    cpu = EncoderLayer(config, 1, 4, "numpy", bool(index))
+                    gpu = EncoderLayer(config, 1, 4, "mojo", bool(index))
+                    state = cpu.model.state()
+                    weight = state["weight_0"]
+                    weight.fill(0)
+                    weight[-1] = np.resize([0, -3, 3, 1, -1, 0, -3], config.units)
+                    cpu.model.load(state)
+                    gpu.model.load(state)
+                    samples = np.zeros((4, config.inputs), np.float32)
+                    expected, _ = cpu.forward(samples)
+                    actual, _ = gpu.forward(samples)
+                    np.testing.assert_array_equal(actual, expected)
+
+    @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
+    def test_gpu_top_one_output_matches_numpy(self):
+        settings = dict(images_per_batch=4, inputs=12, decoder_kind="vector",
+                        encoder_width=24, latent_width=26, encoder_top_k=(5, 6), vector_top_k=1)
+        cpu, gpu = Autoencoder(3, **settings), Autoencoder(3, backend="mojo", **settings)
+        codes = cpu.encode(self.images)
+        expected, cpu_masks = cpu.decoder.predict(codes)
+        actual, gpu_masks = gpu.decoder.predict(codes)
+        np.testing.assert_allclose(actual, expected, atol=2 / 255 + 1e-6)
+        np.testing.assert_array_equal(gpu_masks[0], cpu_masks[0])
 
     @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
     def test_gpu_wider_layers_agree_with_numpy(self):

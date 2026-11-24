@@ -96,7 +96,8 @@ def model_for(config, path, backend="numpy"):
                        input_center=center, rule=config["rule"],
                        vector_hidden_width=config.get("vector_hidden_width", 0),
                        vector_hidden_depth=config.get("vector_hidden_depth", 1),
-                       vector_gate_width=config.get("vector_gate_width", .24))
+                       vector_gate_width=config.get("vector_gate_width", .24),
+                       encoder_top_k=config.get("encoder_top_k", (0, 0)), vector_top_k=config.get("vector_top_k", 0))
 
 
 def compare(path, validation, target_edges, labels, decoder_path=None, seed_start=0):
