@@ -71,23 +71,17 @@ def sine():
 
 
 def marble_layers(model, data, readouts, full):
-    # Align each layer's own RGB estimate with the accumulated contribution through that layer.
-    fig, axes = plt.subplots(4, 6, figsize=(7.5, 5.15))
-    fig.subplots_adjust(left=.165, right=.995, bottom=.01, top=.95, wspace=.06, hspace=.17)
-    for index, values in enumerate(readouts):
-        block, column = divmod(index, 6)
-        mean = readouts[:index + 1].mean(axis=0)
-        if index + 1 == len(readouts):
-            np.testing.assert_array_equal(model.format_output(mean), full)
-        for row, (label, raw) in enumerate((("Layer\nalone", values), ("Accumulated\ncontribution\nthrough layer", mean))):
-            ax = axes[2*block + row, column]
+    accumulated = [readouts[:k].mean(axis=0) for k in range(1, len(readouts) + 1)]
+    np.testing.assert_array_equal(model.format_output(accumulated[-1]), full)
+    fig = plt.figure(figsize=(7.5, 5.8), layout="constrained")
+    groups = (("Layer alone", readouts), ("Accumulated contribution through layer", accumulated))
+    for panel, (title, estimates) in zip(fig.subfigures(2, 1), groups):
+        panel.suptitle(title, fontsize=11, fontweight="bold")
+        for index, (ax, raw) in enumerate(zip(panel.subplots(2, 6).flat, estimates), start=1):
             rgb = (model.format_output(raw).reshape(*data.shape, 3) + 1) / 2
             ax.imshow(rgb, interpolation="none")
             ax.set_axis_off()
-            if row == 0:
-                ax.set_title(f"Layer {index + 1}", fontsize=9, pad=3)
-            if column == 0:
-                ax.text(-.12, .5, label, transform=ax.transAxes, ha="right", va="center", fontsize=9)
+            ax.set_title(f"Layer {index}", fontsize=9, pad=2)
     fig.savefig(OUT / "earth-layers.pdf")
     plt.close(fig)
 

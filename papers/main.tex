@@ -1,5 +1,5 @@
 \documentclass[10pt]{article}
-\usepackage{tmlr}
+\usepackage[preprint]{tmlr}
 \usepackage{amsmath,amssymb,graphicx,booktabs}
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
@@ -12,19 +12,17 @@
 \maketitle
 
 \begin{abstract}
-We extend supervised Hebbian class networks to continuous outputs. Each output has two classes of neurons. Subtracting the total activity magnitude of one class from that of the other gives a numerical prediction. When the prediction falls below its target, increase neurons receive a positive teaching sign and decrease neurons a negative one. An overprediction reverses the signs. Each weight combines its teaching sign with the activities at its two ends. For large output vectors, each hidden neuron pair receives votes from a fixed subset of the outputs. We use the rule to fit a sine wave with a jump, represent an Earth photograph from pixel coordinates, and train a dense autoencoder on 162,770 CelebA portraits. A distribution fitted to its training codes lets the decoder generate portraits on its own.
+We extend supervised Hebbian class networks to continuous outputs and train all layers jointly without backpropagation. For each output, we sum the activity magnitudes of the increase neurons and subtract the corresponding sum for the decrease neurons. When the prediction falls below its target, increase neurons receive a positive teaching sign and decrease neurons a negative one. An overprediction reverses the signs. Each connection updates its weight using that sign and the activities of the two neurons it connects. For large output vectors, each hidden neuron pair receives votes from a fixed subset of the outputs. We use the rule to fit a sine wave with a jump, represent an Earth photograph from pixel coordinates, and train a dense autoencoder on 162,770 CelebA portraits. A distribution fitted to its training codes lets the decoder generate portraits on its own.
 \end{abstract}
 
 \section{From a class label to a value}
-Suppose a network predicts $0.4$ where the target is $0.6$. Its answer should increase. A target of $0.8$ calls for the same instruction. How can a connection several layers from the output use that instruction?
-
 In the classifier of \citet{loverich2026}, each hidden neuron belongs to a label class. The network scores the classes by combining squared activities across layers. When a correction is needed, it reinforces the correct class and suppresses its strongest competitor.
 
 For a continuous value, an \emph{increase} neuron adds its activity magnitude to the prediction and a \emph{decrease} neuron subtracts it. For example, class totals of $1.1$ and $0.7$ give the prediction $0.4$. To move toward $0.6$, the increase class should contribute more or the decrease class less. Figure~\ref{fig:network} shows how two layers can share this instruction. Each neuron in either class receives the entire preceding layer.
 
 \begin{figure}[!ht]
 \centering\includegraphics[width=.92\linewidth]{figures/class-network.pdf}
-\caption{A scalar regressor with two small layers. Each circle marked $+$ or $-$ represents a neuron with a learned set of incoming weights. Gray lines are learned connections. Teal lines carry the two layer estimates to their fixed average. Dashed arrows return the teaching sign to each layer during training.}
+\caption{A scalar regressor with two small layers. Each circle marked $+$ or $-$ represents a neuron with a learned set of incoming weights. Gray lines are learned connections. Teal lines carry the two layer estimates to the output, where they are averaged. Dashed arrows return the teaching sign to each layer during training.}
 \label{fig:network}
 \end{figure}
 
@@ -48,7 +46,7 @@ For output $k$, let $P_{\ell k}$ and $N_{\ell k}$ be the increase and decrease n
  a_k=\frac{1}{L}\sum_{\ell=1}^{L} r_{\ell k}.
  \label{eq:output}
 \end{equation}
-There are no coefficients to fit in this sum. For scalar regression the prediction is $\hat y_k=a_k$. For an image, we clip $a_k$ to $[-1,1]$ and round to the nearest of 256 equally spaced values in that interval. We apply the same conversion to the target. In the autoencoder only the final pairs contribute directly to the prediction. Its earlier layers supply learned features to those pairs.
+For scalar regression the prediction is $\hat y_k=a_k$. For an image, we clip $a_k$ to $[-1,1]$ and round to the nearest of 256 equally spaced values in that interval. We apply the same conversion to the target. In the autoencoder only the final pairs contribute directly to the prediction. Its earlier layers supply learned features to those pairs.
 
 \section{Updating the connections}
 For each example the network computes the complete prediction, then compares it with the target in each output coordinate,
@@ -56,9 +54,9 @@ For each example the network computes the complete prediction, then compares it 
  e_k=\sgn(y_k-\hat y_k),\qquad \sgn(0)=0 .
  \label{eq:sign}
 \end{equation}
-An increase neuron assigned to $k$ receives $s_j=e_k$, and a decrease neuron receives $s_j=-e_k$. For example, if the red value of a pixel is too low and its green value is correct, the pair assigned to red receives signs $+1$ and $-1$, respectively. Both neurons assigned to green receive zero. Each layer uses signs from the \emph{final} prediction, even if its own contribution $r_{\ell k}$ would suggest a different correction. A correct pixel channel contributes no observation for that channel.
+An increase neuron assigned to $k$ receives $s_j=e_k$, and a decrease neuron receives $s_j=-e_k$. For example, if the red value of a pixel is too low and its green value is correct, the pair assigned to red receives signs $+1$ and $-1$, respectively. Both neurons assigned to green receive zero. Each layer uses signs from the \emph{final} prediction, even if its own contribution $r_{\ell k}$ would suggest a different correction. We omit channels whose predictions match their targets when counting observations for the update.
 
-\paragraph{One minibatch.}
+\paragraph{Joint training.} Each minibatch passes through all layers before any weight changes. Every layer computes its update from the activities recorded on that pass and the signs of the errors in the final prediction. In the autoencoder this includes the encoder, the code layer and the decoder from the first minibatch onward.
 \begin{enumerate}
 \item Pass every example through the network. Save the input and activity of each neuron.
 \item Pool the activities into output values. Compare each final output with its target to obtain $e_k$.
@@ -84,7 +82,7 @@ The memoryless update uses $S_{ij}=A_{ij}$. Let $F$ count the ordinary inputs, s
  \frac{w_{ij}+\eta\,\sgn(S_{ij})/\sqrt{F+1}}{1+\eta Q_j}.
  \label{eq:update}
 \end{equation}
-The numerator uses the direction on which the activity products agree after summation. Dividing the step by $\sqrt{F+1}$ bounds the length of the step vector in the numerator by $\eta$ even in a wide layer. The denominator shrinks the incoming weights more strongly at a neuron with larger squared activity. Activity-dependent weight control dates to \citet{oja1982}. Equation~\ref{eq:update} uses the implicit divisor from the supervised class network.
+The sign of $S_{ij}$ determines the direction of the step for each weight. Dividing the step by $\sqrt{F+1}$ bounds the length of the step vector in the numerator by $\eta$ even in a wide layer. The denominator shrinks the incoming weights more strongly at a neuron with larger squared activity. \citet{oja1982} used the receiving neuron's squared activity to control weight growth. Equation~\ref{eq:update} uses the implicit divisor from the supervised class network.
 
 In the later phases of the coordinate experiments we also use a running average $M_{ij}$ of coactivity. The Hebbian adaptation of Lion \citep{loverich2026,chen2023} computes
 \begin{equation}
@@ -92,7 +90,7 @@ In the later phases of the coordinate experiments we also use a running average 
  M_{ij}\leftarrow 0.99 M_{ij}+0.01 A_{ij}.
  \label{eq:history}
 \end{equation}
-The direction in Equation~\ref{eq:update} uses the old $M_{ij}$ in the first expression. The history starts at zero when first used and is skipped along with an inactive neuron. All observations for a minibatch come from the same forward pass. The target supplies only the sign in Equation~\ref{eq:sign}. The computation is local to a connection given that sign, the activities at its ends, and the receiving neuron's activity statistic. The output comparison itself requires information from the whole network.
+The direction in Equation~\ref{eq:update} uses the old $M_{ij}$ in the first expression. The history starts at zero when first used and is skipped along with an inactive neuron. The target supplies only the sign in Equation~\ref{eq:sign}. The computation is local to a connection given that sign, the activities at its ends, and the receiving neuron's activity statistic. The output comparison itself requires information from the whole network.
 
 \subsection{Sharing many output signs among hidden neurons}
 A $64\times64$ RGB portrait has 12,288 output values. The final layer can give each value its own increase/decrease pair. Giving every value a pair in every earlier layer would defeat the purpose of a narrow image code. Instead, we assign each earlier pair a fixed subset of output coordinates. Each coordinate casts one vote using its error sign. The assignment is drawn once per layer by permuting the output indices and dividing them into disjoint groups. Half the coordinates in a group have vote multiplier $+1$ and half have $-1$. This lets a pair respond to a pattern of increases and decreases in different parts of the output. Its incoming connections still span the entire preceding layer.
@@ -138,7 +136,7 @@ $24\times64$  & 95,808 & 0.01968 & 0.07347 & 0.02229\\
 We measure rise width by subtracting the known sine term from the prediction for evaluation. Within $0.10$ of the jump, we find the upward half-height crossing closest to the crest and the neighboring upward crossings at 10\% and 90\%. Their separation gives the widths in Table~\ref{tab:sine}. The 24-layer network gives the sharpest median rise and the smallest test error. Its smooth branches show more ripple. Outside the $0.05$ neighborhood, the RMSE in slopes between adjacent test points is $1.19$ for 12 layers and $6.04$ for 24.
 
 \subsection{Implicit Representation of an Image}
-The input is $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. Each target is the RGB triple at that point in a crop of the Apollo 17 Blue Marble photograph \citep{nasa1972}. Twelve layers of 432 neurons each contain 72 increase and 72 decrease neurons per color. There are 2,058,912 learned weights and biases. We fit and score all 16,384 pixels. This measures how closely a dense network can represent one image.
+The input is $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. Each target is the RGB triple at that point in a crop of the Apollo 17 Blue Marble photograph \citep{nasa1972}. Twelve layers of 432 neurons each contain 72 increase and 72 decrease neurons per color. There are 2,058,912 learned weights and biases. We fit and score all 16,384 pixels.
 
 \begin{figure}[ht]
 \centering\includegraphics[width=\linewidth]{figures/earth.pdf}
@@ -148,11 +146,11 @@ The input is $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. Each target i
 
 With RGB values expressed on $[0,1]$, the sum of the squared differences across all 49,152 channel values is 47.17. This corresponds to a root mean squared difference of 0.0310 per channel, or about eight levels on an 8-bit scale.
 
-Figure~\ref{fig:earth-layers} shows how the twelve estimates combine. Layer 1 gives a coarse, brightly colored patch at the position of the Earth. Several deeper layers show sharp cloud bands with strong color casts. Layer 9 comes closest to the photograph on its own, with a summed squared error of 2,836.10. In the cumulative views, error falls with every added layer, from 7,194.38 at layer 1 to 91.04 through layer 11 and 47.17 through layer 12.
+Layer 1 places a coarse patch of color at the position of the Earth (Figure~\ref{fig:earth-layers}). Several deeper layers show sharp cloud bands with strong color casts. Layer 9 comes closest to the photograph on its own, with a summed squared error of 2,836.10. In the cumulative views, error falls with every added layer, from 7,194.38 at layer 1 to 91.04 through layer 11 and 47.17 through layer 12.
 
 \begin{figure}[!htb]
 \centering\includegraphics[width=\linewidth]{figures/earth-layers.pdf}
-\caption{Blue Marble readouts from the final network. For each layer $\ell$, the upper image displays its own RGB estimate $r_{\ell}$. The image directly below shows the accumulated contribution through layer $\ell$, computed as $(r_1+\cdots+r_{\ell})/\ell$. Each layer receives its usual inputs from the preceding layer in both views. Clipping and rounding occur once per displayed image, after averaging in the cumulative rows. The lower right image is the full reconstruction in Figure~\ref{fig:earth}.}
+\caption{Blue Marble from the trained network. The top two rows show each layer's own RGB estimate $r_{\ell}$, in order from 1 to 12. The bottom two rows show the accumulated contribution through each layer in the same order, $(r_1+\cdots+r_{\ell})/\ell$. Each image uses the activities from the same forward pass at each pixel. We clip and round after computing the displayed estimate. The lower right image is the full reconstruction in Figure~\ref{fig:earth}.}
 \label{fig:earth-layers}
 \end{figure}
 
@@ -183,11 +181,11 @@ An autoencoder maps a portrait to a shorter vector, called its code, and uses th
 \label{fig:auto}
 \end{figure}
 
-The only neuron classes in Figure~\ref{fig:auto} are increase and decrease. Either class can have positive or negative activity. RGB identifies the measured quantities at the input and output. The encoder's 1,536 pairs pass all 3,072 activities to the code layer, whose 1,024 pairs supply all 2,048 code values to every decoder neuron. Each hidden pair receives teaching votes from a fixed group of pixel channels that can mix colors and locations. Only at the decoder output does a pair correspond to a particular channel at a particular pixel. For example, one pair estimates the red value at the upper left pixel as $|h_+|-|h_-|$. Two more pairs estimate green and blue there. The three dense layers contain 94,401,536 learned weights and biases.
+The only neuron classes in Figure~\ref{fig:auto} are increase and decrease. Either class can have positive or negative activity. Red, green and blue are the pixel channels. The encoder's 1,536 pairs pass all 3,072 activities to the code layer, whose 1,024 pairs supply all 2,048 code values to every decoder neuron. Each hidden pair receives teaching votes from a fixed group of pixel channels that can mix colors and locations. Only at the decoder output does a pair correspond to a particular channel at a particular pixel. For example, one pair estimates the red value at the upper left pixel as $|h_+|-|h_-|$. Two more pairs estimate green and blue there. The three dense layers contain 94,401,536 learned weights and biases.
 
 The first encoder layer has three competition pools of 1,024 neurons. The code layer has pools of 684, 684 and 680. Both use $\tau=0.85$ and equal numbers of increase and decrease neurons in each pool. Equation~\ref{eq:votes} assigns eight output coordinates per pair in the first layer and twelve per pair in the code. The decoder uses $\tau=0.50$ in each two-neuron pool and the direct error sign for that value.
 
-We initialize the weights and biases independently from normal distributions. Decoder draws have standard deviations $0.12$ times the usual values in Section~4. All three layers learn with Equation~\ref{eq:update} with the Lion-style coactivity history in Equation~\ref{eq:history}. Training uses one pass in minibatches of 128 portraits. The decoder starts at step $0.004$ and both encoder layers at $0.0006$. The hold and cosine schedule advances at each minibatch. We compare the starting weights and four equally spaced checkpoints on 512 portraits from the official validation split. The final checkpoint gives the lowest error.
+We initialize the weights and biases independently from normal distributions. Decoder draws have standard deviations $0.12$ times the usual values in Section~4. All three layers use the update in Equation~\ref{eq:update} and the coactivity history in Equation~\ref{eq:history}. Training uses one pass in minibatches of 128 portraits. The decoder starts at step $0.004$ and both encoder layers at $0.0006$. The hold and cosine schedule advances at each minibatch. We compare the starting weights and four equally spaced checkpoints on 512 portraits from the official validation split. The final checkpoint gives the lowest error.
 
 \paragraph{Reconstruction.}
 On the 19,962 official test portraits, the mean sum of squared RGB differences per portrait is 144.21. The sum is over 12,288 values on the $[0,1]$ scale. The root mean squared difference per channel is 0.108.
@@ -201,23 +199,31 @@ The factor $0.85$ scales the sampled standard deviations. Estimating these means
 
 \begin{figure}[ht]
 \centering\includegraphics[width=.58\linewidth]{figures/portraits.png}
-\caption{Thirty-six consecutive draws from the final CelebA decoder and its fitted code distribution, in draw order. Hair, background and illumination vary. Many faces share a similar frontal pose and facial outline. Fine details such as hair strands remain soft.}
+\caption{Portraits generated from 36 consecutive draws from the fitted code distribution. Hair, background and illumination vary. Many faces share a similar frontal pose and facial outline. Fine details such as hair strands remain soft.}
 \label{fig:faces}
 \end{figure}
 
-\section{Relation to other Hebbian methods}
-The classifier of \citet{loverich2026} already combines class scores across layers and updates connections from their activity products. Here the classes stand for opposite contributions to a number. The sign of the final discrepancy teaches both classes throughout the network. Signed groups of output coordinates carry the same information to hidden layers narrower than the output.
+\section{Relation to other local learning methods}
+The classifier of \citet{loverich2026} trains its layers jointly. A single class decision, based on activities across layers, supplies the teaching signs for that minibatch. Here the classes stand for opposite contributions to a number. The sign of the final discrepancy teaches both classes throughout the network. Signed groups of output coordinates carry the same information to hidden layers narrower than the output.
 
-\citet{qiao1992} had already used a global scalar error to modulate local anti-Hebbian changes in a two-layer optical network. Their hidden-layer correction suppresses an activity pattern after an error. Here fixed class membership determines which neurons reinforce an activity pattern and which suppress it.
+\citet{padmani2025} use Forward-Forward learning for regression. They train each layer by gradient descent to distinguish candidate pairs $(x,y)$ inside and outside a tolerance band around the target function. At inference they test multiple values of $y$ for one $x$ and average the accepted values. \citet{liu2026ffr} use competing neuron groups for ordered intervals of the target and combine estimates from several depths. Each hidden layer optimizes its own loss. A learned linear map of the group scores supplies the final layer's estimate and is trained by squared error with gradients confined to that map. In our coordinate regressor, the prediction at $x$ is the average of the layer estimates (Eq.~\ref{eq:output}). The sign of its error teaches the increase and decrease neurons at every depth.
 
-Hebbian image reconstruction and generation have precedents. \citet{melchior2024} studied supervised input--target associations and reported image regression with a denoising autoencoder on CIFAR. Their supervised update uses the difference between desired and observed activity. \citet{teh2000} learned a generative model of paired face images by comparing pixel--feature correlations on observed and reconstructed pairs. \citet{ororbia2022} generated images with local error-Hebbian updates in a hierarchy whose neighboring layers predict each other's activities. The present construction obtains the activity product for each connection from a single forward evaluation and gives it a teaching sign derived from the final output.
+\citet{qiao1992} used a global scalar error to train the hidden layer of a two-layer optical network without propagating derivatives through the output weights. Their hidden-layer rule suppresses an activity pattern after an error. Their output weights follow a gradient update derived from the output loss.
 
-\citet{ghosh2020} fitted a distribution to the codes of a trained deterministic autoencoder and used it to generate images, including CelebA portraits. \citet{samuth2024} used a low-rank Gaussian mixture for face codes with an additional nearest-neighbor mapping. Our sampler sends a low-rank Gaussian draw directly to the learned decoder.
+In the CIFAR-10 denoising autoencoder of \citet[Sections 4.3 and 5.2]{melchior2024}, Hebbian descent changes the loss used to train the output layer. It cancels the derivative of the output activation in the error signal. The network learns its output weights by gradient descent and uses backpropagation to train the earlier layers.
+
+For autoencoders, \citet{hinton1988recirculation} trained the encoding and reconstruction connections together without backpropagation. They sent a mixture of the input and its reconstruction through the encoder a second time. The change in hidden activity taught the encoding connections. The reconstruction connections used the numerical change at the visible units, which gives a squared-error gradient for linear visible units.
+
+\citet{teh2000} reconstruct face pairs without backpropagation. In their restricted Boltzmann machine, the same weights connect pixels to hidden units in both directions. Training compares their correlations on observed face pairs and on one-step reconstructions (their Fig.~1 and Eq.~3). \citet{ororbia2022} train a predictive coding model without backpropagation. The network repeatedly adjusts its hidden activities while an image is held at the input. Each layer predicts the one below it. The connections that produce the image learn from the activity above and the prediction error at the pixels. After training, the authors fitted a Gaussian mixture to the highest layer and sampled from it to generate images.
+
+Our autoencoder trains the encoder and decoder together. The signs of the pixel errors from one forward pass teach both the hidden pairs and the pairs that produce the image.
+
+Fitting a distribution to codes is a separate step from learning to reconstruct pixels. \citet{ghosh2020} trained the encoder and decoder by backpropagation with Adam, then fitted a distribution to the training codes. \citet{samuth2024} started with a pretrained VQ-GAN autoencoder and fitted a low-rank mixture in its code space, refining samples by nearest-neighbor matching before decoding. In our portrait experiment, the mixture is fitted after the Hebbian encoder and decoder have finished learning. It supplies codes for generation. Reconstructing a supplied portrait uses only the encoder and decoder.
 
 \section{Discussion}
-A continuous target can supervise a class network through a three-valued instruction at each output coordinate. Its usefulness depends on how the output combines the neurons it teaches. For coordinates, every layer supplies an estimate in the units of the target. For a portrait, each final pair estimates one channel at one pixel. Fixed groups of pixel signs let earlier layers learn a much smaller code. The cost of forming the output is concentrated in the final dense layer, which accounts for 53\% of the autoencoder weights and biases.
+In all three experiments, each output coordinate tells the network whether its prediction should increase, decrease or stay the same. For coordinates, every layer supplies an estimate in the units of the target. For a portrait, each final pair estimates one channel at one pixel. Fixed groups of pixel signs let earlier layers learn a much smaller code. The cost of forming the output is concentrated in the final dense layer, which accounts for 53\% of the autoencoder weights and biases.
 
-The sine experiment exposes a limit of the chosen network. Its affine maps, Gaussian competition and magnitude sums are continuous in $x$, so a true jump must occupy some finite width in the prediction. The portrait experiment raises a different question. Reconstruction measures agreement with a supplied portrait. Variation in Figure~\ref{fig:faces} depends on both the trained decoder and the fitted distribution of codes. How much variation each preserves, including coverage of identities, remains open.
+The sine networks combine affine maps, Gaussian competition and sums of magnitudes. All three operations are continuous in $x$, so the fitted curve rises across a finite interval at the jump. The portrait reconstruction error measures how closely the decoder reproduces a supplied face. The variety of faces in Figure~\ref{fig:faces} depends on both the decoder and the distribution of sampled codes. We did not measure how well the generated portraits cover the identities in the training set.
 
 \bibliographystyle{tmlr}
 \bibliography{references}
