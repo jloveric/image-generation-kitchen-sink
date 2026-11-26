@@ -9,7 +9,7 @@ import numpy as np
 from PIL import Image
 
 from .gpu import MojoModel, batch_array
-from .model import ModelConfig, NumpyModel, select, top_k_activity, with_bias
+from .model import ModelConfig, NUMPY_ONLY_RULES, NumpyModel, select, top_k_activity, with_bias
 
 SIZE = 64
 LATENT = 64
@@ -92,6 +92,8 @@ def class_pair_indices(width):
 
 class EncoderLayer:
     def __init__(self, config, seed, capacity, backend, bottleneck, pool_size=None):
+        if config.hidden_rule in NUMPY_ONLY_RULES:
+            raise ValueError(f"{config.hidden_rule} is implemented for dense regression")
         self.config = config
         self.bottleneck = bottleneck
         if bottleneck:
@@ -147,15 +149,18 @@ class EncoderLayer:
         directions = signs[:, channels[active]] * self.polarity[active]
         coactivity = incoming.T @ (activity * directions) / normalizer
         squared = (contributors[:, active] * activity**2).sum(axis=0) / normalizer
-        if self.config.hidden_rule == "lion":
+        if self.config.uses_history:
             history = self.model.history[0]
-            signal = .125 * history[:, active] + .875 * coactivity
-            history[:, active] = .99 * history[:, active] + .01 * coactivity
+            past = history[:, active]
+            signal = .125 * past + .875 * coactivity
+            if self.config.hidden_rule == "lion-adaptive-agreement":
+                rate = np.float32(rate) * self.model.adapt_step(0, active, past, coactivity)
+            history[:, active] = .99 * past + .01 * coactivity
         else:
             signal = coactivity
         direction = np.sign(signal) / np.float32(np.sqrt(incoming.shape[1]))
         weights = self.model.weights[0]
-        weights[:, active] = (weights[:, active] + rate * direction) / (1 + rate * squared)
+        weights[:, active] = self.config.update_weights(weights[:, active], rate, direction, squared)
 
 
 def decode(decoder, codes, coordinates=COORDINATES, batch=1024, coordinate_scale=1.):

@@ -13,7 +13,7 @@ import numpy as np
 from hebbian_fit.__main__ import training_epochs
 from hebbian_fit.data import IMAGE, rgb_data
 from hebbian_fit.gpu import MojoModel
-from hebbian_fit.model import ModelConfig, NumpyModel
+from hebbian_fit.model import ADAPTIVE_LION_RULES, ModelConfig, NumpyModel
 
 from .blue_marble_affine import TEST_SEEDS, VALIDATION_SEEDS, render_convergence
 from .blue_marble_continuation import detail_pixels
@@ -31,6 +31,12 @@ class Trial:
 
     def path(self, seed):
         signature = repr(self) if self.schedule == "hold-cosine" else repr((self, self.schedule))
+        if self.config.normalize_hidden_inputs:
+            signature += f"-interlayer-{self.config.normalize_hidden_inputs}"
+        if self.config.skip_input_to_hidden:
+            signature += "-skip-input"
+        if self.config.hidden_rule == "lion-response":
+            signature += repr(self.config.response_limit_ratio)
         fingerprint = hashlib.sha256(signature.encode()).hexdigest()[:12]
         return Path("runs/blue-marble-quality") / f"{self.label}-{self.backend}-{fingerprint}" / str(seed)
 
@@ -45,7 +51,7 @@ def experiments(backend):
                        readout="class-sum", readout_layers="all",
                        layer_gate_widths=(.24, .217, .194, .171, .149, .126, .103, .08),
                        output_bound=1., output_levels=256)
-    two_phase = (("signsgd", .004, 128, 80, 1.), ("lion", .0015, 64, 100, .7))
+    two_phase = (("lion", .004, 128, 80, 1.), ("lion", .0015, 64, 100, .7))
     uniform = (("lion", .004, 128, 80, 1.), ("lion", .0006, 64, 100, 1.))
     for group in ("layer", "class", "output"):
         config = replace(base, competition=group)
@@ -68,7 +74,12 @@ def save_progress(path, model, state, metadata):
         snapshot.replace(path)
 
 
-def train(trial, seed, data, full=False, parent=None, checkpoint_pixels=None, squared_error=rgb_sse):
+def train(trial, seed, data, full=False, parent=None, checkpoint_pixels=None, squared_error=rgb_sse,
+          *, until_epoch=None):
+    if until_epoch is not None and (
+            full or parent is not None or len(trial.phases) != 1
+            or not 0 < until_epoch < trial.phases[0][3] or until_epoch % 5):
+        raise ValueError("A training pause must be at a checkpoint epoch within a single phase")
     directory = trial.path(seed)
     directory.mkdir(parents=True, exist_ok=True)
     checkpoint = directory / ("full-fit.npz" if full else "checkpoint.npz")
@@ -116,19 +127,28 @@ def train(trial, seed, data, full=False, parent=None, checkpoint_pixels=None, sq
                     model.load({key.removeprefix("current_"): saved[key] for key in saved.files
                                 if key.startswith("current_")})
                     state = {key.removeprefix("best_"): saved[key] for key in saved.files if key.startswith("best_")}
-        for epoch in training_epochs(model, data, args, pixels, budget, start_epoch=start):
+        stop = budget if until_epoch is None else min(budget, until_epoch)
+        for epoch in training_epochs(model, data, args, pixels, stop, start_epoch=start):
             if full or epoch % 5:
                 continue
             error = squared_error(model, data, score_pixels)
             if not np.isfinite(error):
                 raise ValueError(f"Nonfinite predictions for {trial.label}, seed {seed}, epoch {epoch}")
             train_error = squared_error(model, data, pixels) if checkpoint_pixels is None else error
-            history.append(dict(epoch=phase_start + epoch, validation_sse=error, train_sse=train_error))
+            point = dict(epoch=phase_start + epoch, validation_sse=error, train_sse=train_error)
+            if rule in ADAPTIVE_LION_RULES:
+                point["mean_step_multipliers"] = model.take_mean_step_multipliers()
+            if checkpoint_pixels is not None and epoch % 25 == 0:
+                print(f"{trial.label}: epoch {epoch}/{budget}, squared RGB error {error:.2f}", flush=True)
+            history.append(point)
             if error < best:
                 best, chosen, state = error, epoch, model.state()
-            if epoch % 50 == 0 and epoch < budget:
+            if (epoch % 50 == 0 or epoch == until_epoch) and epoch < budget:
                 save_progress(progress, model, state,
                               dict(epoch=epoch, best=best, chosen=chosen, history=history))
+        if until_epoch is not None:
+            # Keep the current trajectory for resumption and select only for reporting.
+            return dict(seed=seed, phase_epochs=[chosen], validation={"sse": best}, history=history)
         if full:
             state = model.state()
         phase_epochs.append(chosen)
@@ -259,8 +279,9 @@ def fit_all_pixels(trial, data, seed):
                   checkpoint_selection="training_squared_rgb_error", validation_pixel_count=0, test_pixel_count=0,
                   subpixel_bilinear_squared_error=subpixel_error, subpixel_count=len(centers),
                   layer_squared_errors=layer_errors,
-                  history=[dict(epoch=p["epoch"], squared_error=p["train_sse"]) for p in row["history"]])
-    filename.with_suffix(".json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
+                  history=[{key: value for key, value in point.items() if key not in ("train_sse", "validation_sse")}
+                           | {"squared_error": point["train_sse"]} for point in row["history"]])
+    filename.with_name(f"{filename.name}.json").write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     fig, axes = plt.subplots(2, 2, figsize=(6.3, 6.2), layout="constrained")
     for column, (image, title) in enumerate(((target, "NASA target"), (fit, f"All-pixel fit · squared error {error:.1f}"))):
         axes[0, column].imshow(image, interpolation="nearest")
@@ -270,7 +291,7 @@ def fit_all_pixels(trial, data, seed):
         ax.set_axis_off()
     fig.suptitle(f"Blue Marble · {trial.config.depth} layers × {trial.config.units} neurons · seed {seed}")
     fig.supxlabel("Source photograph AS17-148-22727 · NASA Johnson Space Center", fontsize=9)
-    fig.savefig(filename.with_suffix(".png"), dpi=160)
+    fig.savefig(filename.with_name(f"{filename.name}.png"), dpi=160)
     plt.close(fig)
     fig, ax = plt.subplots(figsize=(7.1, 3.), layout="constrained")
     history = report["history"]

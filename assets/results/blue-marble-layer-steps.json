@@ -1,0 +1,322 @@
+{
+  "runs": [
+    {
+      "settings": {
+        "label": "layer-steps-uniform-all-pixels",
+        "config": {
+          "inputs": 2,
+          "outputs": 3,
+          "width": 72,
+          "winners": 8,
+          "depth": 12,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.24,
+            0.225,
+            0.211,
+            0.196,
+            0.182,
+            0.167,
+            0.153,
+            0.138,
+            0.124,
+            0.109,
+            0.095,
+            0.08
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1.0,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null,
+          "response_limit_ratio": 1.0
+        },
+        "phases": [
+          [
+            "lion",
+            0.0015,
+            64,
+            560,
+            1.0
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "cosine"
+      },
+      "seed": 5,
+      "selected_epoch": 80,
+      "squared_error": 409.44400114938225,
+      "history": [
+        {
+          "epoch": 5,
+          "squared_error": 699.5868854846128
+        },
+        {
+          "epoch": 10,
+          "squared_error": 554.5837987341483
+        },
+        {
+          "epoch": 15,
+          "squared_error": 469.15039295043823
+        },
+        {
+          "epoch": 20,
+          "squared_error": 458.14858009981856
+        },
+        {
+          "epoch": 25,
+          "squared_error": 481.5332173427056
+        },
+        {
+          "epoch": 30,
+          "squared_error": 488.998701744769
+        },
+        {
+          "epoch": 35,
+          "squared_error": 463.57721626894795
+        },
+        {
+          "epoch": 40,
+          "squared_error": 551.6622506375746
+        },
+        {
+          "epoch": 45,
+          "squared_error": 439.643280165331
+        },
+        {
+          "epoch": 50,
+          "squared_error": 417.71100743184115
+        },
+        {
+          "epoch": 55,
+          "squared_error": 458.8862364222085
+        },
+        {
+          "epoch": 60,
+          "squared_error": 413.79023753813794
+        },
+        {
+          "epoch": 65,
+          "squared_error": 482.1673737776834
+        },
+        {
+          "epoch": 70,
+          "squared_error": 525.3420335180152
+        },
+        {
+          "epoch": 75,
+          "squared_error": 434.21771991708636
+        },
+        {
+          "epoch": 80,
+          "squared_error": 409.44400114938225
+        },
+        {
+          "epoch": 85,
+          "squared_error": 459.93189228478224
+        },
+        {
+          "epoch": 90,
+          "squared_error": 442.903349101932
+        },
+        {
+          "epoch": 95,
+          "squared_error": 453.0638568419412
+        },
+        {
+          "epoch": 100,
+          "squared_error": 469.1152245387458
+        }
+      ]
+    },
+    {
+      "settings": {
+        "label": "layer-steps-scaled-all-pixels",
+        "config": {
+          "inputs": 2,
+          "outputs": 3,
+          "width": 72,
+          "winners": 8,
+          "depth": 12,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.24,
+            0.225,
+            0.211,
+            0.196,
+            0.182,
+            0.167,
+            0.153,
+            0.138,
+            0.124,
+            0.109,
+            0.095,
+            0.08
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1.0,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 0.7,
+          "top_k": null,
+          "response_limit_ratio": 1.0
+        },
+        "phases": [
+          [
+            "lion",
+            0.0015,
+            64,
+            560,
+            0.7
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "cosine"
+      },
+      "seed": 5,
+      "selected_epoch": 150,
+      "squared_error": 170.81412447840736,
+      "history": [
+        {
+          "epoch": 5,
+          "squared_error": 1065.8564919569037
+        },
+        {
+          "epoch": 10,
+          "squared_error": 661.647023838181
+        },
+        {
+          "epoch": 15,
+          "squared_error": 498.9863639316125
+        },
+        {
+          "epoch": 20,
+          "squared_error": 429.26814405979803
+        },
+        {
+          "epoch": 25,
+          "squared_error": 389.93045846591934
+        },
+        {
+          "epoch": 30,
+          "squared_error": 359.0443671387085
+        },
+        {
+          "epoch": 35,
+          "squared_error": 351.9990296843615
+        },
+        {
+          "epoch": 40,
+          "squared_error": 288.3724969129995
+        },
+        {
+          "epoch": 45,
+          "squared_error": 274.11304430895825
+        },
+        {
+          "epoch": 50,
+          "squared_error": 282.0164666458236
+        },
+        {
+          "epoch": 55,
+          "squared_error": 294.81905138987065
+        },
+        {
+          "epoch": 60,
+          "squared_error": 286.16771566008697
+        },
+        {
+          "epoch": 65,
+          "squared_error": 268.20936212554284
+        },
+        {
+          "epoch": 70,
+          "squared_error": 250.52400909157114
+        },
+        {
+          "epoch": 75,
+          "squared_error": 239.7855995841315
+        },
+        {
+          "epoch": 80,
+          "squared_error": 243.733681619383
+        },
+        {
+          "epoch": 85,
+          "squared_error": 237.25495734425078
+        },
+        {
+          "epoch": 90,
+          "squared_error": 222.96765180318016
+        },
+        {
+          "epoch": 95,
+          "squared_error": 216.69649440340072
+        },
+        {
+          "epoch": 100,
+          "squared_error": 209.70993522966074
+        },
+        {
+          "epoch": 105,
+          "squared_error": 211.53981570901993
+        },
+        {
+          "epoch": 110,
+          "squared_error": 209.976170761699
+        },
+        {
+          "epoch": 115,
+          "squared_error": 197.19139533351552
+        },
+        {
+          "epoch": 120,
+          "squared_error": 198.51890011340743
+        },
+        {
+          "epoch": 125,
+          "squared_error": 194.6536484029549
+        },
+        {
+          "epoch": 130,
+          "squared_error": 188.917915550854
+        },
+        {
+          "epoch": 135,
+          "squared_error": 187.6006846359747
+        },
+        {
+          "epoch": 140,
+          "squared_error": 180.58616595584672
+        },
+        {
+          "epoch": 145,
+          "squared_error": 177.13835414407987
+        },
+        {
+          "epoch": 150,
+          "squared_error": 170.81412447840736
+        }
+      ]
+    }
+  ]
+}

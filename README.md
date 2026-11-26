@@ -1,6 +1,6 @@
 # Hebbian coordinate fitting
 
-[Read the TMLR manuscript (PDF)](papers/main.pdf) · [LaTeX source and reproduction instructions](papers/README.md)
+[Read the TMLR manuscript (PDF)](papers/main.pdf) · [LaTeX source and reproduction instructions](papers/README.md) · [Explicit and semi-implicit Lion results](papers/README.md#explicit-and-semi-implicit-lion)
 
 This repository tests dense mixed-class MLPs as black-box regressors. Every hidden layer trains by local signed coactivity. The output uses fixed class-magnitude differences with zero trainable weights or biases. The project prohibits gradient descent anywhere in training. [Project constraints](AGENTS.md)
 
@@ -9,6 +9,8 @@ This repository tests dense mixed-class MLPs as black-box regressors. Every hidd
 ### CelebA face generation
 
 #### 256-value bottleneck
+
+The manuscript and its Lion comparison use this bottleneck width. [Manuscript results and reproduction commands](papers/README.md#celeba)
 
 The best 256-value model scores **184.19** summed squared RGB error per portrait on the 0–1 scale across all 19,962 official test portraits. Its dense layers are **12,288 → 3,072 → 1,536 → 256 → 1,536 → 24,576**, for **81,033,472** learned weights and biases. The encoder has three dense layers including the bottleneck. The decoder has two including the RGB layer. The bottleneck has one forty-eighth as many values as the input.
 
@@ -54,6 +56,9 @@ All runs use the same 256-value bottleneck, 84,378,112 parameters, and cosine sc
 At the validation-selected RGB Gaussian width of 0.42, lowering the starting step from 0.0008 to 0.0006 reduced test error from **232.07 to 230.91**. The four-pass 0.0004 run has roughly the same cumulative scheduled step as the two-pass 0.0008 run. Its best checkpoint occurs at 2.5 passes. To reproduce the best smaller-step run, use `--rate .0006` with the added-layer training command above. [Training curves](assets/results/celeba-256-smaller-step.png) · [Run settings and measurements](assets/results/celeba-256-smaller-step.json)
 
 ![Portraits from the seven-layer, 256-value model trained at a starting step of 0.0006](assets/results/celeba-256-smaller-step-faces.png)
+
+<details>
+<summary>Earlier CelebA experiments with other bottleneck widths</summary>
 
 #### 512-value bottleneck
 
@@ -332,86 +337,31 @@ python -m hebbian_fit.autoencoder runs/celeba-capacity/decoder-skip768x3-pass2/f
   --seed 42 --output face.png
 ```
 
+</details>
+
 ### NASA Blue Marble
 
 The network maps raw $(x,y)$ coordinates to RGB on the bundled 128 × 128 crop of Apollo 17 frame AS17-148-22727. Each color channel has an increase class and a decrease class. Every coordinate passes through the same dense network. [NASA Johnson Space Center source photograph](https://science.nasa.gov/resource/the-blue-marble/)
 
-#### Final all-pixel fit
-
-The final reconstruction reaches **47.17 summed squared RGB error**. All **16,384** original pixels participate in training and checkpoint selection. The model uses initialization seed 5. The enlarged crop shows the remaining differences in fine cloud texture and coastlines. [Training settings and per-epoch error](assets/results/blue-marble-output-depth-12-two-phase-all-pixels.json)
-
-![Blue Marble target and final all-pixel reconstruction with enlarged cloud detail](assets/results/blue-marble-output-depth-12-two-phase-all-pixels.png)
+All **16,384** original pixels participate in training and checkpoint selection.
 
 The network maps $(x,y)$ through **12 dense hidden layers of 432 neurons** to three RGB outputs. Each hidden layer contains 72 increase and 72 decrease neurons per channel. Each channel's two classes share one Gaussian competition pool. The widths, in layer order, are 0.240, 0.225, 0.211, 0.196, 0.182, 0.167, 0.153, 0.138, 0.124, 0.109, 0.095 and 0.080. The first layer has 1,296 affine parameters and the remaining layers have 187,056 each, for **2,058,912 trainable weights and biases**. Weight initialization uses a zero-mean normal distribution with standard deviation $1/\sqrt{\text{fan-in}}$, and biases use standard deviation 0.35.
 
-For each color, the fixed readout subtracts the decrease-class magnitude sum from the increase-class magnitude sum in each layer. It averages those 12 signed values, then clips and rounds to 8-bit RGB. Every hidden layer trains by local Hebbian coactivity using the sign of the final RGB residual. A matching channel supplies a teaching sign of zero.
+For each color, subtract the decrease-class magnitude sum from the increase-class magnitude sum in each layer. Average those 12 signed values, then clip and round to 8-bit RGB. Every hidden layer trains by local Hebbian coactivity using the sign of the final RGB residual. A matching channel supplies a teaching sign of zero.
 
-| Training phase | Rule | Epochs | Batch size | Initial step |
-|---|---|---:|---:|---|
-| 1 | Memoryless signed coactivity | 80 | 128 | 0.004 across layers |
-| 2 | Lion-style coactivity | 480 | 64 | 0.0015 in the final layer, multiplied by 0.7 per layer going backward |
+The **Blue Marble baseline** uses semi-implicit Lion with one 560-epoch cosine starting at 0.004 and batches of 128. Each neuron adjusts its step from the agreement between its latest Hebbian coactivity and its running history. The rule is identical across layers and uses no settings tied to layer depth.
 
-Each phase holds its starting step for roughly one fifth of its budget, then decays it on a cosine schedule. Phase two loads the lowest-error checkpoint from phase one and starts its coactivity history at zero. Both phases selected their last epoch. [Exact local update equations](#network-and-updates)
+The fit reaches **6.82** summed squared RGB error at epoch 560. [Convergence](assets/results/blue-marble-shared-step-lion-adaptive-agreement-0.004.png) · [Per-layer images](papers/figures/earth-layers.pdf) · [Reproduction commands](papers/README.md#one-shared-timestep-with-sign-agreement)
 
-![Summed squared RGB error over both phases of the final all-pixel fit](assets/results/blue-marble-output-depth-12-two-phase-all-pixels-convergence.png)
+![Blue Marble photograph and fitted RGB values, with the same detail enlarged below each](assets/results/blue-marble-shared-step-lion-adaptive-agreement-0.004-fits.png)
 
-#### What each layer contributes
+### Sine wave with a jump at the crest
 
-The first grid averages the raw RGB readouts from layers 1 through the indicated layer, then clips and rounds once. The early layers establish the outline and broad colors. Later layers add cloud and coastal detail. In this checkpoint, error falls with each added layer, from **7,194.38** with layer 1 to **91.04** with layers 1–11 and **47.17** with all 12.
+The target is $f(x)=0.5\sin(2\pi x)+0.5\,\mathbf{1}_{x>0.25}$. Its left and right slopes approach zero at the crest, where the value jumps from 0.5 to 1.0. The MLP receives only raw coordinates. Each of the training, validation and test grids contains 4,096 points.
 
-![Cumulative layer views, averaging readouts from layers 1 through each successive layer](assets/results/blue-marble-output-depth-12-two-phase-all-pixels-cumulative-layers.png)
+The best fit uses 24 hidden layers of 64 neurons, with Gaussian widths tapering from 0.320 to 0.160. It trains for 640 epochs in batches of 64 with the same update as Blue Marble and one cosine starting at 0.00075. Median test RMSE is **0.01103** across the training interval and **0.00463** away from the jump. [Training settings and comparison](papers/README.md#discontinuous-sine)
 
-The second grid shows the RGB readout of each layer in isolation. Every tile uses the same trained network. Each layer receives the activations of the preceding layers. The deep readouts show fine structure and strong color casts. Combining them brings the colors into balance. Layer 9 has the lowest individual error at **2,836.10**.
-
-![Individual readouts from each of the 12 hidden layers](assets/results/blue-marble-output-depth-12-two-phase-all-pixels-individual-layers.png)
-
-<details>
-<summary>Between-pixel diagnostic</summary>
-
-At each of the 16,129 centers between four adjacent pixels, we compared the model's prediction with the mean of the four surrounding RGB values. This is bilinear interpolation at the center. The cumulative readout reached **71.68** squared error through layer 11 and **97.62** through layer 12 against that reference. The final fit uses only the original pixel colors to learn and choose its checkpoint. [Per-layer measurements](assets/results/blue-marble-output-depth-12-two-phase-all-pixels.json)
-
-</details>
-
-### Sine-wave regression
-
-A dense MLP fits $f(x)=\sin(2\pi x)$ from **4,096 raw coordinates** on $[-1,1]$. Median test root mean squared error was **0.00718**, with a range of **0.00593–0.00931** across three initializations. Validation and test each use 4,096 separate interleaved coordinates in the training interval.
-
-The figure shows the median run and its residuals over $[-1,1]$. [Per-seed results and exact settings](assets/results/sine-paper-fit.json)
-
-![Sine target and network predictions on the training interval, with residuals below](assets/results/sine-paper-fit.png)
-
-The architecture is **1 → 64 → 64 → 64 → 64 → 1**, with **12,608 trainable weights and biases**. Each dense hidden layer has 32 increase and 32 decrease neurons in one pool. Smooth Gaussian gate widths are 0.320, 0.267, 0.213, and 0.160. Each layer subtracts the summed decrease magnitudes from the summed increase magnitudes. Averaging the four differences gives the scalar output. All layers receive the sign of the final residual and train through local coactivity.
-
-| Phase | Local update | Epoch budget | Initial final-layer step | Step multiplier per earlier layer |
-|---|---|---:|---:|---:|
-| 1 | Memoryless signed coactivity | 80 | 0.003 | 1.00 |
-| 2 | Lion-style coactivity history | 100 | 0.0008 | 0.75 |
-| 3 | Lion-style coactivity history | 220 | 0.00035 | 0.90 |
-| 4 | Lion-style coactivity history | 240 | 0.00012 | 0.95 |
-
-Minibatches contain 64 samples. Each phase holds the starting step for the first fifth of training, then decays it with a cosine. The starting checkpoint and checkpoints every five epochs compete on validation error. [Vector figure for the paper](assets/results/sine-paper-fit.pdf)
-
-#### Sine wave with a jump at the crest
-
-The target is $f(x)=0.5\sin(2\pi x)+0.5\,\mathbf{1}_{x>0.25}$. At the crest, the left and right branches both approach zero slope and the target jumps from 0.5 to 1.0. The MLP receives only raw coordinates. We screened 4, 6, 8, 12, and 24 hidden layers and a longer four-layer run, using median validation RMSE across seeds 1–3. We also screened single layers with 512, 2,048, and 8,192 neurons on seed 1, then compared the three best settings with and without two additional refinement phases on seeds 1–3. The 12-layer configuration had the lowest validation error.
-
-| Configuration | Parameters | Test RMSE | Test RMSE within 0.05 of jump | 10–90% rise width |
-|---|---:|---:|---:|---:|
-| 4 layers | 12,608 | 0.03168 | 0.13321 | 0.08154 |
-| 4 layers, longer | 12,608 | 0.02985 | 0.12900 | 0.06923 |
-| 12 layers (selected) | 45,888 | 0.02634 | 0.09515 | 0.03551 |
-| 24 layers (0.64× step) | 95,808 | **0.01968** | **0.07347** | **0.02229** |
-| 1 layer, 512 neurons | 1,024 | 0.09044 | 0.18083 | 0.12221 |
-
-Each error is the median across held-out runs with seeds 7–9. The 24-layer search retrains from scratch at each step, multiplying all four phases' steps by 0.8 while keeping the epoch budgets and layer multipliers fixed. Median validation RMSE across seeds 1–3 was 1× at 0.02444, 0.8× at 0.02388, 0.64× at 0.02224, 0.512× at 0.02310. The search stopped at the first increase and selected **0.64×**.
-
-Reducing the 24-layer step changes test RMSE from **0.02570 to 0.01968**, its rise width from **0.03256 to 0.02229**, and its slope RMSE away from the jump from **9.244 to 6.041**. The single-layer model starts rising well before the jump in the plotted run. Its median rise width uses the two test runs with both crossings in the measurement window.
-
-The figure shows the median-scoring 12-layer run and the 24-layer and wide single-layer models from the same seed. The close-up also shows the four-layer reference. The shaded band in the close-up marks the 10% and 90% crossings of the selected fit after subtracting the sine term. [Per-seed results and exact settings](assets/results/sine-jump-fit.json) · [Vector figure](assets/results/sine-jump-fit.pdf)
-
-![Full crest-jump fit with 12 layers, 24 layers, and one wide layer, with the four-layer reference in the close-up](assets/results/sine-jump-fit.png)
-
-The multilayer fits use 64 neurons per hidden layer, with Gaussian widths tapering from 0.320 to 0.160. The wide layer uses 256 neurons per class, a single Gaussian pool of width 0.320, and the same signed local update with fixed class pooling. Each phase starts at the sine fit’s step multiplied by $\sqrt{64/512}$. The longer run adds a 480-epoch cosine phase with an initial step of 0.00045 and a 0.90 multiplier per earlier layer, starting from the validation-selected four-layer checkpoint.
+![Discontinuous sine fits from four network sizes, over the full interval and near the jump](assets/results/sine-jump-fit-cosine-adaptive-agreement.png)
 
 ## Network and updates
 
@@ -443,11 +393,13 @@ The image command defaults to 256 levels over $[-1,1]$ with clipping enabled. Pr
 
 For each minibatch, compute the prediction first. Hidden neuron $j$ receives $s_j=\sigma_j\operatorname{sign}(y_k-\hat y_k)$, where $\sigma_j$ is its class polarity. For samples with nonzero $s_j$ and postsynaptic activity $h_j$, form the local means $A_{ij}=\operatorname{mean}(u_i s_j h_j)$ and $Q_j=\operatorname{mean}(h_j^2)$. The bias input is one. Skip a neuron when it has no contributing samples. The update direction uses this local coactivity statistic.
 
-- `--hidden-rule signsgd` uses $D_{ij}=\operatorname{sign}(A_{ij})/\sqrt{KF+1}$ and stores no optimizer history.
-- `--hidden-rule lion` uses $D_{ij}=\operatorname{sign}(0.125m_{ij}+0.875A_{ij})/\sqrt{KF+1}$, then sets $m_{ij}\gets0.99m_{ij}+0.01A_{ij}$. The history starts at zero.
-- `--hidden-rule activity-sign` multiplies the signSGD direction by $\sqrt{Q_j/(1+Q_j)}$. Low-activity neurons take smaller steps using their own postsynaptic activity. The rule stores no optimizer history.
+Both Lion updates use $D_{ij}=\operatorname{sign}(0.125m_{ij}+0.875A_{ij})/\sqrt{KF+1}$, then set $m_{ij}\gets0.99m_{ij}+0.01A_{ij}$. The history starts at zero.
 
-All three rules update each hidden coefficient by $w_{ij}\gets(w_{ij}+\eta D_{ij})/(1+\eta Q_j)$. The optional unit-norm update normalizes the receiving neuron's updated weights and bias together. The CLI uses one cosine decay by default. At epoch $e$ of a budget of $T$, the multiplier is $[1+\cos(\pi(e-1)/T)]/2$. It starts at the configured step and decreases from the second epoch onward. Use `--schedule hold-cosine` for the earlier schedule that holds the step near its starting value for the first fifth of training. With `--layer-rate-decay d`, a hidden layer with $k$ layers after it takes a step of $\eta d^k$. The default $d=1$ gives every layer the same step size. [NumPy model](hebbian_fit/model.py) · [Mojo GPU kernels](hebbian_fit/_hebbian_gpu.mojo)
+- `--hidden-rule lion` applies the semi-implicit update $w_{ij}\gets(w_{ij}+\eta D_{ij})/(1+\eta Q_j)$.
+- `--hidden-rule lion-explicit` applies the explicit update $w_{ij}\gets w_{ij}+\eta D_{ij}-\eta Q_jw_{ij}$ using the old weight in the last term.
+- `--hidden-rule lion-adaptive-agreement` applies the semi-implicit update with step $\eta g_j$. Each neuron starts with $g_j=1$. Before updating the history, take the mean $a_j$ of $\operatorname{sign}(A_{ij})\operatorname{sign}(m_{ij})$ over its incoming weights and bias, then set $g_j\gets\operatorname{clip}(g_j\,0.99^{-a_j},\,0.01,\,1)$. Every layer follows the same rule with one shared schedule. NumPy and Mojo implement this variant.
+
+The optional unit-norm update normalizes the receiving neuron's updated weights and bias together. The CLI uses one cosine decay by default. At epoch $e$ of a budget of $T$, the multiplier is $[1+\cos(\pi(e-1)/T)]/2$. It starts at the configured step and decreases from the second epoch onward. Use `--schedule hold-cosine` to hold the step near its starting value for the first fifth of training. With `--layer-rate-decay d`, a hidden layer with $k$ layers after it takes a step of $\eta d^k$. The default $d=1$ gives every layer the same step size. [NumPy model](hebbian_fit/model.py) · [Mojo GPU kernels](hebbian_fit/_hebbian_gpu.mojo)
 
 ## Reproduction
 
@@ -455,10 +407,9 @@ Install the CPU dependencies with `uv sync`. Use `uv sync --extra gpu` for Mojo.
 
 ```sh
 export OPENBLAS_NUM_THREADS=1
-uv run --extra gpu python -m experiments.blue_marble_quality \
-  --backend mojo --capacity --extend --fit-all-pixels output-depth-12-two-phase
-uv run python -m experiments.sine_paper
-uv run python -m experiments.sine_jump
+uv run python -m papers.lion sine --rule lion-adaptive-agreement --workers 4
+uv run python -m papers.results sine
+OPENBLAS_NUM_THREADS=2 uv run python -m experiments.blue_marble_shared_step --rule lion-adaptive-agreement --rate .004 --until 560 --fits
 uv run python -m unittest discover -s tests -v
 HEBBIAN_TEST_GPU=1 uv run --extra gpu python -m unittest discover -s tests -v
 ```

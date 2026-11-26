@@ -6,6 +6,12 @@
 
 Use parameter-free output pooling. Update hidden weights only from local presynaptic activity, postsynaptic activity and the signed class teaching signal. The final residual supplies only its sign to training. Error magnitudes may be reported for evaluation and checkpoint selection.
 
+For the manuscript's sine, Blue Marble and CelebA experiments, use a single Lion update for each run, explicit or semi-implicit, from initialization through the final minibatch. Keep the corresponding coactivity history whenever training continues from a checkpoint within the run.
+
+Use the 256-value bottleneck for the manuscript's CelebA model and its Lion comparison.
+
+Use one cosine step-size schedule over the full training run. A short warmup is optional. For the coordinate demonstrations, use one starting step shared by all layers and keep the batch size constant. Run the schedule continuously from initialization. Select checkpoints for reporting without restarting training from the best intermediate checkpoint. The sine and Blue Marble examples should show what a standard MLP learns with a simple training procedure.
+
 ## Architecture
 
 Develop a generic, fully connected mixed-class MLP that callers can use as a black-box regressor. One shared set of weights must serve the entire input domain. The same architecture and learning rule should work with ordinary input and target vectors across regression tasks.

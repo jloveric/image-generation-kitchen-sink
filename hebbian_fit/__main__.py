@@ -46,14 +46,14 @@ def evaluate(model, data, indices, task):
     return result, prediction
 
 
-def training_epochs(model, data, args, indices, epochs, *, start_epoch=0):
+def training_epochs(model, data, args, indices, epochs, *, start_epoch=0, epoch_offset=0):
     rng = np.random.default_rng(args.seed + 1)
     hold = 0.2 if getattr(args, "schedule", "hold-cosine") == "hold-cosine" else 0.
     for epoch in range(1, epochs + 1):
         order = rng.permutation(indices)
         if epoch <= start_epoch:
             continue
-        progress = max(0, (epoch - 1) / args.epochs - hold) / (1 - hold)
+        progress = max(0, (epoch_offset + epoch - 1) / args.epochs - hold) / (1 - hold)
         schedule = (1 + np.cos(np.pi * progress)) / 2
         for start in range(0, len(order), args.batch):
             batch = order[start:start + args.batch]
@@ -167,6 +167,8 @@ def parse_args():
     p.add_argument("--edge-transitions", type=float, nargs="+",
                    help="Smooth each two-piece layer over a band with the given half-width")
     p.add_argument("--depth", type=int, default=2)
+    p.add_argument("--normalize-hidden-inputs", nargs="?", choices=("rms", "max-abs"), const="rms", default=False,
+                   help="Normalize each example's gated features between layers (NumPy)")
     p.add_argument("--initialization", choices=INITIALIZATIONS, default="normal",
                    help="Optionally normalize each incoming weight vector with its bias at initialization")
     p.add_argument("--unit-norm-updates", action="store_true",
@@ -220,13 +222,15 @@ def main():
                          args.unit_norm_updates, args.sine_omega, args.connection, args.hidden_rule,
                          output_bound=args.output_bound, output_levels=args.output_levels or None,
                          edge_transitions=args.edge_transitions, clip_output=args.clip_output,
-                         layer_rate_decay=args.layer_rate_decay)
+                         layer_rate_decay=args.layer_rate_decay, normalize_hidden_inputs=args.normalize_hidden_inputs)
     if args.backend == "mojo":
         from .gpu import MojoModel
         backend = MojoModel
     else:
         backend = NumpyModel
     path = Path("runs", args.task, args.backend, args.readout, args.competition)
+    if args.normalize_hidden_inputs:
+        path /= f"interlayer-{args.normalize_hidden_inputs}"
     if args.schedule == "cosine":
         path /= "cosine"
     if args.fit_all_pixels:

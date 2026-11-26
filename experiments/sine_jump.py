@@ -43,7 +43,7 @@ def wide_trials():
     for units, gate, rate in ((512, .08, .0015), (2048, .08, .0015), (2048, .12, .003),
                               (2048, .16, .003), (8192, .10, .0015)):
         config = replace(TRIAL.config, depth=1, width=units // 2, layer_gate_widths=(gate,))
-        phases = (("signsgd", rate, 64, 80, 1.), ("lion", rate * (.0008 / .003), 64, 100, .75))
+        phases = (("lion", rate, 64, 80, 1.), ("lion", rate * (.0008 / .003), 64, 100, .75))
         yield replace(TRIAL, label=f"sine-crest-jump-1x{units}-gauss{gate:.2f}-step{rate:g}",
                       config=config, phases=phases)
     for units, gate, initialization in ((512, .16, "normal"), (2048, .16, "normal"), (8192, .16, "normal"),

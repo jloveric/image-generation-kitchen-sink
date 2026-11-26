@@ -1,0 +1,100 @@
+{
+  "settings": {
+    "label": "shared-step-lion-coactivity-direction-0.004-all-pixels",
+    "config": {
+      "inputs": 2,
+      "outputs": 3,
+      "width": 72,
+      "winners": 8,
+      "depth": 12,
+      "competition": "output",
+      "readout": "class-sum",
+      "gate": "gaussian",
+      "gate_width": 0.5,
+      "layer_gate_widths": [
+        0.24,
+        0.225,
+        0.211,
+        0.196,
+        0.182,
+        0.167,
+        0.153,
+        0.138,
+        0.124,
+        0.109,
+        0.095,
+        0.08
+      ],
+      "readout_layers": "all",
+      "initialization": "normal",
+      "unit_norm_updates": false,
+      "sine_omega": null,
+      "connection": "affine",
+      "hidden_rule": "lion-coactivity-direction",
+      "output_bound": 1.0,
+      "output_levels": 256,
+      "edge_transitions": null,
+      "clip_output": true,
+      "layer_rate_decay": 1.0,
+      "top_k": null,
+      "response_limit_ratio": 1.0,
+      "normalize_hidden_inputs": false
+    },
+    "phases": [
+      [
+        "lion-coactivity-direction",
+        0.004,
+        128,
+        560,
+        1.0
+      ]
+    ],
+    "backend": "numpy",
+    "schedule": "cosine"
+  },
+  "seed": 5,
+  "selected_epoch": 25,
+  "squared_error": 524.910763543908,
+  "history": [
+    {
+      "epoch": 5,
+      "squared_error": 791.8752559965346
+    },
+    {
+      "epoch": 10,
+      "squared_error": 599.7308826784631
+    },
+    {
+      "epoch": 15,
+      "squared_error": 565.900095246468
+    },
+    {
+      "epoch": 20,
+      "squared_error": 759.0147837485174
+    },
+    {
+      "epoch": 25,
+      "squared_error": 524.910763543908
+    },
+    {
+      "epoch": 30,
+      "squared_error": 635.1510818777119
+    },
+    {
+      "epoch": 35,
+      "squared_error": 541.6373043690257
+    },
+    {
+      "epoch": 40,
+      "squared_error": 706.3735077135184
+    },
+    {
+      "epoch": 45,
+      "squared_error": 550.2195563103712
+    },
+    {
+      "epoch": 50,
+      "squared_error": 719.2731931972407
+    }
+  ]
+}

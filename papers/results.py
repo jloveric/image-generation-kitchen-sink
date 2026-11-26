@@ -1,7 +1,6 @@
 """Reproduce the final measurements and figures used in the manuscript, from the repository root."""
 import argparse
 import json
-from dataclasses import replace
 from pathlib import Path
 
 import matplotlib
@@ -17,37 +16,37 @@ from experiments.celeba_diversity import model_for
 from hebbian_fit.autoencoder import Generator
 from hebbian_fit.data import rgb_data
 from hebbian_fit.model import ModelConfig, NumpyModel
+from papers import lion
 
 OUT = Path(__file__).resolve().parent / "figures"
-REPORTS = Path("assets/results")
-FACE_RUN = Path("runs/celeba-sequential/full/target150-standard-full128-broad-lion/full")
+FACE_RUN = lion.PORTRAIT_BASELINE
+FACE_MIXTURE = "decoder-mixture-selected.npz"
 INK, TEAL = "#293942", "#00767b"
 plt.rcParams.update({"pdf.fonttype": 42, "font.size": 10, "axes.spines.top": False,
                      "axes.spines.right": False, "axes.labelcolor": INK, "text.color": INK})
 
 
 def sine():
-    data = sine_jump.dataset()
-    trial = sine_jump.deeper(12)
-    wide_start = next(t for t in sine_jump.wide_trials() if t.label == "sine-crest-jump-1x512-gauss0.32")
-    others = [(sine_jump.refine_wide(wide_start), wide_start, "1 × 512", "#846829", ":"),
-              (sine_jump.TRIAL, None, "4 × 64", "#526e91", "-."),
-              (sine_jump.scale_steps(sine_jump.deeper(24), .64), None, "24 × 64", "#99516b", "--")]
-    rows = sine_jump.measure(trial, data, sine_jump.TEST_SEEDS)
-    print(trial.label, json.dumps(sine_jump.summarize(rows), indent=2))
+    rule = "lion-adaptive-agreement"
+    report = lion.report(f"{lion.SINE}-all-{rule}")
+    trials = lion.sine_trials()
+    best = min(trials, key=lambda t: report[t.label]["medians"]["test_rmse"])
+    trial = lion.comparison_trial(best, rule)
+    others = [t for t in trials if t != best]
+    rows = report[best.label]["runs"]
     row = sorted(rows, key=lambda r: r["test_rmse"])[len(rows) // 2]
     model = sine_jump.load_model(row["seed"], trial)
     fig, axes = plt.subplots(1, 2, figsize=(7.5, 3.05), width_ratios=(1.12, 1),
                              layout="constrained")
     for ax, (left, right), title in zip(axes, ((-1, 1), (.15, .35)), ("Full interval", "Near the crest")):
         x = np.linspace(left, right, 8001, dtype=np.float32)
-        ax.plot(x, sine_jump.curve(model, x), lw=1.75, color=TEAL, label="12 × 64")
+        ax.plot(x, sine_jump.curve(model, x), lw=1.75, color=TEAL,
+                label=f"{best.config.depth} × {best.config.units}")
         if ax is axes[1]:
-            for other, parent, name, color, style in others:
-                measured = sine_jump.measure(other, data, sine_jump.TEST_SEEDS, parent=parent)
-                print(other.label, json.dumps(sine_jump.summarize(measured), indent=2))
-                other_model = sine_jump.load_model(row["seed"], other)
-                ax.plot(x, sine_jump.curve(other_model, x), lw=1.25, color=color, ls=style, label=name)
+            for other, color, style in zip(others, ("#846829", "#526e91", "#99516b"), (":", "-.", "--"), strict=True):
+                other_model = sine_jump.load_model(row["seed"], lion.comparison_trial(other, rule))
+                ax.plot(x, sine_jump.curve(other_model, x), lw=1.25, color=color, ls=style,
+                        label=f"{other.config.depth} × {other.config.units}")
         x_left = np.linspace(left, sine_jump.JUMP_X, 1001)
         x_right = np.linspace(sine_jump.JUMP_X, right, 1001)
         ax.plot(x_left, sine_jump.sine(x_left), ls=(0, (5, 2)), lw=1.35, color=INK, label="Target")
@@ -58,15 +57,18 @@ def sine():
         ax.set_axisbelow(True)
     axes[0].set_ylabel("Output")
     handles, labels = axes[1].get_legend_handles_labels()
-    order = [4, 1, 2, 0, 3]
+    plotted = [best, *others]
+    order = [len(trials), *(plotted.index(trial) for trial in trials)]
     fig.legend([handles[i] for i in order], [labels[i] for i in order],
                loc="outside lower center", frameon=False, ncol=5, fontsize=9)
     axes[1].set_xticks([.20, .25, .30])
     t = row["transition"]
-    axes[1].axvspan(t["x10"], t["x90"], color="#deeeea", lw=0, zorder=0)
+    if t["x10"] is not None and t["x90"] is not None:
+        axes[1].axvspan(t["x10"], t["x90"], color="#deeeea", lw=0, zorder=0)
     axes[1].plot([.25], [.5], "o", color=INK, ms=4)
     axes[1].plot([.25], [1.], "o", mec=INK, mfc="white", ms=4)
     fig.savefig(OUT / "sine.pdf")
+    fig.savefig(lion.RESULTS / "sine-jump-fit-cosine-adaptive-agreement.png", dpi=180)
     plt.close(fig)
 
 
@@ -84,22 +86,29 @@ def marble_layers(model, data, readouts, full):
             ax.set_title(f"Layer {index}", fontsize=9, pad=2)
     fig.savefig(OUT / "earth-layers.pdf")
     plt.close(fig)
+    return accumulated
 
 
 def marble(checkpoint=None):
-    report = json.loads((REPORTS / "blue-marble-output-depth-12-two-phase-all-pixels.json").read_text())
+    report = lion.report("blue-marble-shared-step-lion-adaptive-agreement-0.004")
     settings = report["settings"]
     config = ModelConfig(**{**settings["config"], "layer_gate_widths": tuple(settings["config"]["layer_gate_widths"])})
-    trial = Trial(settings["label"], config, tuple(map(tuple, settings["phases"])), settings["backend"])
-    trial = replace(trial, label=trial.label + "-all-pixels")
+    trial = Trial(settings["label"], config, tuple(map(tuple, settings["phases"])),
+                  settings["backend"], settings["schedule"])
     model = NumpyModel(config, report["seed"])
     with np.load(checkpoint or trial.path(report["seed"]) / "checkpoint.npz", allow_pickle=False) as state:
         model.load(state)
     data = rgb_data(split=False)
     readouts, predicted = layer_readouts(model, data.x)
-    marble_layers(model, data, readouts, predicted)
+    accumulated = marble_layers(model, data, readouts, predicted)
     error = np.sum(np.square((predicted - data.y) / 2, dtype=np.float64))
+    if checkpoint is None:
+        np.testing.assert_allclose(error, report["squared_error"], rtol=1e-6)
     print(f"RGB squared error, summed over {len(data.x):,} pixels: {error:.6f}")
+    for label, values in (("Individual", readouts), ("Accumulated", accumulated)):
+        errors = [float(np.square((model.format_output(raw) - data.y) / 2, dtype=np.float64).sum())
+                  for raw in values]
+        print(label, "layer errors", ", ".join(f"{score:.6f}" for score in errors))
     images = [(arr.reshape(128, 128, 3) + 1) / 2 for arr in (data.y, predicted)]
     fig, axes = plt.subplots(1, 4, figsize=(7.5, 1.96), layout="constrained")
     titles = ("Photograph", "Network", "Photograph detail", "Network detail")
@@ -117,7 +126,8 @@ def marble(checkpoint=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=("sine", "marble", "portraits", "reconstruction"))
-    parser.add_argument("--run", type=Path, default=FACE_RUN, help="Final CelebA full run directory")
+    parser.add_argument("--run", type=Path, help="CelebA full run directory")
+    parser.add_argument("--mixture", type=Path, help="Use this fitted code distribution and decoder export")
     parser.add_argument("--checkpoint", type=Path, help="Use this saved Blue Marble checkpoint")
     parser.add_argument("--code-top-k", type=int,
                         help="Evaluate a saved CelebA checkpoint with a different bottleneck competition count")
@@ -126,23 +136,29 @@ def main():
     args = parser.parse_args()
     if args.checkpoint is not None and args.task != "marble":
         parser.error("--checkpoint is for the marble task")
+    if args.mixture is not None and args.task != "portraits":
+        parser.error("--mixture is for the portraits task")
     if args.task != "reconstruction" and (args.code_top_k is not None or args.vector_gate_width is not None):
         parser.error("Competition overrides require the reconstruction task")
     OUT.mkdir(exist_ok=True)
+    run = args.run or FACE_RUN
     if args.task == "sine":
         sine()
     elif args.task == "marble":
         marble(args.checkpoint)
     elif args.task == "portraits":
-        generator = Generator(args.run / "decoder-mixture.npz")
+        filename = FACE_MIXTURE if run == FACE_RUN else "decoder-mixture.npz"
+        generator = Generator(args.mixture or run / filename)
         figure(np.stack([generator.generate(i) for i in range(36)]), OUT / "portraits.png")
     else:
-        config = json.loads((args.run / "results.json").read_text())["config"]
-        model = model_for(config, args.run, backend="mojo", code_top_k=args.code_top_k,
-                          vector_gate_width=args.vector_gate_width)
-        load_checkpoint(args.run / "selected.npz", model)
-        test = np.load(args.run.parent / "test.npy", mmap_mode="r")
-        center = np.load(args.run / "encoder-center.npy").reshape(test.shape[1:])
+        config = json.loads((run / "results.json").read_text())["config"]
+        width = args.vector_gate_width
+        if width is None and args.run is None:
+            width = lion.report(lion.PORTRAITS)["fixed_weights"]["inference_vector_gate_width"]
+        model = model_for(config, run, backend="mojo", code_top_k=args.code_top_k, vector_gate_width=width)
+        load_checkpoint(run / "selected.npz", model)
+        test = np.load(run.parent / "test.npy", mmap_mode="r")
+        center = np.load(run / "encoder-center.npy").reshape(test.shape[1:])
         error = evaluate(model, test, center, shuffle=False)["reconstruction_sse"]
         print(f"Squared RGB error per portrait on {len(test):,} test portraits: {error/len(test):.6f}")
 

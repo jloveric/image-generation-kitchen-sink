@@ -1,0 +1,244 @@
+{
+  "runs": [
+    {
+      "settings": {
+        "label": "layer-steps-uniform-all-pixels",
+        "config": {
+          "inputs": 2,
+          "outputs": 3,
+          "width": 72,
+          "winners": 8,
+          "depth": 12,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.24,
+            0.225,
+            0.211,
+            0.196,
+            0.182,
+            0.167,
+            0.153,
+            0.138,
+            0.124,
+            0.109,
+            0.095,
+            0.08
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1.0,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null,
+          "response_limit_ratio": 1.0,
+          "normalize_hidden_inputs": false
+        },
+        "phases": [
+          [
+            "lion",
+            0.0015,
+            64,
+            560,
+            1.0
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "cosine"
+      },
+      "seed": 5,
+      "selected_epoch": 80,
+      "squared_error": 409.44400114938225,
+      "history": [
+        {
+          "epoch": 5,
+          "squared_error": 699.5868854846128
+        },
+        {
+          "epoch": 10,
+          "squared_error": 554.5837987341483
+        },
+        {
+          "epoch": 15,
+          "squared_error": 469.15039295043823
+        },
+        {
+          "epoch": 20,
+          "squared_error": 458.14858009981856
+        },
+        {
+          "epoch": 25,
+          "squared_error": 481.5332173427056
+        },
+        {
+          "epoch": 30,
+          "squared_error": 488.998701744769
+        },
+        {
+          "epoch": 35,
+          "squared_error": 463.57721626894795
+        },
+        {
+          "epoch": 40,
+          "squared_error": 551.6622506375746
+        },
+        {
+          "epoch": 45,
+          "squared_error": 439.643280165331
+        },
+        {
+          "epoch": 50,
+          "squared_error": 417.71100743184115
+        },
+        {
+          "epoch": 55,
+          "squared_error": 458.8862364222085
+        },
+        {
+          "epoch": 60,
+          "squared_error": 413.79023753813794
+        },
+        {
+          "epoch": 65,
+          "squared_error": 482.1673737776834
+        },
+        {
+          "epoch": 70,
+          "squared_error": 525.3420335180152
+        },
+        {
+          "epoch": 75,
+          "squared_error": 434.21771991708636
+        },
+        {
+          "epoch": 80,
+          "squared_error": 409.44400114938225
+        },
+        {
+          "epoch": 85,
+          "squared_error": 459.93189228478224
+        },
+        {
+          "epoch": 90,
+          "squared_error": 442.903349101932
+        },
+        {
+          "epoch": 95,
+          "squared_error": 453.0638568419412
+        },
+        {
+          "epoch": 100,
+          "squared_error": 469.1152245387458
+        }
+      ]
+    },
+    {
+      "settings": {
+        "label": "layer-steps-uniform-interlayer-max-abs-all-pixels",
+        "config": {
+          "inputs": 2,
+          "outputs": 3,
+          "width": 72,
+          "winners": 8,
+          "depth": 12,
+          "competition": "output",
+          "readout": "class-sum",
+          "gate": "gaussian",
+          "gate_width": 0.5,
+          "layer_gate_widths": [
+            0.24,
+            0.225,
+            0.211,
+            0.196,
+            0.182,
+            0.167,
+            0.153,
+            0.138,
+            0.124,
+            0.109,
+            0.095,
+            0.08
+          ],
+          "readout_layers": "all",
+          "initialization": "normal",
+          "unit_norm_updates": false,
+          "sine_omega": null,
+          "connection": "affine",
+          "hidden_rule": "lion",
+          "output_bound": 1.0,
+          "output_levels": 256,
+          "edge_transitions": null,
+          "clip_output": true,
+          "layer_rate_decay": 1.0,
+          "top_k": null,
+          "response_limit_ratio": 1.0,
+          "normalize_hidden_inputs": "max-abs"
+        },
+        "phases": [
+          [
+            "lion",
+            0.0015,
+            64,
+            560,
+            1.0
+          ]
+        ],
+        "backend": "numpy",
+        "schedule": "cosine"
+      },
+      "seed": 5,
+      "selected_epoch": 40,
+      "squared_error": 420.69321212680825,
+      "history": [
+        {
+          "epoch": 5,
+          "squared_error": 609.8238484127705
+        },
+        {
+          "epoch": 10,
+          "squared_error": 545.5740505082083
+        },
+        {
+          "epoch": 15,
+          "squared_error": 488.1388908217001
+        },
+        {
+          "epoch": 20,
+          "squared_error": 465.818613542592
+        },
+        {
+          "epoch": 25,
+          "squared_error": 470.5689393679154
+        },
+        {
+          "epoch": 30,
+          "squared_error": 470.1839657977763
+        },
+        {
+          "epoch": 35,
+          "squared_error": 565.7134902035673
+        },
+        {
+          "epoch": 40,
+          "squared_error": 420.69321212680825
+        },
+        {
+          "epoch": 45,
+          "squared_error": 472.68655653629696
+        },
+        {
+          "epoch": 50,
+          "squared_error": 500.0188002762196
+        }
+      ]
+    }
+  ]
+}

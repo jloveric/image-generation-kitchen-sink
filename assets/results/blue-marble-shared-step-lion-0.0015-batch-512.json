@@ -1,0 +1,221 @@
+{
+  "settings": {
+    "label": "shared-step-lion-0.0015-batch-512-all-pixels",
+    "config": {
+      "inputs": 2,
+      "outputs": 3,
+      "width": 72,
+      "winners": 8,
+      "depth": 12,
+      "competition": "output",
+      "readout": "class-sum",
+      "gate": "gaussian",
+      "gate_width": 0.5,
+      "layer_gate_widths": [
+        0.24,
+        0.225,
+        0.211,
+        0.196,
+        0.182,
+        0.167,
+        0.153,
+        0.138,
+        0.124,
+        0.109,
+        0.095,
+        0.08
+      ],
+      "readout_layers": "all",
+      "initialization": "normal",
+      "unit_norm_updates": false,
+      "sine_omega": null,
+      "connection": "affine",
+      "hidden_rule": "lion",
+      "output_bound": 1.0,
+      "output_levels": 256,
+      "edge_transitions": null,
+      "clip_output": true,
+      "layer_rate_decay": 1.0,
+      "top_k": null,
+      "response_limit_ratio": 1.0,
+      "normalize_hidden_inputs": false,
+      "skip_input_to_hidden": false
+    },
+    "phases": [
+      [
+        "lion",
+        0.0015,
+        512,
+        2240,
+        1.0
+      ]
+    ],
+    "backend": "numpy",
+    "schedule": "cosine"
+  },
+  "seed": 5,
+  "selected_epoch": 120,
+  "squared_error": 357.8053962225162,
+  "history": [
+    {
+      "epoch": 5,
+      "squared_error": 904.6906243525109
+    },
+    {
+      "epoch": 10,
+      "squared_error": 672.8016415101879
+    },
+    {
+      "epoch": 15,
+      "squared_error": 595.7335095996888
+    },
+    {
+      "epoch": 20,
+      "squared_error": 614.2908693881242
+    },
+    {
+      "epoch": 25,
+      "squared_error": 556.7396903020253
+    },
+    {
+      "epoch": 30,
+      "squared_error": 508.3033189333353
+    },
+    {
+      "epoch": 35,
+      "squared_error": 518.1815866371497
+    },
+    {
+      "epoch": 40,
+      "squared_error": 501.6044828924186
+    },
+    {
+      "epoch": 45,
+      "squared_error": 541.9266080212906
+    },
+    {
+      "epoch": 50,
+      "squared_error": 507.5139806459823
+    },
+    {
+      "epoch": 55,
+      "squared_error": 534.382957443622
+    },
+    {
+      "epoch": 60,
+      "squared_error": 562.9701173208834
+    },
+    {
+      "epoch": 65,
+      "squared_error": 501.2386562941498
+    },
+    {
+      "epoch": 70,
+      "squared_error": 449.92400406397934
+    },
+    {
+      "epoch": 75,
+      "squared_error": 384.6337722466046
+    },
+    {
+      "epoch": 80,
+      "squared_error": 417.9460251361203
+    },
+    {
+      "epoch": 85,
+      "squared_error": 425.89093934831135
+    },
+    {
+      "epoch": 90,
+      "squared_error": 433.2794812861024
+    },
+    {
+      "epoch": 95,
+      "squared_error": 408.1785474236071
+    },
+    {
+      "epoch": 100,
+      "squared_error": 410.3691529030616
+    },
+    {
+      "epoch": 105,
+      "squared_error": 403.55666482193
+    },
+    {
+      "epoch": 110,
+      "squared_error": 396.4668538631102
+    },
+    {
+      "epoch": 115,
+      "squared_error": 445.497814974849
+    },
+    {
+      "epoch": 120,
+      "squared_error": 357.8053962225162
+    },
+    {
+      "epoch": 125,
+      "squared_error": 414.88291029366184
+    },
+    {
+      "epoch": 130,
+      "squared_error": 404.08410982795044
+    },
+    {
+      "epoch": 135,
+      "squared_error": 405.48009554816036
+    },
+    {
+      "epoch": 140,
+      "squared_error": 414.35911220789956
+    },
+    {
+      "epoch": 145,
+      "squared_error": 465.39565473938114
+    },
+    {
+      "epoch": 150,
+      "squared_error": 386.73648838814836
+    },
+    {
+      "epoch": 155,
+      "squared_error": 416.40418935381865
+    },
+    {
+      "epoch": 160,
+      "squared_error": 482.6106212516181
+    },
+    {
+      "epoch": 165,
+      "squared_error": 410.8603965019747
+    },
+    {
+      "epoch": 170,
+      "squared_error": 376.73691816285566
+    },
+    {
+      "epoch": 175,
+      "squared_error": 381.1354424734858
+    },
+    {
+      "epoch": 180,
+      "squared_error": 383.42989791664223
+    },
+    {
+      "epoch": 185,
+      "squared_error": 384.86935915393656
+    },
+    {
+      "epoch": 190,
+      "squared_error": 358.82411318897397
+    },
+    {
+      "epoch": 195,
+      "squared_error": 360.97207249826914
+    },
+    {
+      "epoch": 200,
+      "squared_error": 402.05058549925786
+    }
+  ]
+}

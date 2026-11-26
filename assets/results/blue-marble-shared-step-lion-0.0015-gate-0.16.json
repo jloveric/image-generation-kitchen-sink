@@ -1,0 +1,128 @@
+{
+  "settings": {
+    "label": "shared-step-lion-0.0015-gate-0.16-all-pixels",
+    "config": {
+      "inputs": 2,
+      "outputs": 3,
+      "width": 72,
+      "winners": 8,
+      "depth": 12,
+      "competition": "output",
+      "readout": "class-sum",
+      "gate": "gaussian",
+      "gate_width": 0.16,
+      "layer_gate_widths": null,
+      "readout_layers": "all",
+      "initialization": "normal",
+      "unit_norm_updates": false,
+      "sine_omega": null,
+      "connection": "affine",
+      "hidden_rule": "lion",
+      "output_bound": 1.0,
+      "output_levels": 256,
+      "edge_transitions": null,
+      "clip_output": true,
+      "layer_rate_decay": 1.0,
+      "top_k": null,
+      "response_limit_ratio": 1.0,
+      "normalize_hidden_inputs": false,
+      "skip_input_to_hidden": false
+    },
+    "phases": [
+      [
+        "lion",
+        0.0015,
+        128,
+        560,
+        1.0
+      ]
+    ],
+    "backend": "numpy",
+    "schedule": "cosine"
+  },
+  "seed": 5,
+  "selected_epoch": 90,
+  "squared_error": 337.68568876868676,
+  "history": [
+    {
+      "epoch": 5,
+      "squared_error": 667.8186849667177
+    },
+    {
+      "epoch": 10,
+      "squared_error": 496.39477555082107
+    },
+    {
+      "epoch": 15,
+      "squared_error": 456.66508568698737
+    },
+    {
+      "epoch": 20,
+      "squared_error": 401.68321606056253
+    },
+    {
+      "epoch": 25,
+      "squared_error": 411.91263688201843
+    },
+    {
+      "epoch": 30,
+      "squared_error": 384.2925817670558
+    },
+    {
+      "epoch": 35,
+      "squared_error": 374.2967031608273
+    },
+    {
+      "epoch": 40,
+      "squared_error": 383.1891756604175
+    },
+    {
+      "epoch": 45,
+      "squared_error": 346.3961849219628
+    },
+    {
+      "epoch": 50,
+      "squared_error": 401.90168669786766
+    },
+    {
+      "epoch": 55,
+      "squared_error": 463.49204981970894
+    },
+    {
+      "epoch": 60,
+      "squared_error": 342.9216143070488
+    },
+    {
+      "epoch": 65,
+      "squared_error": 388.13878001994397
+    },
+    {
+      "epoch": 70,
+      "squared_error": 367.49674941589876
+    },
+    {
+      "epoch": 75,
+      "squared_error": 366.6275455596379
+    },
+    {
+      "epoch": 80,
+      "squared_error": 357.640601566647
+    },
+    {
+      "epoch": 85,
+      "squared_error": 344.4715425483785
+    },
+    {
+      "epoch": 90,
+      "squared_error": 337.68568876868676
+    },
+    {
+      "epoch": 95,
+      "squared_error": 339.827897920071
+    },
+    {
+      "epoch": 100,
+      "squared_error": 393.6096916859159
+    }
+  ]
+}

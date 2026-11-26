@@ -1,0 +1,100 @@
+{
+  "settings": {
+    "label": "shared-step-lion-cosine-coactivity-0.02-all-pixels",
+    "config": {
+      "inputs": 2,
+      "outputs": 3,
+      "width": 72,
+      "winners": 8,
+      "depth": 12,
+      "competition": "output",
+      "readout": "class-sum",
+      "gate": "gaussian",
+      "gate_width": 0.5,
+      "layer_gate_widths": [
+        0.24,
+        0.225,
+        0.211,
+        0.196,
+        0.182,
+        0.167,
+        0.153,
+        0.138,
+        0.124,
+        0.109,
+        0.095,
+        0.08
+      ],
+      "readout_layers": "all",
+      "initialization": "normal",
+      "unit_norm_updates": false,
+      "sine_omega": null,
+      "connection": "affine",
+      "hidden_rule": "lion-cosine-coactivity",
+      "output_bound": 1.0,
+      "output_levels": 256,
+      "edge_transitions": null,
+      "clip_output": true,
+      "layer_rate_decay": 1.0,
+      "top_k": null,
+      "response_limit_ratio": 1.0,
+      "normalize_hidden_inputs": false
+    },
+    "phases": [
+      [
+        "lion-cosine-coactivity",
+        0.02,
+        128,
+        560,
+        1.0
+      ]
+    ],
+    "backend": "numpy",
+    "schedule": "cosine"
+  },
+  "seed": 5,
+  "selected_epoch": 25,
+  "squared_error": 394.6057234417121,
+  "history": [
+    {
+      "epoch": 5,
+      "squared_error": 777.009571588643
+    },
+    {
+      "epoch": 10,
+      "squared_error": 570.122533941216
+    },
+    {
+      "epoch": 15,
+      "squared_error": 542.1745225243742
+    },
+    {
+      "epoch": 20,
+      "squared_error": 599.3349457751557
+    },
+    {
+      "epoch": 25,
+      "squared_error": 394.6057234417121
+    },
+    {
+      "epoch": 30,
+      "squared_error": 510.5560268124485
+    },
+    {
+      "epoch": 35,
+      "squared_error": 529.9157827614555
+    },
+    {
+      "epoch": 40,
+      "squared_error": 586.9126627205144
+    },
+    {
+      "epoch": 45,
+      "squared_error": 524.9828940726684
+    },
+    {
+      "epoch": 50,
+      "squared_error": 517.4869468377727
+    }
+  ]
+}

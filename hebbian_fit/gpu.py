@@ -9,7 +9,7 @@ import sys
 
 import numpy as np
 
-from .model import GATES, NumpyModel, validate_checkpoint
+from .model import GATES, NUMPY_ONLY_RULES, NumpyModel, validate_checkpoint
 
 
 def load_extension():
@@ -43,17 +43,25 @@ def load_extension():
 
 class MojoModel:
     def __init__(self, config, seed, capacity=256, encoder=False):
+        if config.normalize_hidden_inputs:
+            raise ValueError("Interlayer normalization requires the NumPy backend")
+        if config.skip_input_to_hidden:
+            raise ValueError("Direct input connections to every layer require the NumPy backend")
+        if config.hidden_rule in NUMPY_ONLY_RULES:
+            raise ValueError(f"{config.hidden_rule} requires the NumPy backend")
         self.config = config
         self.capacity = capacity
+        self.adaptive_agreement = config.hidden_rule == "lion-adaptive-agreement"
         self.network = load_extension().Network(
             config.inputs, config.outputs, config.width, config.depth, config.keep_per_pool,
             config.readout == "sum", capacity, config.competition_groups,
             GATES.index(config.gate), config.gate_widths, config.readout_divisor, config.heads,
             config.unit_norm_updates, config.sine_omega or 0.0, config.basis_size,
-            config.hidden_rule == "lion", config.hidden_rule == "activity-sign", config.output_bound or 0.0,
+            config.uses_history, config.hidden_rule == "activity-sign", config.output_bound or 0.0,
             (config.output_levels - 1) / 2 if config.output_levels else 0.0,
             config.edge_transitions or (0.,) * config.depth,
             config.clip_output, config.rate_multipliers, config.readout == "class-energy", encoder,
+            config.hidden_rule == "lion-explicit", self.adaptive_agreement,
         )
         initial = NumpyModel(config, seed).state()
         self.shapes = [initial[f"weight_{i}"].shape for i in range(config.depth)]
@@ -83,14 +91,17 @@ class MojoModel:
 
     def state(self):
         weights = np.empty(self.offsets[-1], np.float32)
-        history = np.empty_like(weights) if self.config.hidden_rule == "lion" else None
-        self.network.save(weights, history)
+        history = np.empty_like(weights) if self.config.uses_history else None
+        gains = np.empty((self.config.depth, self.config.units), np.float32) if self.adaptive_agreement else None
+        self.network.save(weights, history, gains)
         state = {}
         for i, shape in enumerate(self.shapes):
             part = slice(self.offsets[i], self.offsets[i + 1])
             state[f"weight_{i}"] = weights[part].reshape(shape)
             if history is not None:
                 state[f"history_{i}"] = history[part].reshape(shape)
+            if gains is not None:
+                state[f"agreement_{i}"] = gains[i]
         return state
 
     def load(self, state):
@@ -101,8 +112,10 @@ class MojoModel:
                                    for i, shape in enumerate(self.shapes)], dtype=np.float32)
 
         weights = pack("weight")
-        history = pack("history") if self.config.hidden_rule == "lion" else None
-        self.network.load(weights, history)
+        history = pack("history") if self.config.uses_history else None
+        gains = (np.stack([state_array(state[f"agreement_{i}"], (self.config.units,))
+                           for i in range(self.config.depth)]) if self.adaptive_agreement else None)
+        self.network.load(weights, history, gains)
 
 
 def batch_array(array, columns, rows=None):

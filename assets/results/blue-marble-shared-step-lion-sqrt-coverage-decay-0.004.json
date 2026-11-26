@@ -1,0 +1,101 @@
+{
+  "settings": {
+    "label": "shared-step-lion-sqrt-coverage-decay-0.004-all-pixels",
+    "config": {
+      "inputs": 2,
+      "outputs": 3,
+      "width": 72,
+      "winners": 8,
+      "depth": 12,
+      "competition": "output",
+      "readout": "class-sum",
+      "gate": "gaussian",
+      "gate_width": 0.5,
+      "layer_gate_widths": [
+        0.24,
+        0.225,
+        0.211,
+        0.196,
+        0.182,
+        0.167,
+        0.153,
+        0.138,
+        0.124,
+        0.109,
+        0.095,
+        0.08
+      ],
+      "readout_layers": "all",
+      "initialization": "normal",
+      "unit_norm_updates": false,
+      "sine_omega": null,
+      "connection": "affine",
+      "hidden_rule": "lion-sqrt-coverage-decay",
+      "output_bound": 1.0,
+      "output_levels": 256,
+      "edge_transitions": null,
+      "clip_output": true,
+      "layer_rate_decay": 1.0,
+      "top_k": null,
+      "response_limit_ratio": 1.0,
+      "normalize_hidden_inputs": false,
+      "skip_input_to_hidden": false
+    },
+    "phases": [
+      [
+        "lion-sqrt-coverage-decay",
+        0.004,
+        128,
+        560,
+        1.0
+      ]
+    ],
+    "backend": "numpy",
+    "schedule": "cosine"
+  },
+  "seed": 5,
+  "selected_epoch": 25,
+  "squared_error": 608.6304763439234,
+  "history": [
+    {
+      "epoch": 5,
+      "squared_error": 960.4232719321096
+    },
+    {
+      "epoch": 10,
+      "squared_error": 794.7973487619561
+    },
+    {
+      "epoch": 15,
+      "squared_error": 707.6172614508099
+    },
+    {
+      "epoch": 20,
+      "squared_error": 864.2374894166612
+    },
+    {
+      "epoch": 25,
+      "squared_error": 608.6304763439234
+    },
+    {
+      "epoch": 30,
+      "squared_error": 616.1200318669368
+    },
+    {
+      "epoch": 35,
+      "squared_error": 648.5641697110284
+    },
+    {
+      "epoch": 40,
+      "squared_error": 835.4639120157392
+    },
+    {
+      "epoch": 45,
+      "squared_error": 882.083890075224
+    },
+    {
+      "epoch": 50,
+      "squared_error": 664.6219190635945
+    }
+  ]
+}

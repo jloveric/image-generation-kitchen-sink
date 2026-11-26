@@ -1,5 +1,5 @@
 """GPU implementation of the dense competitive Hebbian model."""
-from std.math import abs, ceildiv, exp, floor, max, min, sin, sqrt
+from std.math import abs, ceildiv, exp, floor, log, max, min, sin, sqrt
 from std.os import abort
 from std.python import PythonObject
 from std.python.bindings import PythonModuleBuilder
@@ -280,9 +280,17 @@ def teaching_signs(target: Read, prediction: Read, teaching: Write, size: Int32,
         teaching[i] = sign(residual)
 
 
-def hebbian(x: Read, activity: Read, teaching: Read,
-            weights: Write, history: Write, batch_arg: Int32, inputs_arg: Int32,
-            outputs_arg: Int32, width_arg: Int32, offset_arg: Int32, rate: Float32, lion: Int32, scale_direction: Int32):
+def updated_weight(weight: Float32, rate: Float32, direction: Float32,
+                   squared: Float32, explicit_decay: Int32) -> Float32:
+    if explicit_decay != 0:
+        return (1 - rate * squared) * weight + rate * direction
+    return (weight + rate * direction) / (1 + rate * squared)
+
+
+def hebbian[observe: Bool = False](x: Read, activity: Read, teaching: Read,
+            weights: Write, history: Write, observations: Write, stats: Write,
+            batch_arg: Int32, inputs_arg: Int32, outputs_arg: Int32, width_arg: Int32,
+            offset_arg: Int32, rate: Float32, lion: Int32, scale_direction: Int32, explicit_decay: Int32):
     var batch = Int(batch_arg)
     var inputs = Int(inputs_arg)
     var outputs = Int(outputs_arg)
@@ -310,18 +318,25 @@ def hebbian(x: Read, activity: Read, teaching: Read,
             product += pre * (direction * post)
             squared += post * post
             count += 1
-    if count > 0:
-        product /= Float32(count)
-        squared /= Float32(count)
-        var signal = product
-        if lion != 0:
-            var old = history[offset + i]
-            signal = 0.125 * old + 0.875 * product
-            history[offset + i] = 0.99 * old + 0.01 * product
-        var direction = sign(signal) / sqrt(Float32(inputs + 1))
-        if scale_direction != 0:
-            direction *= sqrt(squared / (1 + squared))
-        weights[offset + i] = (weights[offset + i] + rate * direction) / (1 + rate * squared)
+    comptime if observe:
+        if incoming == 0:
+            stats[node] = Float32(count)
+            stats[units + node] = squared / Float32(max(count, 1))
+        if count > 0:
+            observations[i] = product / Float32(count)
+    else:
+        if count > 0:
+            product /= Float32(count)
+            squared /= Float32(count)
+            var signal = product
+            if lion != 0:
+                var old = history[offset + i]
+                signal = 0.125 * old + 0.875 * product
+                history[offset + i] = 0.99 * old + 0.01 * product
+            var direction = sign(signal) / sqrt(Float32(inputs + 1))
+            if scale_direction != 0:
+                direction *= sqrt(squared / (1 + squared))
+            weights[offset + i] = updated_weight(weights[offset + i], rate, direction, squared, explicit_decay)
 
 
 def bottleneck_gate(z: Read, activity: Write, batch_arg: Int32, units_arg: Int32,
@@ -375,8 +390,9 @@ def encoder_coactivity(activity: Read, signs: Read, counts: Read, signed_post: W
     stats[units + node] = squared / max(count, Float32(1))
 
 
-def encoder_update(x: Read, signed_post: Read, stats: Read, weights: Write, history: Write,
-                   batch_arg: Int32, inputs_arg: Int32, units_arg: Int32, rate: Float32, lion: Int32):
+def encoder_update[observe: Bool = False](x: Read, signed_post: Read, stats: Read,
+                   weights: Write, history: Write, observations: Write,
+                   batch_arg: Int32, inputs_arg: Int32, units_arg: Int32, rate: Float32, lion: Int32, explicit_decay: Int32):
     var batch = Int(batch_arg)
     var inputs = Int(inputs_arg)
     var units = Int(units_arg)
@@ -393,13 +409,50 @@ def encoder_update(x: Read, signed_post: Read, stats: Read, weights: Write, hist
         var pre = x[n * inputs + incoming] if incoming < inputs else Float32(1)
         product += pre * signed_post[n * units + node]
     product /= count
-    var signal = product
-    if lion != 0:
-        var old = history[i]
-        signal = 0.125 * old + 0.875 * product
-        history[i] = 0.99 * old + 0.01 * product
-    var direction = sign(signal) / sqrt(Float32(inputs + 1))
-    weights[i] = (weights[i] + rate * direction) / (1 + rate * stats[units + node])
+    comptime if observe:
+        observations[i] = product
+    else:
+        var signal = product
+        if lion != 0:
+            var old = history[i]
+            signal = 0.125 * old + 0.875 * product
+            history[i] = 0.99 * old + 0.01 * product
+        var direction = sign(signal) / sqrt(Float32(inputs + 1))
+        weights[i] = updated_weight(weights[i], rate, direction, stats[units + node], explicit_decay)
+
+
+def adapt_gain(history: Read, observations: Read, stats: Read, gains: Write,
+               rows_arg: Int32, units_arg: Int32, offset: Int32, gain_offset: Int32):
+    var rows = Int(rows_arg)
+    var units = Int(units_arg)
+    var node = global_idx.x
+    if node >= units or stats[node] == 0:
+        return
+    var alignment: Float32 = 0
+    for row in range(rows):
+        var i = row * units + node
+        alignment += sign(history[Int(offset) + i]) * sign(observations[i])
+    var factor = exp(-log(Float32(0.99)) * (alignment / Float32(rows)))
+    var index = Int(gain_offset) + node
+    gains[index] = max(Float32(0.01), min(Float32(1), gains[index] * factor))
+
+
+def apply_adapted_lion(observations: Read, stats: Read, gains: Read, weights: Write, history: Write,
+                       rows_arg: Int32, units_arg: Int32, offset: Int32, gain_offset: Int32, rate: Float32):
+    var rows = Int(rows_arg)
+    var units = Int(units_arg)
+    var i = global_idx.x
+    if i >= rows * units:
+        return
+    var node = i % units
+    if stats[node] == 0:
+        return
+    var product = observations[i]
+    var index = Int(offset) + i
+    var old = history[index]
+    var direction = sign(0.125 * old + 0.875 * product) / sqrt(Float32(rows))
+    history[index] = 0.99 * old + 0.01 * product
+    weights[index] = updated_weight(weights[index], rate * gains[Int(gain_offset) + node], direction, stats[units + node], 0)
 
 
 def normalize_updated(weights: Write, activity: Read, teaching: Read,
@@ -428,6 +481,7 @@ def normalize_updated(weights: Write, activity: Read, teaching: Read,
 struct Network(Movable, Writable):
     var ctx: DeviceContext
     var weights: Buffer
+    var explicit_decay: Int32
     var lion: Bool
     var scale_direction: Bool
     var output_bound: Float32
@@ -435,6 +489,9 @@ struct Network(Movable, Writable):
     var clip_output: Int32
     var teaching: Buffer
     var history: Buffer
+    var adaptive_agreement: Bool
+    var agreement: Buffer
+    var observations: Buffer
     var coordinates: Buffer
     var target: Buffer
     var prediction: Buffer
@@ -502,6 +559,8 @@ struct Network(Movable, Writable):
         self.omega = Float32(Float64(py=args[13]))
         self.basis_size = Int(py=args[14])
         self.lion = Bool(py=args[15])
+        self.explicit_decay = Int32(Bool(py=args[24]))
+        self.adaptive_agreement = Bool(py=args[25])
         self.scale_direction = Bool(py=args[16])
         self.output_bound = Float32(Float64(py=args[17]))
         self.output_half_span = Float32(Float64(py=args[18]))
@@ -513,6 +572,11 @@ struct Network(Movable, Writable):
         var size = (self.inputs * self.basis_size + 1 + (self.depth - 1) * (self.units * self.basis_size + 1)) * self.units
         self.weights = self.ctx.enqueue_create_buffer[DType.float32](size)
         self.history = self.ctx.enqueue_create_buffer[DType.float32](size if self.lion else 1)
+        self.agreement = self.ctx.enqueue_create_buffer[DType.float32](
+            self.units * self.depth if self.adaptive_agreement else 1)
+        var largest_input = self.inputs if self.depth == 1 else max(self.inputs, self.units)
+        self.observations = self.ctx.enqueue_create_buffer[DType.float32](
+            (largest_input * self.basis_size + 1) * self.units if self.adaptive_agreement else 1)
         self.coordinates = self.ctx.enqueue_create_buffer[DType.float32](self.capacity * self.inputs)
         self.target = self.ctx.enqueue_create_buffer[DType.float32](self.capacity * self.outputs)
         self.prediction = self.ctx.enqueue_create_buffer[DType.float32](self.capacity * self.outputs)
@@ -524,7 +588,8 @@ struct Network(Movable, Writable):
         self.encoder_signs = self.ctx.enqueue_create_buffer[DType.float32](self.capacity * self.units if self.encoder else 1)
         self.encoder_counts = self.ctx.enqueue_create_buffer[DType.float32](len(self.encoder_signs))
         self.signed_post = self.ctx.enqueue_create_buffer[DType.float32](len(self.logits) if self.encoder else 1)
-        self.encoder_stats = self.ctx.enqueue_create_buffer[DType.float32](2 * self.units if self.encoder else 1)
+        self.encoder_stats = self.ctx.enqueue_create_buffer[DType.float32](
+            2 * self.units if self.encoder or self.adaptive_agreement else 1)
         self.features = List[Buffer]()
         if self.basis_size > 1:
             for layer in range(self.depth):
@@ -539,17 +604,34 @@ struct Network(Movable, Writable):
 
     @staticmethod
     def load(self: MutPointer[Self, MutAnyOrigin], weights: PythonObject,
-             history: PythonObject) raises:
+             history: PythonObject, agreement: PythonObject) raises:
         upload(self[].weights, weights, len(self[].weights))
         if self[].lion:
             upload(self[].history, history, len(self[].history))
+        if self[].adaptive_agreement:
+            upload(self[].agreement, agreement, len(self[].agreement))
 
     @staticmethod
     def save(self: MutPointer[Self, MutAnyOrigin], weights: PythonObject,
-             history: PythonObject) raises:
+             history: PythonObject, agreement: PythonObject) raises:
         download(self[].weights, weights, len(self[].weights))
         if self[].lion:
             download(self[].history, history, len(self[].history))
+        if self[].adaptive_agreement:
+            download(self[].agreement, agreement, len(self[].agreement))
+
+    def adapt_and_update(mut self, inputs: Int, offset: Int, layer: Int, rate: Float32) raises:
+        var rows = inputs + 1
+        var gain_offset = layer * self.units
+        # Reduce signs using the old history before applying the weight and history updates.
+        self.ctx.enqueue_function[adapt_gain](
+            read(self.history), read(self.observations), read(self.encoder_stats), write(self.agreement),
+            Int32(rows), Int32(self.units), Int32(offset), Int32(gain_offset),
+            grid_dim=ceildiv(self.units, Block), block_dim=Block)
+        self.ctx.enqueue_function[apply_adapted_lion](
+            read(self.observations), read(self.encoder_stats), read(self.agreement), write(self.weights), write(self.history),
+            Int32(rows), Int32(self.units), Int32(offset), Int32(gain_offset), rate,
+            grid_dim=ceildiv(rows * self.units, Block), block_dim=Block)
 
     def expand(mut self, source: Read, layer: Int, count: Int) raises:
         self.ctx.enqueue_function[expand_edges](
@@ -663,11 +745,22 @@ struct Network(Movable, Writable):
             read(self[].activity[0]), read(self[].encoder_signs), read(self[].encoder_counts),
             write(self[].signed_post), write(self[].encoder_stats), Int32(batch), Int32(self[].units), Int32(self[].width),
             Int32(Int(py=channel_width)), Int32(teaching_width), grid_dim=ceildiv(self[].units, Block), block_dim=Block)
-        self[].ctx.enqueue_function[encoder_update](
-            read(self[].coordinates), read(self[].signed_post), read(self[].encoder_stats),
-            write(self[].weights), write(self[].history), Int32(batch), Int32(self[].inputs), Int32(self[].units),
-            Float32(Float64(py=rate)), Int32(self[].lion),
-            grid_dim=ceildiv(len(self[].weights), Block), block_dim=Block)
+        var step = Float32(Float64(py=rate))
+        if self[].adaptive_agreement:
+            comptime observe = encoder_update[True]
+            self[].ctx.enqueue_function[observe](
+                read(self[].coordinates), read(self[].signed_post), read(self[].encoder_stats),
+                write(self[].weights), write(self[].history), write(self[].observations),
+                Int32(batch), Int32(self[].inputs), Int32(self[].units), step, Int32(self[].lion), self[].explicit_decay,
+                grid_dim=ceildiv(len(self[].weights), Block), block_dim=Block)
+            self[].adapt_and_update(self[].inputs, 0, 0, step)
+        else:
+            comptime update = encoder_update[False]
+            self[].ctx.enqueue_function[update](
+                read(self[].coordinates), read(self[].signed_post), read(self[].encoder_stats),
+                write(self[].weights), write(self[].history), write(self[].observations),
+                Int32(batch), Int32(self[].inputs), Int32(self[].units), step, Int32(self[].lion), self[].explicit_decay,
+                grid_dim=ceildiv(len(self[].weights), Block), block_dim=Block)
 
     @staticmethod
     def train(self: MutPointer[Self, MutAnyOrigin], x: PythonObject,
@@ -694,12 +787,24 @@ struct Network(Movable, Writable):
                 incoming = read(self[].features[layer])
                 inputs *= self[].basis_size
             var count = (inputs + 1) * self[].units
-            self[].ctx.enqueue_function[hebbian](
-                incoming, read(self[].activity[layer]), read(self[].teaching),
-                write(self[].weights), write(self[].history),
-                Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
-                Int32(offset), hidden_rate * self[].rate_multipliers[layer], Int32(self[].lion), Int32(self[].scale_direction),
-                grid_dim=ceildiv(count, Block), block_dim=Block)
+            var step = hidden_rate * self[].rate_multipliers[layer]
+            if self[].adaptive_agreement:
+                comptime observe = hebbian[True]
+                self[].ctx.enqueue_function[observe](
+                    incoming, read(self[].activity[layer]), read(self[].teaching),
+                    write(self[].weights), write(self[].history), write(self[].observations), write(self[].encoder_stats),
+                    Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
+                    Int32(offset), step, Int32(self[].lion), Int32(self[].scale_direction), self[].explicit_decay,
+                    grid_dim=ceildiv(count, Block), block_dim=Block)
+                self[].adapt_and_update(inputs, offset, layer, step)
+            else:
+                comptime update = hebbian[False]
+                self[].ctx.enqueue_function[update](
+                    incoming, read(self[].activity[layer]), read(self[].teaching),
+                    write(self[].weights), write(self[].history), write(self[].observations), write(self[].encoder_stats),
+                    Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
+                    Int32(offset), step, Int32(self[].lion), Int32(self[].scale_direction), self[].explicit_decay,
+                    grid_dim=ceildiv(count, Block), block_dim=Block)
             if self[].unit_norm_updates:
                 self[].ctx.enqueue_function[normalize_updated](
                     write(self[].weights), read(self[].activity[layer]), read(self[].teaching),

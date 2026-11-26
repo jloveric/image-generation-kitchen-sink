@@ -207,7 +207,7 @@ class AutoencoderTest(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
     def test_gpu_encoder_decoder_step_agrees_with_numpy(self):
-        for rule in ("signsgd", "lion"):
+        for rule in ("signsgd", "lion", "lion-explicit", "lion-adaptive-agreement"):
             with self.subTest(rule=rule):
                 cpu, gpu = self.model(rule=rule), self.model("mojo", rule)
                 np.testing.assert_allclose(cpu.encode(self.images), gpu.encode(self.images), atol=5e-6)
@@ -222,14 +222,17 @@ class AutoencoderTest(unittest.TestCase):
     def test_gpu_projected_bottleneck_signs_agree_with_numpy(self):
         settings = dict(images_per_batch=4, inputs=12, decoder_kind="vector",
                         projected_latent_votes=True)
-        cpu = Autoencoder(3, **settings)
-        gpu = Autoencoder(3, backend="mojo", **settings)
-        targets = np.where(cpu.decode(cpu.encode(self.images)) > 0, -1., 1.).astype(np.float32)
-        for model in (cpu, gpu):
-            model.step(self.images, None, targets, .004)
-        actual = gpu.state()
-        for key, expected in cpu.state().items():
-            np.testing.assert_allclose(actual[key], expected, atol=3e-6, err_msg=key)
+        for rule in ("signsgd", "lion-adaptive-agreement"):
+            with self.subTest(rule=rule):
+                cpu = Autoencoder(3, rule=rule, **settings)
+                gpu = Autoencoder(3, backend="mojo", rule=rule, **settings)
+                targets = np.where(cpu.decode(cpu.encode(self.images)) > 0, -1., 1.).astype(np.float32)
+                for _ in range(2):
+                    for model in (cpu, gpu):
+                        model.step(self.images, None, targets, .004)
+                actual = gpu.state()
+                for key, expected in cpu.state().items():
+                    np.testing.assert_allclose(actual[key], expected, atol=3e-6, err_msg=key)
 
     @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
     def test_gpu_small_pools_and_balanced_encoder_feedback(self):

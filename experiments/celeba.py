@@ -327,7 +327,7 @@ def main():
                         help="Save checkpoints and error scores without fitting a sampler")
     parser.add_argument("--rate", type=float, default=.004)
     parser.add_argument("--encoder-rate", type=float, default=1.)
-    parser.add_argument("--rule", choices=("signsgd", "lion"), default="signsgd")
+    parser.add_argument("--rule", choices=("signsgd", "lion", "lion-explicit", "lion-adaptive-agreement"), default="lion")
     parser.add_argument("--bottleneck-pool-size", type=int,
                         help="Size of each equal bottleneck pool, in neurons")
     parser.add_argument("--projected-encoder-votes", action="store_true",

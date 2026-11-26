@@ -24,7 +24,7 @@ TRIAL = ScalarTrial(
     ),
     # Each tuple specifies the rule, initial final-layer step, batch, epochs, and layer step multiplier.
     phases=(
-        ("signsgd", .003, 64, 80, 1.),
+        ("lion", .003, 64, 80, 1.),
         ("lion", .0008, 64, 100, .75),
         ("lion", .00035, 64, 220, .90),
         ("lion", .00012, 64, 240, .95),

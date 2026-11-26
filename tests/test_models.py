@@ -7,10 +7,129 @@ import numpy as np
 
 from hebbian_fit.data import EDGES, scalar_data, step_metrics
 from hebbian_fit.__main__ import training_epochs
-from hebbian_fit.model import ModelConfig, NumpyModel, connection_inputs, select, with_bias
+from hebbian_fit.model import ModelConfig, NumpyModel, connection_inputs, inverse_participation, select, with_bias
 
 
 class NumpyTests(unittest.TestCase):
+    def test_checked_step_restores_weights_and_history_before_skipping_a_reversed_sign(self):
+        cfg = ModelConfig(width=1, depth=1, gate="none")
+        ordinary = NumpyModel(cfg, 5)
+        checked = NumpyModel(replace(cfg, hidden_rule="lion-checked-step"), 5)
+        weights = np.array([[0., 0.], [.2, .05]], dtype=np.float32)
+        for model in (ordinary, checked):
+            model.weights[0][:] = weights
+        x = np.zeros((1, 1), np.float32)
+        target = ordinary.predict_values(x) + .001
+        saved = checked.state()
+        ordinary.step(x, target, .05)
+        self.assertLess(ordinary.teaching_signs(ordinary.predict_values(x), target).item(), 0)
+        checked.step(x, target, .05)
+        for key, value in checked.state().items():
+            np.testing.assert_array_equal(value, saved[key])
+
+    def test_centered_lion_matches_training_in_centered_feature_coordinates(self):
+        cfg = ModelConfig(inputs=2, width=1, depth=1, gate="none")
+        ordinary = NumpyModel(cfg, 7)
+        centered_update = NumpyModel(replace(cfg, hidden_rule="lion-centered"), 7)
+        x = np.array([[1., -.5], [3., .5], [2., 1.5]], np.float32)
+        mean = x.mean(axis=0)
+        ordinary.weights[0][-1] += mean @ ordinary.weights[0][:-1]
+        target = centered_update.predict_values(x) + np.array([[1.], [-.5], [.25]], np.float32)
+        ordinary.step(x - mean, target, .025)
+        centered_update.step(x, target, .025)
+        ordinary.weights[0][-1] -= mean @ ordinary.weights[0][:-1]
+        np.testing.assert_allclose(centered_update.weights[0], ordinary.weights[0], atol=1e-7)
+        np.testing.assert_allclose(centered_update.history[0], ordinary.history[0], atol=1e-7)
+
+    def test_inverse_participation_counts_effectively_active_examples(self):
+        activity = np.array([[0., -3., 9.], [0., 3., 0.], [0., -3., 0.]], dtype=np.float32)
+        np.testing.assert_allclose(inverse_participation(activity), [0., 1/3, 1.])
+        np.testing.assert_allclose(inverse_participation(activity * 1e-25), [0., 1/3, 1.])
+
+    def test_lion_weight_power_scales_the_step_by_each_neurons_current_weights(self):
+        cfg = ModelConfig(width=1, depth=1, gate="none", hidden_rule="lion-weight-power")
+        model = NumpyModel(cfg, 5)
+        weights = np.array([[1., .25], [1., .25]], dtype=np.float32)
+        model.weights[0][:] = weights
+        x = np.ones((1, 1), dtype=np.float32)
+        rate = .05
+        model.step(x, model.predict_values(x) + 1, rate)
+        steps = rate * np.square(weights).sum(axis=0)
+        direction = np.array([1., -1.]) / np.sqrt(2)
+        expected = (weights + steps * direction) / (1 + steps * np.square(weights.sum(axis=0)))
+        np.testing.assert_allclose(model.weights[0], expected, rtol=1e-6)
+
+    def test_lion_coherence_damps_conflicting_observations_and_resumes(self):
+        cfg = ModelConfig(width=1, depth=1, gate="none", hidden_rule="lion-coherence")
+        model = NumpyModel(cfg, 5)
+        model.weights[0][:] = [[1, 0], [1, 0]]
+        x = np.ones((1, 1), dtype=np.float32)
+        model.history[0][:, 0] = -.01
+        model.magnitude_history[0][:, 0] = .04
+        rate = .125
+        target = model.predict_values(x) + 1
+        restored = NumpyModel(cfg, 6)
+        restored.load(model.state())
+        for current in (model, restored):
+            current.step(x, target, rate)
+        signed = .99 * -.01 + .01 * 2
+        magnitude = .99 * .04 + .01 * 2
+        effective_rate = rate * signed / magnitude
+        expected = (1 + effective_rate / np.sqrt(2)) / (1 + effective_rate * 4)
+        np.testing.assert_allclose(model.weights[0][:, 0], expected)
+        np.testing.assert_allclose(model.take_mean_step_multipliers(), [signed / magnitude])
+        for name, value in model.state().items():
+            np.testing.assert_array_equal(value, restored.state()[name])
+
+    def test_adaptive_agreement_recovers_or_reduces_each_neurons_step(self):
+        cfg = ModelConfig(width=1, depth=1, gate="none", hidden_rule="lion-adaptive-agreement")
+        model = NumpyModel(cfg, 5)
+        model.weights[0].fill(.5)
+        model.history[0].fill(-.1)
+        model.agreement_history[0].fill(.5)
+        restored = NumpyModel(cfg, 6)
+        restored.load(model.state())
+
+        x = np.ones((1, 1), dtype=np.float32)
+        target = model.predict_values(x) + 1
+        for current in (model, restored):
+            current.step(x, target, .05)
+
+        gains = .5 * np.array([.99, 1 / .99])
+        rates = .05 * gains
+        expected = (.5 + rates * np.array([1, -1]) / np.sqrt(2)) / (1 + rates)
+        np.testing.assert_allclose(model.agreement_history[0], gains)
+        np.testing.assert_allclose(model.weights[0], np.broadcast_to(expected, (2, 2)))
+        for name, value in model.state().items():
+            np.testing.assert_array_equal(value, restored.state()[name])
+
+    def test_interlayer_max_abs_uses_one_peak_per_example_across_classes(self):
+        cfg = ModelConfig(width=1, depth=3, gate="none", normalize_hidden_inputs="max-abs")
+        model = NumpyModel(cfg, 2)
+        model.weights[0][:] = [[-4., 2.], [0., 0.]]
+        x = np.array([[1.], [-2.], [0.]], dtype=np.float32)
+        _, traces = model.forward(x)
+        np.testing.assert_array_equal(traces[0][1], x * [[-4., 2.]])
+        expected = np.array([[-1., .5], [1., -.5], [0., 0.]], dtype=np.float32)
+        np.testing.assert_array_equal(traces[1][0], with_bias(expected))
+        post = traces[1][1]
+        expected = post / np.max(np.abs(post), axis=1, keepdims=True)
+        np.testing.assert_allclose(traces[2][0], with_bias(expected))
+
+    def test_hidden_rms_scales_connections_per_example_and_preserves_layer_outputs(self):
+        cfg = ModelConfig(width=1, depth=2, gate="none", readout_layers="all", normalize_hidden_inputs=True)
+        model = NumpyModel(cfg, 1)
+        model.weights[0][:] = [[3, -4], [0, 0]]
+        x = np.array([[0], [1], [-2]], np.float32)
+        prediction, ((first_input, first_output, _), (second_input, second_output, _)) = model.forward(x)
+        raw = x * np.array([[3, -4]], np.float32)
+        normalized = raw / np.sqrt((raw**2).mean(axis=1, keepdims=True) + 1e-6)
+        np.testing.assert_array_equal(first_input, with_bias(x))
+        np.testing.assert_array_equal(first_output, raw)
+        np.testing.assert_allclose(second_input, with_bias(normalized))
+        np.testing.assert_allclose(prediction, (model.pool(raw) + model.pool(second_output)) / 2)
+        np.testing.assert_allclose(prediction, np.vstack([model.predict_values(example[None]) for example in x]))
+
     def test_plain_cosine_starts_at_the_peak_and_decay_begins_immediately(self):
         data = SimpleNamespace(x=np.zeros((1, 1)), y=np.zeros((1, 1)))
         rates = []
@@ -45,6 +164,56 @@ class NumpyTests(unittest.TestCase):
             m.step(x, -np.ones_like(x), rate)
         for k, v in model.state().items():
             np.testing.assert_array_equal(restored.state()[k], v)
+
+    def test_explicit_lion_uses_old_weight_for_decay_and_retains_coactivity_history(self):
+        cfg = ModelConfig(width=1, depth=1, gate="none", hidden_rule="lion-explicit")
+        model = NumpyModel(cfg, 1)
+        model.weights[0][:] = [[1, 0], [1, 0]]
+        x = np.ones((1, 1), np.float32)
+        rate = .125
+        model.step(x, model.predict_values(x) + 1, rate)
+        expected = (1 - rate * 4) + rate / np.sqrt(2)
+        np.testing.assert_allclose(model.weights[0][:, 0], expected)
+        np.testing.assert_allclose(model.history[0][:, 0], .02)
+        np.testing.assert_array_equal(model.weights[0][:, 1], 0)
+
+    def test_lion_agreement_scales_the_whole_update_using_previous_history(self):
+        cfg = ModelConfig(inputs=2, width=1, depth=1, gate="none", hidden_rule="lion-agreement")
+        model = NumpyModel(cfg, 1)
+        model.weights[0][:] = [[.2, 0], [.3, 0], [.5, 0]]
+        model.history[0][:, 0] = [.5, -.5, 0.]
+        restored = NumpyModel(cfg, 2)
+        restored.load(model.state())
+        x = np.ones((1, 2), np.float32)
+        rate = .125
+        rates = rate * np.array([1.5, .5, 1.])
+        expected = (model.weights[0][:, 0] + rates / np.sqrt(3)) / (1 + rates)
+        for current in (model, restored):
+            current.step(x, current.predict_values(x) + 1, rate)
+            np.testing.assert_allclose(current.weights[0][:, 0], expected)
+            np.testing.assert_allclose(current.history[0][:, 0], [.505, -.485, .01])
+            np.testing.assert_array_equal(current.weights[0][:, 1], 0.)
+            self.assertEqual(current.take_mean_step_multipliers(), [1.])
+
+    def test_lion_response_limits_each_neurons_change_before_competition(self):
+        cfg = ModelConfig(width=1, depth=1, gate="none")
+        ordinary = NumpyModel(cfg, 3)
+        limited = NumpyModel(replace(cfg, hidden_rule="lion-response", response_limit_ratio=.02), 3)
+        x = np.array([[-1], [.5], [1]], dtype=np.float32)
+        rate = .1
+        before = np.array([[.2, -.1], [.4, -.2]], dtype=np.float32)
+        for model in (ordinary, limited):
+            model.weights[0][:] = before
+            model.step(x, model.predict_values(x) + 1, rate)
+        incoming = with_bias(x)
+        proposed = ordinary.weights[0] - before
+        budget = (.02 * rate) * np.linalg.norm(incoming @ before, axis=0)
+        factors = budget / np.linalg.norm(incoming @ proposed, axis=0)
+        self.assertTrue((factors < 1).all())
+        self.assertNotAlmostEqual(*factors)
+        np.testing.assert_allclose(limited.weights[0], before + factors * proposed)
+        np.testing.assert_array_equal(limited.history[0], ordinary.history[0])
+        np.testing.assert_allclose(limited.take_mean_step_multipliers(), [factors.mean()], rtol=1e-6)
 
     def test_depth_scaled_step_matches_each_local_update(self):
         cfg = ModelConfig(depth=3, width=3, gate="gaussian", hidden_rule="signsgd")
