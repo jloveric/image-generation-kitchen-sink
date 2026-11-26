@@ -72,13 +72,16 @@ The model maps 12,288 input values through layers of 3,072 and 1,536 neurons to 
 
 Training makes two passes over all 162,770 training portraits with one Lion update throughout. A single schedule holds the starting step for the first fifth of all minibatches and decays it to zero along a half cosine. The checkpoint is selected on 512 official validation portraits. With the selected weights, validation chose an RGB Gaussian width of 0.40, giving **184.19** mean summed squared RGB error on the 19,962 official test portraits. The sampler fits the selected encoder's codes for all training portraits. An existing mixture export is sufficient to draw the 36 portraits. [Run settings and measurements](../assets/results/celeba-256.json) · [Sampler](../experiments/celeba_prior.py) · [Paper portrait panel](figures/portraits.png)
 
-To compare updates on a smaller training sample, reuse `portrait_args`. Both runs use the same 8,192 portraits from the official training split and the same 512 validation portraits. They train for two passes in batches of 128. The ordinary Lion control uses the paper's layer timesteps. Adaptive Lion uses one scheduled step across the encoder and decoder. Each neuron adjusts its own multiplier.
+To compare updates on a smaller training sample, reuse `portrait_args`. All runs use the same 8,192 portraits from the official training split and the same 512 validation portraits. They train for two passes in batches of 128. The two ordinary Lion runs use the paper's layer timesteps and one shared timestep, respectively. Adaptive Lion starts from the shared timestep and adjusts it for each neuron.
 
 ```bash
 pilot=("${portrait_args[@]}" --pilot-only --pilot-images 8192 --epochs 2 --checks-per-epoch 4)
 OPENBLAS_NUM_THREADS=2 python -m experiments.celeba "${pilot[@]}" \
   --rule lion --encoder-rate .15 --decoder-rate-decay .15 \
   --output runs/celeba-sequential/screen/code256-shared-step-control
+OPENBLAS_NUM_THREADS=2 python -m experiments.celeba "${pilot[@]}" \
+  --rule lion \
+  --output runs/celeba-sequential/screen/code256-shared-step-uniform
 OPENBLAS_NUM_THREADS=2 python -m experiments.celeba "${pilot[@]}" \
   --rule lion-adaptive-agreement \
   --output runs/celeba-sequential/screen/code256-shared-step-agreement
@@ -152,7 +155,7 @@ OPENBLAS_NUM_THREADS=4 python -m experiments.celeba_prior "$run/full" --vector-g
 python -m papers.lion portraits --run "$run/full"
 ```
 
-### Lion with coactivity agreement
+### Immediate per-weight scaling
 
 For Blue Marble, we test a per-weight step in the semi-implicit update. If current signed coactivity and its running average before the update agree in sign, multiply the scheduled step by 1.5. If they disagree, multiply by 0.5. If either is zero, use the scheduled step. This scales both the signed increment and the activity-dependent shrinkage. The same rule applies in every layer. The run uses Gaussian competition, batches of 128, and the same 560-epoch cosine as its uniform-timestep control, starting at 0.00075.
 
