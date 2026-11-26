@@ -56,7 +56,7 @@ For each example the network computes the complete prediction, then compares it 
  e_k=\sgn(y_k-\hat y_k),\qquad \sgn(0)=0 .
  \label{eq:sign}
 \end{equation}
-An increase neuron assigned to $k$ receives $s_j=e_k$, and a decrease neuron receives $s_j=-e_k$. For example, if the red value of a pixel is too low and its green value is correct, the red classes receive opposite signs and the green classes receive zero. Each layer uses signs from the \emph{final} prediction, even if its own contribution $r_{\ell k}$ would suggest a different correction. A correct pixel channel contributes no observation for that channel.
+An increase neuron assigned to $k$ receives $s_j=e_k$, and a decrease neuron receives $s_j=-e_k$. For example, if the red value of a pixel is too low and its green value is correct, the pair assigned to red receives signs $+1$ and $-1$, respectively. Both neurons assigned to green receive zero. Each layer uses signs from the \emph{final} prediction, even if its own contribution $r_{\ell k}$ would suggest a different correction. A correct pixel channel contributes no observation for that channel.
 
 \paragraph{One minibatch.}
 \begin{enumerate}
@@ -137,7 +137,7 @@ $24\times64$  & 95,808 & 0.01968 & 0.07347 & 0.02229\\
 
 We measure rise width by subtracting the known sine term from the prediction for evaluation. Within $0.10$ of the jump, we find the upward half-height crossing closest to the crest and the neighboring upward crossings at 10\% and 90\%. Their separation gives the widths in Table~\ref{tab:sine}. The 24-layer network gives the sharpest median rise and the smallest test error. Its smooth branches show more ripple. Outside the $0.05$ neighborhood, the RMSE in slopes between adjacent test points is $1.19$ for 12 layers and $6.04$ for 24.
 
-\subsection{One photograph from pixel coordinates}
+\subsection{Implicit Representation of an Image}
 The input is $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. Each target is the RGB triple at that point in a crop of the Apollo 17 Blue Marble photograph \citep{nasa1972}. Twelve layers of 432 neurons each contain 72 increase and 72 decrease neurons per color. There are 2,058,912 learned weights and biases. We fit and score all 16,384 pixels. This measures how closely a dense network can represent one image.
 
 \begin{figure}[ht]
@@ -146,7 +146,15 @@ The input is $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. Each target i
 \label{fig:earth}
 \end{figure}
 
-With RGB values expressed on $[0,1]$, the sum of the squared differences across all 49,152 channel values is 47.17. This corresponds to a root mean squared difference of 0.0310 per channel, or about eight levels on an 8-bit scale. Each of the twelve layers contributes one RGB estimate to this reconstruction.
+With RGB values expressed on $[0,1]$, the sum of the squared differences across all 49,152 channel values is 47.17. This corresponds to a root mean squared difference of 0.0310 per channel, or about eight levels on an 8-bit scale.
+
+Figure~\ref{fig:earth-layers} shows how the twelve estimates combine. Layer 1 gives a coarse, brightly colored patch at the position of the Earth. Several deeper layers show sharp cloud bands with strong color casts. Layer 9 comes closest to the photograph on its own, with a summed squared error of 2,836.10. In the cumulative views, error falls with every added layer, from 7,194.38 at layer 1 to 91.04 through layer 11 and 47.17 through layer 12.
+
+\begin{figure}[!htb]
+\centering\includegraphics[width=\linewidth]{figures/earth-layers.pdf}
+\caption{Blue Marble readouts from the final network. For each layer $\ell$, the upper image displays its own RGB estimate $r_{\ell}$. The image directly below shows the accumulated contribution through layer $\ell$, computed as $(r_1+\cdots+r_{\ell})/\ell$. Each layer receives its usual inputs from the preceding layer in both views. Clipping and rounding occur once per displayed image, after averaging in the cumulative rows. The lower right image is the full reconstruction in Figure~\ref{fig:earth}.}
+\label{fig:earth-layers}
+\end{figure}
 
 \paragraph{Settings for the coordinate fits.}
 In the multilayer sine networks the Gaussian width tapers linearly from $0.32$ to $0.16$, rounded to three decimals. The single layer uses $0.32$. Blue Marble tapers from $0.24$ to $0.08$. Table~\ref{tab:steps} gives phase budgets and starting steps. A phase holds its starting step for the first fifth of its budget, then reduces it along a half cosine. If a layer has $k$ layers after it, its step is multiplied by $d^k$. Every phase considers its starting weights and checkpoints every five epochs. The next phase starts at the checkpoint with the least squared error on the sine validation points or on all Earth pixels, respectively. The 24-layer sine fit scales all four starting steps by $0.64$, chosen on validation error. The one-layer fit scales them by $\sqrt{64/512}$. The comparison thus varies capacity and step size together.
@@ -171,11 +179,11 @@ An autoencoder maps a portrait to a shorter vector, called its code, and uses th
 
 \begin{figure}[ht]
 \centering\includegraphics[width=\linewidth]{figures/autoencoder.pdf}
-\caption{The sequential portrait autoencoder. The first two dense layers compress each portrait into a code of 2,048 values. The decoder maps that code to one increase/decrease pair per RGB value. For generation, a sampled code enters at the dashed arrow.}
+\caption{The portrait autoencoder has two neuron classes throughout. Each box shows one increase ($+$) and one decrease ($-$) neuron and gives the total number of such pairs. In the encoder and code layers, both neurons pass their signed activities to the next dense layer. At the decoder output, subtracting the two activity magnitudes gives one channel value for one pixel, followed by clipping and rounding. A sampled code can enter at the dashed arrow to generate a portrait.}
 \label{fig:auto}
 \end{figure}
 
-The encoder has two dense layers of 3,072 and 2,048 neurons. The second layer's activities form the code. Every output neuron receives all 2,048 code values. The final layer has two neurons for each of the 12,288 RGB values (Figure~\ref{fig:auto}). The three dense layers contain 94,401,536 learned weights and biases. Subtraction, clipping and rounding have no fitted parameters.
+The only neuron classes in Figure~\ref{fig:auto} are increase and decrease. Either class can have positive or negative activity. RGB identifies the measured quantities at the input and output. The encoder's 1,536 pairs pass all 3,072 activities to the code layer, whose 1,024 pairs supply all 2,048 code values to every decoder neuron. Each hidden pair receives teaching votes from a fixed group of pixel channels that can mix colors and locations. Only at the decoder output does a pair correspond to a particular channel at a particular pixel. For example, one pair estimates the red value at the upper left pixel as $|h_+|-|h_-|$. Two more pairs estimate green and blue there. The three dense layers contain 94,401,536 learned weights and biases.
 
 The first encoder layer has three competition pools of 1,024 neurons. The code layer has pools of 684, 684 and 680. Both use $\tau=0.85$ and equal numbers of increase and decrease neurons in each pool. Equation~\ref{eq:votes} assigns eight output coordinates per pair in the first layer and twelve per pair in the code. The decoder uses $\tau=0.50$ in each two-neuron pool and the direct error sign for that value.
 

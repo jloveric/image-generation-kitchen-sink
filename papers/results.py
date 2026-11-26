@@ -11,13 +11,12 @@ from matplotlib.patches import Rectangle
 import numpy as np
 
 from experiments import sine_jump
-from experiments.blue_marble_quality import Trial
+from experiments.blue_marble_quality import Trial, layer_readouts
 from experiments.celeba import evaluate, figure, load_checkpoint
 from experiments.celeba_diversity import model_for
-from experiments.fixed_capacity import predict
 from hebbian_fit.autoencoder import Generator
 from hebbian_fit.data import rgb_data
-from hebbian_fit.model import ModelConfig
+from hebbian_fit.model import ModelConfig, NumpyModel
 
 OUT = Path(__file__).resolve().parent / "figures"
 REPORTS = Path("assets/results")
@@ -71,17 +70,40 @@ def sine():
     plt.close(fig)
 
 
-def marble():
+def marble_layers(model, data, readouts, full):
+    # Align each layer's own RGB estimate with the accumulated contribution through that layer.
+    fig, axes = plt.subplots(4, 6, figsize=(7.5, 5.15))
+    fig.subplots_adjust(left=.165, right=.995, bottom=.01, top=.95, wspace=.06, hspace=.17)
+    for index, values in enumerate(readouts):
+        block, column = divmod(index, 6)
+        mean = readouts[:index + 1].mean(axis=0)
+        if index + 1 == len(readouts):
+            np.testing.assert_array_equal(model.format_output(mean), full)
+        for row, (label, raw) in enumerate((("Layer\nalone", values), ("Accumulated\ncontribution\nthrough layer", mean))):
+            ax = axes[2*block + row, column]
+            rgb = (model.format_output(raw).reshape(*data.shape, 3) + 1) / 2
+            ax.imshow(rgb, interpolation="none")
+            ax.set_axis_off()
+            if row == 0:
+                ax.set_title(f"Layer {index + 1}", fontsize=9, pad=3)
+            if column == 0:
+                ax.text(-.12, .5, label, transform=ax.transAxes, ha="right", va="center", fontsize=9)
+    fig.savefig(OUT / "earth-layers.pdf")
+    plt.close(fig)
+
+
+def marble(checkpoint=None):
     report = json.loads((REPORTS / "blue-marble-output-depth-12-two-phase-all-pixels.json").read_text())
     settings = report["settings"]
     config = ModelConfig(**{**settings["config"], "layer_gate_widths": tuple(settings["config"]["layer_gate_widths"])})
     trial = Trial(settings["label"], config, tuple(map(tuple, settings["phases"])), settings["backend"])
     trial = replace(trial, label=trial.label + "-all-pixels")
-    model = trial.model(report["seed"])
-    with np.load(trial.path(report["seed"]) / "checkpoint.npz", allow_pickle=False) as state:
+    model = NumpyModel(config, report["seed"])
+    with np.load(checkpoint or trial.path(report["seed"]) / "checkpoint.npz", allow_pickle=False) as state:
         model.load(state)
     data = rgb_data(split=False)
-    predicted = predict(model, data, data.train)
+    readouts, predicted = layer_readouts(model, data.x)
+    marble_layers(model, data, readouts, predicted)
     error = np.sum(np.square((predicted - data.y) / 2, dtype=np.float64))
     print(f"RGB squared error, summed over {len(data.x):,} pixels: {error:.6f}")
     images = [(arr.reshape(128, 128, 3) + 1) / 2 for arr in (data.y, predicted)]
@@ -102,18 +124,21 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("task", choices=("sine", "marble", "portraits", "reconstruction"))
     parser.add_argument("--run", type=Path, default=FACE_RUN, help="Final CelebA full run directory")
+    parser.add_argument("--checkpoint", type=Path, help="Use this saved Blue Marble checkpoint")
     parser.add_argument("--code-top-k", type=int,
                         help="Evaluate a saved CelebA checkpoint with a different bottleneck competition count")
     parser.add_argument("--vector-gate-width", type=float,
                         help="Evaluate a saved CelebA checkpoint at a different RGB Gaussian width")
     args = parser.parse_args()
+    if args.checkpoint is not None and args.task != "marble":
+        parser.error("--checkpoint is for the marble task")
     if args.task != "reconstruction" and (args.code_top_k is not None or args.vector_gate_width is not None):
         parser.error("Competition overrides require the reconstruction task")
     OUT.mkdir(exist_ok=True)
     if args.task == "sine":
         sine()
     elif args.task == "marble":
-        marble()
+        marble(args.checkpoint)
     elif args.task == "portraits":
         generator = Generator(args.run / "decoder-mixture.npz")
         figure(np.stack([generator.generate(i) for i in range(36)]), OUT / "portraits.png")

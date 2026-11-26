@@ -85,20 +85,37 @@ def regressor():
 
 
 def autoencoder():
-    fig, ax = canvas(10, 2.85)
-    xs = [.93, 2.87, 4.74, 6.77, 9.02]
-    widths = [1.56, 1.64, 1.46, 2.08, 1.79]
-    layers = [("Portrait", "12,288 RGB values"), ("Encoder", "3,072 neurons"),
-              ("Code", "2,048 values"), ("Dense decoder", "24,576 neurons"),
-              ("Subtract pairs", "12,288 RGB values")]
-    for i, (x, w, (title, detail)) in enumerate(zip(xs, widths, layers)):
-        accent = i in (2, 4)
-        box(ax, x, 1.28, w, .83, title, detail, TEAL if accent else INK, COOL if accent else LIGHT)
-        if i:
-            arrow(ax, (xs[i-1] + widths[i-1]/2, 1.28), (x-w/2, 1.28))
-    label(ax, 4.74, 2.60, "Sampled code for generation", 12, TEAL)
-    arrow(ax, (4.74, 2.40), (4.74, 1.70), TEAL, "--")
-    label(ax, 7.84, .39, "One increase/decrease pair per RGB value", 11)
+    fig, ax = canvas(10.4, 3.3)
+    columns = (2.84, 5.02, 7.20)
+    y = 1.52
+    half_width = .93
+    for x, name, count in zip(columns, ("Encoder", "Code", "Decoder"),
+                              ("1,536 pairs", "1,024 pairs", "12,288 pairs")):
+        ax.add_patch(FancyBboxPatch((x-half_width, .74), 2*half_width, 1.54,
+                                    boxstyle="round,pad=0,rounding_size=.10",
+                                    fc="#f7f9fa", ec=WIRE, lw=1.0))
+        label(ax, x, 2.64, name, 14, weight="bold")
+        for offset, mark, color, fill in ((-.29, "+", TEAL, COOL), (.29, "−", GOLD, WARM)):
+            ax.add_patch(Circle((x+offset, 1.75), .205, ec=color, fc=fill, lw=1.4))
+            label(ax, x+offset, 1.75, mark, 17, color, "bold")
+        label(ax, x, 1.11, count, 12, weight="bold")
+    for left, right in zip((1.55, columns[0]+half_width, columns[1]+half_width),
+                           (x-half_width for x in columns)):
+        arrow(ax, (left, y), (right, y))
+    label(ax, .80, 2.64, "Input", 14, weight="bold")
+    label(ax, .80, y, "12,288\ncentered RGB\nvalues", 11)
+    label(ax, 9.37, 2.64, "Output", 14, weight="bold")
+    arrow(ax, (columns[-1]+half_width, y), (8.59, y), TEAL)
+    label(ax, 9.44, 1.76, r"$|h_{+}|-|h_{-}|$", 14, TEAL)
+    label(ax, 9.44, 1.13, "one value per\npixel channel", 11)
+    label(ax, columns[0], .40, "3,072 neurons", 11)
+    label(ax, columns[1], .40, "2,048 neurons", 11)
+    label(ax, columns[2], .40, "24,576 neurons", 11)
+    label(ax, 1.05, 3.08, "+  increase", 11, TEAL, "bold")
+    label(ax, 2.32, 3.08, "−  decrease", 11, GOLD, "bold")
+    label(ax, 7.92, 3.08, "Sampled code for generation", 11, TEAL)
+    wire(ax, [(6.40, 3.08), (6.11, 3.08)], TEAL, style="--")
+    arrow(ax, (6.11, 3.08), (6.11, y+.05), TEAL, "--")
     fig.savefig(OUT / "autoencoder.pdf")
     plt.close(fig)
 
