@@ -27,8 +27,12 @@ def decoder_config(rule="signsgd", depth=6, gate_widths=None, rate_decay=1., cla
                        output_bound=1, output_levels=256, layer_rate_decay=rate_decay)
 
 
-def vector_decoder_config(rule, inputs=LATENT, class_width=1, gate_width=.24, top_k=0):
+def vector_decoder_config(rule, inputs=LATENT, class_width=1, gate_width=.24, top_k=0, *, single_output_neuron=False):
     # The model sees a code as one input vector and a portrait as one output vector.
+    if single_output_neuron:
+        return ModelConfig(inputs=inputs, outputs=SIZE * SIZE * 3, width=1, depth=1,
+                           competition="output", gate="none", readout="magnitude",
+                           hidden_rule=rule, output_bound=1, output_levels=256)
     return ModelConfig(inputs=inputs, outputs=SIZE * SIZE * 3, width=class_width, depth=1,
                        competition="output", gate="hard" if top_k else "gaussian",
                        gate_width=gate_width, top_k=top_k or None,
@@ -221,7 +225,7 @@ class Autoencoder:
                  encoder_width=ENCODER_WIDTH, latent_width=LATENT, vector_output_class_width=1,
                  vector_decoder_skip=False, projected_decoder_votes=False, vector_hidden_depth=1,
                  vector_gate_width=.24, zero_init_bias=False, encoder_top_k=(0, 0), vector_top_k=0,
-                 encoder_hidden_widths=()):
+                 encoder_hidden_widths=(), single_output_neuron=False):
         if decoder_kind not in ("coordinate", "vector"):
             raise ValueError("Unknown decoder kind")
         if vector_hidden_depth < 1 or (vector_hidden_depth > 1 and not vector_hidden_width):
@@ -238,6 +242,9 @@ class Autoencoder:
             raise ValueError("Supply two nonnegative encoder Top-K counts and a nonnegative output count")
         if vector_top_k and decoder_kind != "vector":
             raise ValueError("Output Top-K requires the image-vector decoder")
+        if single_output_neuron and (decoder_kind != "vector" or vector_output_class_width != 1
+                                     or vector_top_k or paired_decoder_init):
+            raise ValueError("Single-neuron outputs require the vector decoder with no output pairs or competition")
         if encoder_width < 6 or encoder_width % 6 or latent_width < 6 or latent_width % 2:
             raise ValueError("Encoder width must be a positive multiple of six and code width an even integer of at least six")
         encoder_hidden_widths = tuple(encoder_hidden_widths)
@@ -303,7 +310,8 @@ class Autoencoder:
             decoder_inputs = previous_width
             if self.decoder_skip:
                 decoder_inputs = latent_width + sum(layer.config.units for layer in layers)
-            config = vector_decoder_config(rule, decoder_inputs, vector_output_class_width, vector_gate_width, vector_top_k)
+            config = vector_decoder_config(rule, decoder_inputs, vector_output_class_width, vector_gate_width,
+                                           vector_top_k, single_output_neuron=single_output_neuron)
             capacity = images_per_batch
         else:
             config = decoder_config(rule, depth, gate_widths, decoder_rate_decay, decoder_class_width, latent_width)

@@ -61,7 +61,7 @@ class MojoModel:
             (config.output_levels - 1) / 2 if config.output_levels else 0.0,
             config.edge_transitions or (0.,) * config.depth,
             config.clip_output, config.rate_multipliers, config.readout == "class-energy", encoder,
-            config.hidden_rule == "lion-explicit", self.adaptive_agreement,
+            config.hidden_rule == "lion-explicit", self.adaptive_agreement, config.classes_per_output,
         )
         initial = NumpyModel(config, seed).state()
         self.shapes = [initial[f"weight_{i}"].shape for i in range(config.depth)]

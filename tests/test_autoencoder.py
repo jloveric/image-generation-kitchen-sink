@@ -9,7 +9,8 @@ from hebbian_fit.autoencoder import (
     Autoencoder, EncoderLayer, Generator, encoder_configs, export_generator, rgb_bytes, signed_totals,
     vote_assignment, projected_votes,
 )
-from hebbian_fit.model import select
+from hebbian_fit.gpu import MojoModel
+from hebbian_fit.model import ModelConfig, NumpyModel, select
 
 
 class AutoencoderTest(unittest.TestCase):
@@ -116,6 +117,24 @@ class AutoencoderTest(unittest.TestCase):
             with np.load(path) as exported:
                 self.assertEqual(set(exported.files), {"config", "mean", "root", "coordinate_scale"} |
                                  {f"weight_{i}" for i in range(6)})
+
+    def test_single_neuron_outputs_follow_signed_teaching(self):
+        config = ModelConfig(inputs=1, outputs=4, width=1, depth=1, gate="none",
+                             readout="magnitude", output_bound=1, output_levels=256)
+        backends = (NumpyModel, MojoModel) if os.environ.get("HEBBIAN_TEST_GPU") == "1" else (NumpyModel,)
+        x = np.zeros((1, 1), np.float32)
+        target = np.array([[1, 1, -1, 1]], np.float32)
+        for backend in backends:
+            with self.subTest(backend=backend.__name__):
+                model = backend(config, 0)
+                before = model.state()
+                before["weight_0"][0] = 0
+                before["weight_0"][1] = [.25, -.25, -.25, 1.25]
+                model.load(before)
+                np.testing.assert_allclose(model.predict_values(x), [[-127 / 255] * 3 + [1]], atol=1e-7)
+                np.testing.assert_array_equal(model.step(x, target, .01, return_signs=True), [[1, 1, -1, 0]])
+                change = np.abs(model.state()["weight_0"][1]) - np.abs(before["weight_0"][1])
+                np.testing.assert_array_equal(np.sign(change), [1, 1, -1, 0])
 
     def test_vector_decoder_trains_and_exports(self):
         cases = ((0, 64, 1, False, 1), (16, 128, 2, False, 1), (16, 64, 1, True, 1),

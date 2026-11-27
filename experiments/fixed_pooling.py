@@ -9,7 +9,7 @@ import numpy as np
 
 from hebbian_fit.__main__ import evaluate, plot, training_epochs
 from hebbian_fit.data import BAND_EDGES, scalar_data
-from hebbian_fit.model import READOUTS, ModelConfig, NumpyModel
+from hebbian_fit.model import PAIRED_READOUTS, ModelConfig, NumpyModel
 
 
 def model_for(pool, seed):
@@ -40,9 +40,9 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     rates = [.00001, .0001, .001, .003, .01, .03, .1, .3, 1.]
     with ProcessPoolExecutor(max_workers=6) as executor:
-        screen = list(executor.map(train, [(pool, rate, 1) for pool in READOUTS for rate in rates]))
+        screen = list(executor.map(train, [(pool, rate, 1) for pool in PAIRED_READOUTS for rate in rates]))
         chosen = [min((r for r in screen if r[0]["pool"] == pool),
-                      key=lambda r: r[0]["validation_rmse"]) for pool in READOUTS]
+                      key=lambda r: r[0]["validation_rmse"]) for pool in PAIRED_READOUTS]
         jobs = [(row["pool"], row["rate"], seed) for row, _ in chosen for seed in range(2, 7)]
         runs = chosen + list(executor.map(train, jobs))
     results = []

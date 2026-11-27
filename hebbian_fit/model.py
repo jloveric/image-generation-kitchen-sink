@@ -27,7 +27,8 @@ COACTIVITY_DIRECTION_RULES = ("lion-coactivity-direction", "lion-cosine-coactivi
 NUMPY_ONLY_RULES = tuple(rule for rule in (*ADAPTIVE_LION_RULES, *COACTIVITY_DIRECTION_RULES)
                          if rule != "lion-adaptive-agreement")
 HIDDEN_RULES = ("lion", "lion-explicit", "lion-adaptive-agreement", *NUMPY_ONLY_RULES, "signsgd", "activity-sign")
-READOUTS = ("fixed", "class-sum", "sum", "class-energy")
+PAIRED_READOUTS = ("fixed", "class-sum", "sum", "class-energy")
+READOUTS = (*PAIRED_READOUTS, "magnitude")
 COMPETITIONS = ("class", "output", "layer")
 TENT_FLOOR = np.float32(0.01)
 
@@ -77,6 +78,8 @@ class ModelConfig:
             raise ValueError("Input size, output size, width and depth must be positive")
         if self.competition not in COMPETITIONS or self.readout not in READOUTS:
             raise ValueError("Unknown competition or readout")
+        if self.readout == "magnitude" and self.width != 1:
+            raise ValueError("Magnitude readout uses one neuron per output")
         if self.gate not in GATES:
             raise ValueError("Unknown competition gate")
         if self.top_k is None:
@@ -123,8 +126,12 @@ class ModelConfig:
         return (weights + rate * direction) / (1 + rate * squared)
 
     @property
+    def classes_per_output(self):
+        return 1 if self.readout == "magnitude" else 2
+
+    @property
     def classes(self):
-        return 2 * self.outputs
+        return self.classes_per_output * self.outputs
 
     @property
     def units(self):
@@ -313,8 +320,9 @@ class NumpyModel:
         if config.hidden_rule in ADAPTIVE_LION_RULES:
             self.multiplier_sums = np.zeros(config.depth, dtype=np.float64)
             self.multiplier_counts = np.zeros(config.depth, dtype=np.int64)
-        self.channels = np.arange(config.units) // (2 * config.width)
-        self.polarity = (1 - 2 * (np.arange(config.units) // config.width % 2)).astype(np.float32)
+        nodes = np.arange(config.units)
+        self.channels = nodes // (config.classes_per_output * config.width)
+        self.polarity = (1 - 2 * (nodes // config.width % config.classes_per_output)).astype(np.float32)
 
     def forward(self, x, *, response_scales=None):
         config = self.config
@@ -358,6 +366,9 @@ class NumpyModel:
 
     def pool(self, activity):
         config = self.config
+        if config.readout == "magnitude":
+            # Map image intensities in [0, 1] to the model's [-1, 1] convention.
+            return 2 * np.abs(activity) - 1
         grouped = activity.reshape(len(activity), config.outputs, 2, config.width)
         if config.readout == "sum":
             return grouped.sum(axis=(2, 3))

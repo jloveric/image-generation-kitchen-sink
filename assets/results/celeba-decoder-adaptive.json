@@ -1,0 +1,1072 @@
+{
+  "Paper model": {
+    "path": "runs/celeba-sequential/full/code256-balanced-lite-long/full",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 0.15,
+      "rule": "lion",
+      "depth": 6,
+      "gate_width": null,
+      "images": 162770,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 0.15,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 2,
+      "vector_hidden_depth": 1,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 81033472,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1132.3678254273718
+      },
+      {
+        "epoch": 0.5,
+        "mean_summed_squared_rgb_error": 205.18364967328836
+      },
+      {
+        "epoch": 1,
+        "mean_summed_squared_rgb_error": 191.27993993981465
+      },
+      {
+        "epoch": 1.5,
+        "mean_summed_squared_rgb_error": 189.851533654089
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 189.6260594901828
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 189.6260594901828
+    },
+    "neuron_step_multipliers": {},
+    "test": {
+      "images": 19962,
+      "mean_summed_squared_rgb_error": 185.37724107282486
+    },
+    "inference": {
+      "selected_width": 0.4,
+      "test_images": 19962,
+      "test_mean_summed_squared_rgb_error": 184.1851783529987,
+      "validation_mean_summed_squared_rgb_error": 188.54074802504468
+    }
+  },
+  "One added decoder layer": {
+    "path": "runs/celeba-decoder-adaptive/depth2-full-lion-adaptive-agreement/full",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion-adaptive-agreement",
+      "depth": 6,
+      "gate_width": null,
+      "images": 162770,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 2,
+      "vector_hidden_depth": 2,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 83394304,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1127.382978636031
+      },
+      {
+        "epoch": 0.5,
+        "mean_summed_squared_rgb_error": 330.4494861503669
+      },
+      {
+        "epoch": 1,
+        "mean_summed_squared_rgb_error": 348.6964782986792
+      },
+      {
+        "epoch": 1.5,
+        "mean_summed_squared_rgb_error": 348.65087664927916
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 349.30350841824327
+      }
+    ],
+    "selected": {
+      "epoch": 0.5,
+      "mean_summed_squared_rgb_error": 330.4494861503669
+    },
+    "neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.9977853745416118,
+        "median": 0.9996094703674316,
+        "minimum": 0.9620658755302429,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_1": {
+        "mean": 0.9954988058113182,
+        "median": 0.99857497215271,
+        "minimum": 0.9160475730895996,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_2": {
+        "mean": 0.99517040560022,
+        "median": 0.9982099533081055,
+        "minimum": 0.9340293407440186,
+        "fraction_below_0_9": 0.0
+      },
+      "hidden": {
+        "mean": 0.9933776984689757,
+        "median": 0.9964476823806763,
+        "minimum": 0.8985310792922974,
+        "fraction_below_0_9": 0.0006510416666666666
+      },
+      "hidden2": {
+        "mean": 0.9963445864074553,
+        "median": 0.9977433681488037,
+        "minimum": 0.9511023163795471,
+        "fraction_below_0_9": 0.0
+      },
+      "decoder": {
+        "mean": 0.9969444339682619,
+        "median": 0.9978380799293518,
+        "minimum": 0.7752419710159302,
+        "fraction_below_0_9": 0.00020345052083333334
+      }
+    },
+    "inference": {
+      "gaussian_width_sweep": [
+        {
+          "width": 0.44,
+          "validation_mean_summed_squared_rgb_error": 330.4494861503669
+        },
+        {
+          "width": 0.42,
+          "validation_mean_summed_squared_rgb_error": 330.7673108301508
+        },
+        {
+          "width": 0.4,
+          "validation_mean_summed_squared_rgb_error": 332.0894852599523
+        }
+      ],
+      "selected_width": 0.44,
+      "test_images": 19962,
+      "test_mean_summed_squared_rgb_error": 327.6563776153945
+    },
+    "final_neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.9970015487051569,
+        "median": 0.9988981485366821,
+        "minimum": 0.9531061053276062,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_1": {
+        "mean": 0.9895089758792892,
+        "median": 0.9935534000396729,
+        "minimum": 0.9102246761322021,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_2": {
+        "mean": 0.9781119818799198,
+        "median": 0.9847829937934875,
+        "minimum": 0.8208173513412476,
+        "fraction_below_0_9": 0.01171875
+      },
+      "hidden": {
+        "mean": 0.9826420805184171,
+        "median": 0.9909877777099609,
+        "minimum": 0.7459714412689209,
+        "fraction_below_0_9": 0.009114583333333334
+      },
+      "hidden2": {
+        "mean": 0.9911155328542615,
+        "median": 0.9952313899993896,
+        "minimum": 0.9068043828010559,
+        "fraction_below_0_9": 0.0
+      },
+      "decoder": {
+        "mean": 0.9912732662996859,
+        "median": 0.9948086738586426,
+        "minimum": 0.7130498290061951,
+        "fraction_below_0_9": 0.0017496744791666667
+      }
+    },
+    "test": {
+      "images": 19962,
+      "mean_summed_squared_rgb_error": 327.6563776153945
+    }
+  },
+  "Two added decoder layers": {
+    "path": "runs/celeba-decoder-adaptive/depth3-full-lion-adaptive-agreement/full",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion-adaptive-agreement",
+      "depth": 6,
+      "gate_width": null,
+      "images": 162770,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 2,
+      "vector_hidden_depth": 3,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 85755136,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1124.3863510047356
+      },
+      {
+        "epoch": 0.5,
+        "mean_summed_squared_rgb_error": 380.2689883820541
+      },
+      {
+        "epoch": 1,
+        "mean_summed_squared_rgb_error": 394.3144815702472
+      },
+      {
+        "epoch": 1.5,
+        "mean_summed_squared_rgb_error": 391.3446618736822
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 391.2802721250754
+      }
+    ],
+    "selected": {
+      "epoch": 0.5,
+      "mean_summed_squared_rgb_error": 380.2689883820541
+    },
+    "neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.9977326122267792,
+        "median": 0.9996181726455688,
+        "minimum": 0.9601495265960693,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_1": {
+        "mean": 0.9961063427229723,
+        "median": 0.999038815498352,
+        "minimum": 0.9284807443618774,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_2": {
+        "mean": 0.9958428721874952,
+        "median": 0.9990490674972534,
+        "minimum": 0.8960995078086853,
+        "fraction_below_0_9": 0.00390625
+      },
+      "hidden": {
+        "mean": 0.9944943861725429,
+        "median": 0.9974026679992676,
+        "minimum": 0.9038163423538208,
+        "fraction_below_0_9": 0.0
+      },
+      "hidden2": {
+        "mean": 0.9965370021139582,
+        "median": 0.9982719421386719,
+        "minimum": 0.955552875995636,
+        "fraction_below_0_9": 0.0
+      },
+      "hidden3": {
+        "mean": 0.9927079844055697,
+        "median": 0.9950167536735535,
+        "minimum": 0.9222930669784546,
+        "fraction_below_0_9": 0.0
+      },
+      "decoder": {
+        "mean": 0.9955267349117397,
+        "median": 0.9969965219497681,
+        "minimum": 0.8337394595146179,
+        "fraction_below_0_9": 0.0011800130208333333
+      }
+    },
+    "inference": {
+      "gaussian_width_sweep": [
+        {
+          "width": 0.44,
+          "validation_mean_summed_squared_rgb_error": 380.2689883820541
+        },
+        {
+          "width": 0.42,
+          "validation_mean_summed_squared_rgb_error": 380.8945095020634
+        },
+        {
+          "width": 0.4,
+          "validation_mean_summed_squared_rgb_error": 382.5688685896531
+        }
+      ],
+      "selected_width": 0.44,
+      "test_images": 19962,
+      "test_mean_summed_squared_rgb_error": 376.8733329572065
+    },
+    "final_neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.997590395466735,
+        "median": 0.9995604753494263,
+        "minimum": 0.9443234205245972,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_1": {
+        "mean": 0.9929733538301662,
+        "median": 0.9958891868591309,
+        "minimum": 0.9234696626663208,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_2": {
+        "mean": 0.9867076501250267,
+        "median": 0.9918531179428101,
+        "minimum": 0.8596211075782776,
+        "fraction_below_0_9": 0.00390625
+      },
+      "hidden": {
+        "mean": 0.9885129615431651,
+        "median": 0.993179976940155,
+        "minimum": 0.8237488269805908,
+        "fraction_below_0_9": 0.00390625
+      },
+      "hidden2": {
+        "mean": 0.9930235396604985,
+        "median": 0.9962993264198303,
+        "minimum": 0.9338526725769043,
+        "fraction_below_0_9": 0.0
+      },
+      "hidden3": {
+        "mean": 0.9918729763012379,
+        "median": 0.9955763816833496,
+        "minimum": 0.9134992957115173,
+        "fraction_below_0_9": 0.0
+      },
+      "decoder": {
+        "mean": 0.989876753987725,
+        "median": 0.994216799736023,
+        "minimum": 0.6791297197341919,
+        "fraction_below_0_9": 0.0027262369791666665
+      }
+    },
+    "test": {
+      "images": 19962,
+      "mean_summed_squared_rgb_error": 376.8733329572065
+    }
+  },
+  "1 hidden, ordinary": {
+    "path": "runs/celeba-sequential/screen/code256-shared-step-uniform/pilot",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion",
+      "depth": 6,
+      "gate_width": null,
+      "images": 8192,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 4,
+      "vector_hidden_depth": 1,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 81033472,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1132.3572770411122
+      },
+      {
+        "epoch": 0.25,
+        "mean_summed_squared_rgb_error": 855.4354828454882
+      },
+      {
+        "epoch": 0.5,
+        "mean_summed_squared_rgb_error": 653.0174883053068
+      },
+      {
+        "epoch": 0.75,
+        "mean_summed_squared_rgb_error": 550.1367617109847
+      },
+      {
+        "epoch": 1,
+        "mean_summed_squared_rgb_error": 513.4745385595434
+      },
+      {
+        "epoch": 1.25,
+        "mean_summed_squared_rgb_error": 478.34083706041895
+      },
+      {
+        "epoch": 1.5,
+        "mean_summed_squared_rgb_error": 455.14881940022724
+      },
+      {
+        "epoch": 1.75,
+        "mean_summed_squared_rgb_error": 446.53941113551207
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 445.15584108094737
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 445.15584108094737
+    },
+    "neuron_step_multipliers": {}
+  },
+  "1 hidden, adaptive": {
+    "path": "runs/celeba-sequential/screen/code256-shared-step-agreement/pilot",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion-adaptive-agreement",
+      "depth": 6,
+      "gate_width": null,
+      "images": 8192,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 4,
+      "vector_hidden_depth": 1,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 81033472,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1132.3572770411122
+      },
+      {
+        "epoch": 0.25,
+        "mean_summed_squared_rgb_error": 855.4453057053112
+      },
+      {
+        "epoch": 0.5,
+        "mean_summed_squared_rgb_error": 653.0113798659554
+      },
+      {
+        "epoch": 0.75,
+        "mean_summed_squared_rgb_error": 550.2353866991173
+      },
+      {
+        "epoch": 1,
+        "mean_summed_squared_rgb_error": 513.7245860505874
+      },
+      {
+        "epoch": 1.25,
+        "mean_summed_squared_rgb_error": 478.64148490820486
+      },
+      {
+        "epoch": 1.5,
+        "mean_summed_squared_rgb_error": 455.54858449578205
+      },
+      {
+        "epoch": 1.75,
+        "mean_summed_squared_rgb_error": 446.96656391727595
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 445.54219639352016
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 445.54219639352016
+    },
+    "neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.9985662377439439,
+        "median": 1.0,
+        "minimum": 0.9079578518867493,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_1": {
+        "mean": 0.9990083673813691,
+        "median": 1.0,
+        "minimum": 0.9349505305290222,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_2": {
+        "mean": 0.9983225581236184,
+        "median": 1.0,
+        "minimum": 0.8844851851463318,
+        "fraction_below_0_9": 0.00390625
+      },
+      "hidden": {
+        "mean": 0.9972181185924759,
+        "median": 1.0,
+        "minimum": 0.8767666220664978,
+        "fraction_below_0_9": 0.0006510416666666666
+      },
+      "decoder": {
+        "mean": 0.9997358259230774,
+        "median": 1.0,
+        "minimum": 0.7364326119422913,
+        "fraction_below_0_9": 0.0003255208333333333
+      }
+    }
+  },
+  "2 hidden, ordinary": {
+    "path": "runs/celeba-decoder-adaptive/depth2-pilot-lion/pilot",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion",
+      "depth": 6,
+      "gate_width": null,
+      "images": 8192,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 1,
+      "vector_hidden_depth": 2,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 83394304,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1127.3791408929105
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 507.6661698921673
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 507.6661698921673
+    },
+    "neuron_step_multipliers": {}
+  },
+  "2 hidden, adaptive": {
+    "path": "runs/celeba-decoder-adaptive/depth2-pilot/pilot",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion-adaptive-agreement",
+      "depth": 6,
+      "gate_width": null,
+      "images": 8192,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 4,
+      "vector_hidden_depth": 2,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 83394304,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1127.3791408929105
+      },
+      {
+        "epoch": 0.25,
+        "mean_summed_squared_rgb_error": 905.3291643518189
+      },
+      {
+        "epoch": 0.5,
+        "mean_summed_squared_rgb_error": 728.2374901822941
+      },
+      {
+        "epoch": 0.75,
+        "mean_summed_squared_rgb_error": 598.1062343390904
+      },
+      {
+        "epoch": 1,
+        "mean_summed_squared_rgb_error": 565.4704437818978
+      },
+      {
+        "epoch": 1.25,
+        "mean_summed_squared_rgb_error": 539.7073451517206
+      },
+      {
+        "epoch": 1.5,
+        "mean_summed_squared_rgb_error": 518.3339815421854
+      },
+      {
+        "epoch": 1.75,
+        "mean_summed_squared_rgb_error": 509.74219103114376
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 508.2362773713513
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 508.2362773713513
+    },
+    "neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.9984647238549466,
+        "median": 1.0,
+        "minimum": 0.8095934987068176,
+        "fraction_below_0_9": 0.0003255208333333333
+      },
+      "encoder_1": {
+        "mean": 0.9986569982720539,
+        "median": 1.0,
+        "minimum": 0.8991700410842896,
+        "fraction_below_0_9": 0.0006510416666666666
+      },
+      "encoder_2": {
+        "mean": 0.9983262317255139,
+        "median": 1.0,
+        "minimum": 0.9130216836929321,
+        "fraction_below_0_9": 0.0
+      },
+      "hidden": {
+        "mean": 0.9974151411248992,
+        "median": 1.0,
+        "minimum": 0.877829372882843,
+        "fraction_below_0_9": 0.0006510416666666666
+      },
+      "hidden2": {
+        "mean": 0.9984841746045277,
+        "median": 1.0,
+        "minimum": 0.8616963028907776,
+        "fraction_below_0_9": 0.0013020833333333333
+      },
+      "decoder": {
+        "mean": 0.9994470928359078,
+        "median": 1.0,
+        "minimum": 0.6061214804649353,
+        "fraction_below_0_9": 0.0009765625
+      }
+    }
+  },
+  "3 hidden, ordinary": {
+    "path": "runs/celeba-decoder-adaptive/depth3-pilot-lion/pilot",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion",
+      "depth": 6,
+      "gate_width": null,
+      "images": 8192,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 1,
+      "vector_hidden_depth": 3,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 85755136,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1124.3858339804297
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 556.4826705009552
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 556.4826705009552
+    },
+    "neuron_step_multipliers": {}
+  },
+  "3 hidden, adaptive": {
+    "path": "runs/celeba-decoder-adaptive/depth3-pilot-lion-adaptive-agreement/pilot",
+    "config": {
+      "epochs": 2,
+      "seed": 7,
+      "lr": 0.0008,
+      "encoder_rate": 1.0,
+      "rule": "lion-adaptive-agreement",
+      "depth": 6,
+      "gate_width": null,
+      "images": 8192,
+      "validation_images": 512,
+      "coordinate_scale": 1.0,
+      "decoder_rate_decay": 1.0,
+      "encoder_gate_widths": [
+        0.85,
+        0.85
+      ],
+      "decoder_class_width": 32,
+      "shared_coordinates": false,
+      "center_encoder": true,
+      "images_per_batch": 128,
+      "pixels_per_image": 32,
+      "decoder": "vector",
+      "decoder_init_scale": 0.12,
+      "projected_latent_votes": false,
+      "bottleneck_pool_size": null,
+      "projected_encoder_votes": true,
+      "center_each_input": false,
+      "vector_hidden_width": 256,
+      "normalize_each_input": false,
+      "paired_decoder_init": false,
+      "encoder_votes_per_pair": null,
+      "encoder_width": 3072,
+      "latent_width": 256,
+      "select_on_training": false,
+      "vector_output_class_width": 1,
+      "vector_decoder_skip": false,
+      "projected_decoder_votes": true,
+      "checks_per_epoch": 1,
+      "vector_hidden_depth": 3,
+      "vector_gate_width": 0.44,
+      "zero_init_bias": false,
+      "encoder_top_k": [
+        768,
+        86
+      ],
+      "vector_top_k": 0,
+      "encoder_hidden_widths": [
+        1536
+      ]
+    },
+    "parameters": 85755136,
+    "curve": [
+      {
+        "epoch": 0,
+        "mean_summed_squared_rgb_error": 1124.3858339804297
+      },
+      {
+        "epoch": 2,
+        "mean_summed_squared_rgb_error": 556.9270458756858
+      }
+    ],
+    "selected": {
+      "epoch": 2,
+      "mean_summed_squared_rgb_error": 556.9270458756858
+    },
+    "neuron_step_multipliers": {
+      "encoder_0": {
+        "mean": 0.9975188287983959,
+        "median": 1.0,
+        "minimum": 0.8589733242988586,
+        "fraction_below_0_9": 0.0032552083333333335
+      },
+      "encoder_1": {
+        "mean": 0.9985658421258753,
+        "median": 1.0,
+        "minimum": 0.9314984083175659,
+        "fraction_below_0_9": 0.0
+      },
+      "encoder_2": {
+        "mean": 0.9983051947783679,
+        "median": 1.0,
+        "minimum": 0.9487541913986206,
+        "fraction_below_0_9": 0.0
+      },
+      "hidden": {
+        "mean": 0.9963414861122146,
+        "median": 1.0,
+        "minimum": 0.8526905179023743,
+        "fraction_below_0_9": 0.0013020833333333333
+      },
+      "hidden2": {
+        "mean": 0.9980069865317395,
+        "median": 1.0,
+        "minimum": 0.8508678674697876,
+        "fraction_below_0_9": 0.0013020833333333333
+      },
+      "hidden3": {
+        "mean": 0.9980624702293426,
+        "median": 1.0,
+        "minimum": 0.8425076603889465,
+        "fraction_below_0_9": 0.0032552083333333335
+      },
+      "decoder": {
+        "mean": 0.9985351069966176,
+        "median": 1.0,
+        "minimum": 0.6031206250190735,
+        "fraction_below_0_9": 0.0027262369791666665
+      }
+    }
+  }
+}

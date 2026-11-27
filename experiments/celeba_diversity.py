@@ -84,7 +84,7 @@ def model_for(config, path, backend="numpy", *, code_top_k=None, vector_gate_wid
     vector_top_k = config.get("vector_top_k", 0)
     if vector_gate_width is None:
         vector_gate_width = config.get("vector_gate_width", .24)
-    elif config.get("decoder") != "vector" or vector_top_k:
+    elif config.get("decoder") != "vector" or vector_top_k or config.get("single_output_neuron"):
         raise ValueError("An output Gaussian width requires a Gaussian image-vector decoder")
     return Autoencoder(config["seed"], decoder_kind="vector", backend=backend,
                        images_per_batch=config.get("images_per_batch", IMAGES_PER_BATCH),
@@ -105,7 +105,8 @@ def model_for(config, path, backend="numpy", *, code_top_k=None, vector_gate_wid
                        input_center=center, rule=config["rule"],
                        vector_hidden_width=config.get("vector_hidden_width", 0),
                        vector_hidden_depth=config.get("vector_hidden_depth", 1),
-                       vector_gate_width=vector_gate_width, encoder_top_k=encoder_top_k, vector_top_k=vector_top_k)
+                       vector_gate_width=vector_gate_width, encoder_top_k=encoder_top_k, vector_top_k=vector_top_k,
+                       single_output_neuron=config.get("single_output_neuron", False))
 
 
 def compare(path, validation, target_edges, labels, decoder_path=None, seed_start=0):

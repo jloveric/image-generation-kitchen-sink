@@ -153,7 +153,7 @@ def train(train_images, validation, path, args):
                         vector_decoder_skip=args.vector_decoder_skip, projected_decoder_votes=args.projected_decoder_votes,
                         vector_gate_width=args.vector_gate_width, zero_init_bias=args.zero_init_bias,
                         encoder_top_k=args.encoder_top_k, vector_top_k=args.vector_top_k,
-                        encoder_hidden_widths=args.encoder_hidden_widths)
+                        encoder_hidden_widths=args.encoder_hidden_widths, single_output_neuron=args.single_output_neuron)
     rng = np.random.default_rng(args.seed)
     latest, best = path / "latest.npz", path / "selected.npz"
     tuning = dict(coordinate_scale=1., decoder_rate_decay=1., encoder_gate_widths=[.24, .18],
@@ -165,7 +165,8 @@ def train(train_images, validation, path, args):
                   encoder_width=ENCODER_WIDTH, latent_width=LATENT, select_on_training=False,
                   vector_output_class_width=1, vector_decoder_skip=False, projected_decoder_votes=False,
                   checks_per_epoch=1, vector_hidden_depth=1, vector_gate_width=.24,
-                  zero_init_bias=False, encoder_top_k=[0, 0], vector_top_k=0, encoder_hidden_widths=[])
+                  zero_init_bias=False, encoder_top_k=[0, 0], vector_top_k=0, encoder_hidden_widths=[],
+                  single_output_neuron=False)
     config = dict(epochs=args.epochs, seed=args.seed, lr=args.rate, encoder_rate=args.encoder_rate,
                   rule=args.rule, depth=args.depth, gate_width=args.gate_width, images=len(train_images),
                   validation_images=len(validation), **{key: getattr(args, key) for key in tuning})
@@ -352,6 +353,8 @@ def main():
                         help="Number of sequential hidden layers when --vector-hidden-width is positive")
     parser.add_argument("--vector-output-class-width", type=int, default=1,
                         help="Neurons per increase or decrease class for each vector output scalar")
+    parser.add_argument("--single-output-neuron", action="store_true",
+                        help="Predict each RGB channel from one neuron's clamped magnitude")
     parser.add_argument("--vector-gate-width", type=float, default=.24,
                         help="Gaussian competition width in the image-vector output layer")
     parser.add_argument("--vector-top-k", type=int, default=0,

@@ -221,18 +221,18 @@ def output_code(value: Float32, bound: Float32, half_span: Float32, clip: Int32)
 def predict(activity: Read, prediction: Write, batch_arg: Int32,
             outputs_arg: Int32, width_arg: Int32, divisor: Float32, sum_arg: Int32,
             head_arg: Int32, heads_arg: Int32, bound: Float32, half_span: Float32, clip: Int32,
-            class_energy: Int32):
+            class_energy: Int32, classes_per_output: Int32):
     var batch = Int(batch_arg)
     var outputs = Int(outputs_arg)
     var width = Int(width_arg)
     var i = global_idx.x
     if i >= batch * outputs:
         return
-    var sample = i // outputs
-    var channel = i % outputs
-    var pair = (sample * outputs + channel) * 2 * width
+    var pair = i * 2 * width
     var value: Float32 = 0
-    if sum_arg != 0:
+    if classes_per_output == 1:
+        value = 2 * abs(activity[i]) - 1
+    elif sum_arg != 0:
         for j in range(2 * width):
             value += activity[pair + j]
     else:
@@ -290,20 +290,22 @@ def updated_weight(weight: Float32, rate: Float32, direction: Float32,
 def hebbian[observe: Bool = False](x: Read, activity: Read, teaching: Read,
             weights: Write, history: Write, observations: Write, stats: Write,
             batch_arg: Int32, inputs_arg: Int32, outputs_arg: Int32, width_arg: Int32,
-            offset_arg: Int32, rate: Float32, lion: Int32, scale_direction: Int32, explicit_decay: Int32):
+            offset_arg: Int32, rate: Float32, lion: Int32, scale_direction: Int32, explicit_decay: Int32,
+            classes_per_output_arg: Int32):
     var batch = Int(batch_arg)
     var inputs = Int(inputs_arg)
     var outputs = Int(outputs_arg)
     var width = Int(width_arg)
     var offset = Int(offset_arg)
     var i = global_idx.x
-    var units = 2 * width * outputs
+    var classes_per_output = Int(classes_per_output_arg)
+    var units = classes_per_output * width * outputs
     if i >= (inputs + 1) * units:
         return
     var incoming = i // units
     var node = i % units
-    var channel = node // (2 * width)
-    var polarity = Float32(1 - 2 * (node // width % 2))
+    var channel = node // (classes_per_output * width)
+    var polarity = Float32(1 - 2 * (node // width % classes_per_output))
     var product: Float32 = 0
     var squared: Float32 = 0
     var count = 0
@@ -456,13 +458,13 @@ def apply_adapted_lion(observations: Read, stats: Read, gains: Read, weights: Wr
 
 
 def normalize_updated(weights: Write, activity: Read, teaching: Read,
-                      batch_arg: Int32, rows_arg: Int32, units_arg: Int32, width_arg: Int32,
+                      batch_arg: Int32, rows_arg: Int32, units_arg: Int32,
                       outputs_arg: Int32, offset_arg: Int32):
     var node = global_idx.x
     var units = Int(units_arg)
     if node >= units:
         return
-    var channel = node // (2 * Int(width_arg))
+    var channel = node // (units // Int(outputs_arg))
     for sample in range(Int(batch_arg)):
         var index = sample * Int(outputs_arg) + channel
         if teaching[index] != 0 and activity[sample * units + node] != 0:
@@ -518,6 +520,7 @@ struct Network(Movable, Writable):
     var unit_norm_updates: Bool
     var omega: Float32
     var raw_sum: Bool
+    var classes_per_output: Int
     var capacity: Int
     var encoded_batch: Int
     var encoder: Bool
@@ -543,7 +546,8 @@ struct Network(Movable, Writable):
         self.keep = Int(py=args[4])
         self.raw_sum = Bool(py=args[5])
         self.capacity = Int(py=args[6])
-        self.units = 2 * self.outputs * self.width
+        self.classes_per_output = Int(py=args[26])
+        self.units = self.classes_per_output * self.outputs * self.width
         var groups = Int(py=args[7])
         self.group_size = self.units // groups
         self.gate = Int32(Int(py=args[8]))
@@ -703,7 +707,7 @@ struct Network(Movable, Writable):
                 read(self.activity[layer]), write(self.prediction),
                 Int32(batch), Int32(self.outputs), Int32(self.width), self.readout_divisor,
                 Int32(self.raw_sum), Int32(head), Int32(self.heads), self.output_bound, self.output_half_span,
-                self.clip_output, self.class_energy,
+                self.clip_output, self.class_energy, Int32(self.classes_per_output),
                 grid_dim=ceildiv(batch * self.outputs, Block), block_dim=Block)
 
     @staticmethod
@@ -795,6 +799,7 @@ struct Network(Movable, Writable):
                     write(self[].weights), write(self[].history), write(self[].observations), write(self[].encoder_stats),
                     Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
                     Int32(offset), step, Int32(self[].lion), Int32(self[].scale_direction), self[].explicit_decay,
+                    Int32(self[].classes_per_output),
                     grid_dim=ceildiv(count, Block), block_dim=Block)
                 self[].adapt_and_update(inputs, offset, layer, step)
             else:
@@ -804,12 +809,13 @@ struct Network(Movable, Writable):
                     write(self[].weights), write(self[].history), write(self[].observations), write(self[].encoder_stats),
                     Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
                     Int32(offset), step, Int32(self[].lion), Int32(self[].scale_direction), self[].explicit_decay,
+                    Int32(self[].classes_per_output),
                     grid_dim=ceildiv(count, Block), block_dim=Block)
             if self[].unit_norm_updates:
                 self[].ctx.enqueue_function[normalize_updated](
                     write(self[].weights), read(self[].activity[layer]), read(self[].teaching),
                     Int32(batch), Int32(inputs + 1), Int32(self[].units),
-                    Int32(self[].width), Int32(self[].outputs), Int32(offset),
+                    Int32(self[].outputs), Int32(offset),
                     grid_dim=ceildiv(self[].units, Block), block_dim=Block)
             offset += count
             inputs = self[].units
