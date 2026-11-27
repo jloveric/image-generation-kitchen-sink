@@ -87,6 +87,14 @@ OPENBLAS_NUM_THREADS=2 python -m experiments.celeba "${pilot[@]}" \
   --output runs/celeba-sequential/screen/code256-shared-step-agreement
 ```
 
+| CelebA pilot update | Mean validation squared RGB error after two passes |
+| --- | ---: |
+| Ordinary Lion with the paper's layer timesteps | 470.71 |
+| Ordinary Lion with one shared timestep | **445.16** |
+| Adaptive Lion with one shared timestep | 445.54 |
+
+A shared timestep reduced the pilot's validation error by about 5.4%. The two shared-step runs finished within 0.39 squared RGB error per portrait. The final mean adaptive multipliers across the five layers ranged from 0.9972 to 0.9997. The paper's portrait panel uses the full-data run described above. [Pilot settings, measurements and curves](../assets/results/celeba-256-shared-step.json)
+
 ### Explicit and semi-implicit Lion
 
 These are the two weight updates in Section 3.3 of *Supervised Hebbian Class Networks*. Both use the direction and coactivity history from Eq. (7). Here $w$ is a weight before the minibatch, $D$ is the signed direction scaled for the number of incoming coefficients, $Q$ is the receiving neuron's mean squared activity over contributing observations, and $\eta$ is the layer's step size. [Loverich, Eqs. (7)–(9)](https://arxiv.org/html/2611.24314v1#S3.SS3)
