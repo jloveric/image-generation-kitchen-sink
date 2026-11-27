@@ -38,7 +38,7 @@ def sine():
     model = sine_jump.load_model(row["seed"], trial)
     fig, axes = plt.subplots(1, 2, figsize=(7.5, 3.05), width_ratios=(1.12, 1),
                              layout="constrained")
-    for ax, (left, right), title in zip(axes, ((-1, 1), (.15, .35)), ("Full interval", "Near the crest")):
+    for ax, (left, right), title in zip(axes, ((-1, 1), (.15, .35)), ("Curve fit", "Zoom of discontinuity")):
         x = np.linspace(left, right, 8001, dtype=np.float32)
         ax.plot(x, sine_jump.curve(model, x), lw=1.75, color=TEAL,
                 label=f"{best.config.depth} × {best.config.units}")
@@ -62,11 +62,12 @@ def sine():
     fig.legend([handles[i] for i in order], [labels[i] for i in order],
                loc="outside lower center", frameon=False, ncol=5, fontsize=9)
     axes[1].set_xticks([.20, .25, .30])
-    t = row["transition"]
-    if t["x10"] is not None and t["x90"] is not None:
-        axes[1].axvspan(t["x10"], t["x90"], color="#deeeea", lw=0, zorder=0)
     axes[1].plot([.25], [.5], "o", color=INK, ms=4)
     axes[1].plot([.25], [1.], "o", mec=INK, mfc="white", ms=4)
+    left, right = axes[1].get_xlim()
+    bottom, top = axes[1].get_ylim()
+    axes[0].add_patch(Rectangle((left, bottom), right - left, top - bottom,
+                                fill=False, edgecolor=INK, linewidth=0.9))
     fig.savefig(OUT / "sine.pdf")
     fig.savefig(lion.RESULTS / "sine-jump-fit-cosine-adaptive-agreement.png", dpi=180)
     plt.close(fig)
@@ -160,7 +161,7 @@ def main():
         test = np.load(run.parent / "test.npy", mmap_mode="r")
         center = np.load(run / "encoder-center.npy").reshape(test.shape[1:])
         error = evaluate(model, test, center, shuffle=False)["reconstruction_sse"]
-        print(f"Squared RGB error per portrait on {len(test):,} test portraits: {error/len(test):.6f}")
+        print(f"Squared RGB error per image on {len(test):,} test images: {error/len(test):.6f}")
 
 
 if __name__ == "__main__":

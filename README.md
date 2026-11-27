@@ -12,9 +12,11 @@ This repository tests dense mixed-class MLPs as black-box regressors. Every hidd
 
 The manuscript and its Lion comparison use this bottleneck width. [Manuscript results and reproduction commands](papers/README.md#celeba)
 
-The best 256-value model scores **184.19** summed squared RGB error per portrait on the 0–1 scale across all 19,962 official test portraits. Its dense layers are **12,288 → 3,072 → 1,536 → 256 → 1,536 → 24,576**, for **81,033,472** learned weights and biases. The encoder has three dense layers including the bottleneck. The decoder has two including the RGB layer. The bottleneck has one forty-eighth as many values as the input.
+The best 256-value model scores **184.19** summed squared RGB error per image on the 0–1 scale across all 19,962 official test images. Its dense layers are **12,288 → 3,072 → 1,536 → 256 → 1,536 → 24,576**, for **81,033,472** learned weights and biases. The encoder has three dense layers including the bottleneck. The decoder has two including the RGB layer. The bottleneck has one forty-eighth as many values as the input.
 
-![Portraits generated from the 256-value bottleneck](assets/results/celeba-256-faces.png)
+![Images generated from the 256-value bottleneck](assets/results/celeba-256-faces.png)
+
+![CelebA reconstruction and training, showing how the same voting rule teaches all four hidden layers, with a worked example for one bottleneck pair](papers/figures/autoencoder.png)
 
 With the same two-pass schedule and the same bottleneck and RGB competition settings, the model with one extra layer on each side scored **185.38**, compared with **191.71** for the shallow model. Validation selected the deeper checkpoint after two passes and the shallow checkpoint after one pass. The one-pass experiments with two extra encoder layers, two extra decoder layers, or two on both sides scored **233.52**, **233.63**, and **239.77**, respectively.
 
@@ -38,7 +40,7 @@ python -m experiments.celeba "$face_archive" --partitions "$face_partitions" --o
 
 Adding a 768-neuron encoder layer and a second 1,536-neuron decoder layer gives **12,288 → 3,072 → 1,536 → 768 → 256 → 1,536 → 1,536 → 24,576** with **84,378,112** learned weights and biases. Both layouts use the two-pass schedule above. At the training settings, the deeper model scored **232.82** on the official test split, compared with **185.38** for the previous layout. Adjusting the RGB Gaussian width on validation gave final test scores of **232.07** and **184.19**, respectively. The deeper model's validation error fell by only 0.04 in the last half pass. [Training curves](assets/results/celeba-256-extra-depth.png) · [Run settings and measurements](assets/results/celeba-256-extra-depth.json)
 
-![Portraits from the 256-value model with four encoder layers and three decoder layers](assets/results/celeba-256-extra-depth-faces.png)
+![Images from the 256-value model with four encoder layers and three decoder layers](assets/results/celeba-256-extra-depth-faces.png)
 
 For the added layers, set `--encoder-hidden-widths 1536 768` and `--vector-hidden-depth 2` in the training command above. Use `--vector-gate-width .42` in the reconstruction and sampler commands.
 
@@ -55,16 +57,16 @@ All runs use the same 256-value bottleneck, 84,378,112 parameters, and cosine sc
 
 At the validation-selected RGB Gaussian width of 0.42, lowering the starting step from 0.0008 to 0.0006 reduced test error from **232.07 to 230.91**. The four-pass 0.0004 run has roughly the same cumulative scheduled step as the two-pass 0.0008 run. Its best checkpoint occurs at 2.5 passes. To reproduce the best smaller-step run, use `--rate .0006` with the added-layer training command above. [Training curves](assets/results/celeba-256-smaller-step.png) · [Run settings and measurements](assets/results/celeba-256-smaller-step.json)
 
-![Portraits from the seven-layer, 256-value model trained at a starting step of 0.0006](assets/results/celeba-256-smaller-step-faces.png)
+![Images from the seven-layer, 256-value model trained at a starting step of 0.0006](assets/results/celeba-256-smaller-step-faces.png)
 
 <details>
 <summary>Earlier CelebA experiments with other bottleneck widths</summary>
 
 #### 512-value bottleneck
 
-The best **512-value** autoencoder scores **161.16** squared RGB error per test portrait. It maps **12,288 → 6,144 → 512 → 24,576** with **91,257,344** learned weights and biases. The code has one twenty-fourth as many values as the input. Test error sums squared RGB differences on a 0–1 scale and averages them across all 19,962 official CelebA test portraits.
+The best **512-value** autoencoder scores **161.16** squared RGB error per test image. It maps **12,288 → 6,144 → 512 → 24,576** with **91,257,344** learned weights and biases. The embedding has one twenty-fourth as many values as the input. Test error sums squared RGB differences on a 0–1 scale and averages them across all 19,962 official CelebA test images.
 
-![Portraits generated from a 512-value bottleneck](assets/results/celeba-refinement-faces.png)
+![Images generated from a 512-value bottleneck](assets/results/celeba-refinement-faces.png)
 
 | Bottleneck values | Learned parameters | Test RGB error ↓ |
 |---:|---:|---:|
@@ -72,7 +74,7 @@ The best **512-value** autoencoder scores **161.16** squared RGB error per test 
 | 3,072 | 169,903,104 | 112.38 |
 | 4,096 | 201,361,408 | 105.32 |
 
-The 512-value model trains for one pass with Lion-style local coactivity, 1,536 winners per first encoder pool, 128 winners per bottleneck pool, and a Gaussian RGB width of 0.46. With the trained weights fixed, validation favored retaining all 512 code values and using an RGB width of 0.44. That changed the test error from **164.49** to **161.16**. Two scheduled passes gave **164.37** at the checkpoint selected after one pass. Separately, changing the 4,096-value model's RGB width from 0.50 to 0.46 lowered its error from **106.78** to **105.32** with its saved weights. [Runs and validation checks](assets/results/celeba-refinement.json)
+The 512-value model trains for one pass with Lion-style local coactivity, 1,536 winners per first encoder pool, 128 winners per bottleneck pool, and a Gaussian RGB width of 0.46. With the trained weights fixed, validation favored retaining all 512 embedding values and using an RGB width of 0.44. That changed the test error from **164.49** to **161.16**. Two scheduled passes gave **164.37** at the checkpoint selected after one pass. Separately, changing the 4,096-value model's RGB width from 0.50 to 0.46 lowered its error from **106.78** to **105.32** with its saved weights. [Runs and validation checks](assets/results/celeba-refinement.json)
 
 ![Validation curves for the 512-value models and wider comparisons](assets/results/celeba-refinement.png)
 
@@ -91,25 +93,25 @@ The best model keeps the **1,536** largest activation magnitudes in each first-l
 | Gaussian | Gaussian | Independent | 119.24 |
 | Top-K | Both neurons unscaled | Independent | 125.40 |
 
-The 106.78 and 119.24 runs differ only in encoder competition. Both use one pass through 162,770 training portraits in batches of 128. The decoder starts at **0.0014** and both encoder layers at **0.00021**. Validation selected the best Top-K checkpoint at the end of the pass. The continuation started from the Gaussian checkpoint at a decoder step of 0.00012 and selected its checkpoint after a further quarter pass. In the 4,096-portrait training pilot, the all-hard model kept about 90% of the encoder activations and one winner per RGB pair. Its validation error was **175.59**, compared with **139.33** for the Gaussian control. [Run settings and measurements](assets/results/celeba-topk.json)
+The 106.78 and 119.24 runs differ only in encoder competition. Both use one pass through 162,770 training images in batches of 128. The decoder starts at **0.0014** and both encoder layers at **0.00021**. Validation selected the best Top-K checkpoint at the end of the pass. The continuation started from the Gaussian checkpoint at a decoder step of 0.00012 and selected its checkpoint after a further quarter pass. In the 4,096-image training pilot, the all-hard model kept about 90% of the encoder activations and one winner per RGB pair. Its validation error was **175.59**, compared with **139.33** for the Gaussian control. [Run settings and measurements](assets/results/celeba-topk.json)
 
 ![Validation error during training for Top-K and Gaussian competition](assets/results/celeba-topk.png)
 
-To reproduce the best score, use the training and reconstruction commands with `--encoder-width 6144 --latent-width 4096 --rate .0014 --encoder-top-k 1536 1024` and a new output directory. The portrait panel uses the 16-component sampler described there, fitted to the selected Top-K model's training codes. [CelebA data and commands](papers/README.md#celeba)
+To reproduce the best score, use the training and reconstruction commands with `--encoder-width 6144 --latent-width 4096 --rate .0014 --encoder-top-k 1536 1024` and a new output directory. The image panel uses the 16-component sampler described there, fitted to the selected Top-K model's training embeddings. [CelebA data and commands](papers/README.md#celeba)
 
 #### Lower-step training
 
-The Gaussian 4,096-value model starts the decoder at **0.0014** and both encoder layers at **0.00021**, using the same hold and cosine schedule as the manuscript. Validation selected the checkpoint after one pass through 162,770 training portraits, in batches of 128. The 2,048-value model reached **126.88** with a 0.0006 decoder step and two passes. [Run settings and checkpoint measurements](assets/results/celeba-target120.json)
+The Gaussian 4,096-value model starts the decoder at **0.0014** and both encoder layers at **0.00021**, using the same hold and cosine schedule as the manuscript. Validation selected the checkpoint after one pass through 162,770 training images, in batches of 128. The 2,048-value model reached **126.88** with a 0.0006 decoder step and two passes. [Run settings and checkpoint measurements](assets/results/celeba-target120.json)
 
-![Squared RGB error per validation portrait over passes through the training split](assets/results/celeba-target120.png)
+![Squared RGB error per validation image over passes through the training split](assets/results/celeba-target120.png)
 
 To reproduce the 4,096-value reconstruction score, use the training and reconstruction commands with `--encoder-width 6144 --latent-width 4096 --rate .0014` and a new output directory. [CelebA data and commands](papers/README.md#celeba)
 
 #### Training the standard sequential model
 
-The original full-data runs below use one pass through all 162,770 training portraits. All used 128 portraits per minibatch, a starting decoder step of 0.004, and an encoder step of 0.0006. The validation panel selected checkpoints.
+The original full-data runs below use one pass through all 162,770 training images. All used 128 images per minibatch, a starting decoder step of 0.004, and an encoder step of 0.0006. The validation panel selected checkpoints.
 
-| Encoder → code | Decoder initialization scale | Decoder Gaussian width | Local update | Test RGB error ↓ |
+| Encoder → embedding | Decoder initialization scale | Decoder Gaussian width | Local update | Test RGB error ↓ |
 |---|---:|---:|---|---:|
 | 3,072 → 2,048 | 0.12 | 0.5 | Lion-style | 144.21 |
 | 6,144 → 4,096 | 0.12 | 0.5 | Memoryless | 146.68 |
@@ -118,13 +120,13 @@ The original full-data runs below use one pass through all 162,770 training port
 | 3,072 → 2,048 | 0.12 | 0.24 | Memoryless | 153.24 |
 | 3,072 → 2,048 | 1 | 0.24 | Memoryless | 228.04 |
 
-The larger-batch run with the original initialization scored 228.04. Reducing the scale of the independent decoder weights and biases brought it down to 153.24, and widening output competition reduced it further. The 4,096-value pilot also reached 149.30 after training on 4,096 portraits. [Run settings, checkpoint measurements and export checksum](assets/results/celeba-target150.json)
+The larger-batch run with the original initialization scored 228.04. Reducing the scale of the independent decoder weights and biases brought it down to 153.24, and widening output competition reduced it further. The 4,096-value pilot also reached 149.30 after training on 4,096 images. [Run settings, checkpoint measurements and export checksum](assets/results/celeba-target150.json)
 
 #### Earlier tuning of the sequential architecture
 
-We screened 26 settings and trained six configurations on the full split. The screen varied encoder and code widths, zero to three additional decoder hidden layers, starting steps, Gaussian competition width and output initialization. The pilot used 4,096 training portraits and 512 validation portraits. Full-data runs used all 162,770 training portraits. Validation chose the checkpoint and model. Each test error sums squared differences across RGB values on a 0–1 scale and averages over all 19,962 official test portraits.
+We screened 26 settings and trained six configurations on the full split. The screen varied encoder and embedding widths, zero to three additional decoder hidden layers, starting steps, Gaussian competition width and output initialization. The pilot used 4,096 training images and 512 validation images. Full-data runs used all 162,770 training images. Validation chose the checkpoint and model. Each test error sums squared differences across RGB values on a 0–1 scale and averages over all 19,962 official test images.
 
-| Encoder → code | Output initialization | Gaussian width | Initial decoder step | Validation RGB error ↓ | Test RGB error ↓ |
+| Encoder → embedding | Output initialization | Gaussian width | Initial decoder step | Validation RGB error ↓ | Test RGB error ↓ |
 |---|---|---:|---:|---:|---:|
 | 3,072 → 2,048 | Independent | 0.24 | 0.004 | 234.37 | 229.47 |
 | 3,072 → 2,048 | Independent | 0.50 | 0.004 | 221.84 | 217.98 |
@@ -137,31 +139,31 @@ The pilot favored the larger steps for some short runs. On the full split, the b
 
 Across 864 matched draws per model, the tuned 2,048-value model lowers measured color grain from 0.098 to 0.060 and increases variation in facial edges from 0.560 to 0.756 compared with the earlier 512-value three-layer decoder. Many faces still share similar poses. [All settings, scores and sampler records](assets/results/celeba-sequential.json)
 
-![Matched generated portraits from the previous and tuned sequential decoders](assets/results/celeba-sequential.png)
+![Matched generated images from the previous and tuned sequential decoders](assets/results/celeba-sequential.png)
 
 #### Earlier decoder experiments
 
-The earlier concatenated generator uses **three 768-neuron decoder hidden layers after two training passes**. Across 864 decoder seeds, the second pass increased facial-edge spread from **0.765 to 0.793** and slightly reduced measured color grain. The first-pass checkpoint had a test reconstruction error of **202.42**. All layers train with local signed Hebbian updates on the encoder's exact codes. [Before-and-after samples and convergence curves](#a-second-pass-for-the-deeper-decoders)
+The earlier concatenated generator uses **three 768-neuron decoder hidden layers after two training passes**. Across 864 decoder seeds, the second pass increased facial-edge spread from **0.765 to 0.793** and slightly reduced measured color grain. The first-pass checkpoint had a test reconstruction error of **202.42**. All layers train with local signed Hebbian updates on the encoder's exact embeddings. [Before-and-after samples and convergence curves](#a-second-pass-for-the-deeper-decoders)
 
 ![36 faces from the three-layer decoder after two passes, seeds 0–35](assets/results/celeba-faces.png)
 
 #### Decoder connected only to its last hidden layer
 
-We initially compared the concatenated decoder, which sends the code and all three hidden layers to the RGB layer, with a sequential decoder of the same widths. The sequential path is **12,288 → 768 → 2,048 → 768 → 768 → 768 → 24,576**, followed by fixed pair subtraction to 12,288 RGB values. The RGB layer receives only the last 768 activities. We also tried **12,288 → 768 → 512 → 768 → 768 → 768 → 24,576**, with the 512-value code the narrowest layer. All six dense layers learn from the signs of the final RGB errors.
+We initially compared the concatenated decoder, which sends the embedding and all three hidden layers to the RGB layer, with a sequential decoder of the same widths. The sequential path is **12,288 → 768 → 2,048 → 768 → 768 → 768 → 24,576**, followed by fixed pair subtraction to 12,288 RGB values. The RGB layer receives only the last 768 activities. We also tried **12,288 → 768 → 512 → 768 → 768 → 768 → 24,576**, with the 512-value embedding the narrowest layer. All six dense layers learn from the signs of the final RGB errors.
 
-Each model trains on all 162,770 training portraits for two passes. The RGB layer starts at 0.004 in the first pass and 0.0002 in the second. Every earlier layer uses 15% of these steps. The batch size is 32 and the cosine starts after the first fifth of each pass. The first pass uses the lowest-error checkpoint on the same 512 training portraits to start the second pass. We compare all models at the end of the second pass.
+Each model trains on all 162,770 training images for two passes. The RGB layer starts at 0.004 in the first pass and 0.0002 in the second. Every earlier layer uses 15% of these steps. The batch size is 32 and the cosine starts after the first fifth of each pass. The first pass uses the lowest-error checkpoint on the same 512 training images to start the second pass. We compare all models at the end of the second pass.
 
 | Decoder | Trainable parameters | Test RGB error, first pass | Test RGB error, second pass | Generated facial-edge spread | Generated color grain |
 |---|---:|---:|---:|---:|---:|
-| Code and all three hidden layers | 120,747,008 | 202.42 | 203.79 | 0.793 | 0.0718 |
-| Last hidden layer only, 2,048-value code | 32,666,624 | 362.85 | 370.10 | 0.543 | 0.0969 |
+| Embedding and all three hidden layers | 120,747,008 | 202.42 | 203.79 | 0.793 | 0.0718 |
+| Last hidden layer only, 2,048-value embedding | 32,666,624 | 362.85 | 370.10 | 0.543 | 0.0969 |
 | Last hidden layer only, 512-value neck | 30,305,792 | 348.58 | 353.30 | 0.560 | 0.0975 |
 
-Test RGB error sums squared differences across RGB values on a 0–1 scale, then averages over all 19,962 test portraits. At the same layer widths, connecting only to the last layer cuts the RGB layer's input width from 4,352 to 768 and reduces the model's parameter count by 73%. With these settings, the sequential decoder produces blurrier reconstructions and more mottled colors. The 512-value neck lowers the sequential model's reconstruction error. It retains useful image information: giving it another portrait's code raises the error from 353.30 to 1,486.08.
+Test RGB error sums squared differences across RGB values on a 0–1 scale, then averages over all 19,962 test images. At the same layer widths, connecting only to the last layer cuts the RGB layer's input width from 4,352 to 768 and reduces the model's parameter count by 73%. With these settings, the sequential decoder produces blurrier reconstructions and more mottled colors. The 512-value neck lowers the sequential model's reconstruction error. It retains useful image information: giving it another image's embedding raises the error from 353.30 to 1,486.08.
 
 The generation columns use 864 draws per model, with a separate fit of the same 16-component, rank-64 sampler for each model. Edge spread measures variation in the outlines and lighting of generated faces. The panels use the same random draws in each row. [Settings and measured results](assets/results/celeba-decoder-connections.json)
 
-![Generated portraits from the concatenated decoder and the sequential decoders with 2,048- and 512-value codes](assets/results/celeba-decoder-connections.png)
+![Generated images from the concatenated decoder and the sequential decoders with 2,048- and 512-value embeddings](assets/results/celeba-decoder-connections.png)
 
 Use the aligned archive described in the [data instructions](papers/README.md#celeba). The following commands train the two earlier sequential models. The comparison command also reads the concatenated model's export listed in the run record. The argument list assumes the ZIP contains the official evaluation partition list. Add `--partitions /path/to/list_eval_partition.txt` to `common` if the list is separate.
 
@@ -190,13 +192,13 @@ done
 OPENBLAS_NUM_THREADS=2 python -m experiments.celeba_decoder_connections
 ```
 
-The comparison command also saves a local sheet with test portraits and each model's reconstruction at `runs/celeba-capacity/decoder-connections/reconstruction.png`.
+The comparison command also saves a local sheet with test images and each model's reconstruction at `runs/celeba-capacity/decoder-connections/reconstruction.png`.
 
 #### Direct decoder baseline
 
-The direct decoder with a **2,048-value code** completed one pass over all **162,770 training portraits**. Summed squared RGB error fell from **245.8 to 215.2 per training portrait**, a **12.5% reduction** from the 1,024-value model. On the official 19,962-image test split it fell from **244.9 to 214.6**. Each score sums squared differences across all RGB values on a 0–1 scale, then averages across portraits. [Direct decoder run, architecture, and checksum](assets/results/celeba.json)
+The direct decoder with a **2,048-value embedding** completed one pass over all **162,770 training images**. Summed squared RGB error fell from **245.8 to 215.2 per training image**, a **12.5% reduction** from the 1,024-value model. On the official 19,962-image test split it fell from **244.9 to 214.6**. Each score sums squared differences across all RGB values on a 0–1 scale, then averages across images. [Direct decoder run, architecture, and checksum](assets/results/celeba.json)
 
-Across two blocks of 216 seeds, the wider-code direct generator raised the average spread of smoothed grayscale facial edges from **0.676 to 0.730** and lowered the mean gap between generated and held-out brightness quantiles from **0.014 to 0.011**. This edge measure captures some lighting variation along with facial structure. The samples still lean toward front-facing, feminine-looking faces, and some show visible grain. [Width and sampler measurements](assets/results/celeba-width-comparison.json)
+Across two blocks of 216 seeds, the direct generator with a wider bottleneck raised the average spread of smoothed grayscale facial edges from **0.676 to 0.730** and lowered the mean gap between generated and held-out brightness quantiles from **0.014 to 0.011**. This edge measure captures some lighting variation along with facial structure. The samples still lean toward front-facing, feminine-looking faces, and some show visible grain. [Width and sampler measurements](assets/results/celeba-width-comparison.json)
 
 #### Matched width and sampler comparisons
 
@@ -206,7 +208,7 @@ Across two blocks of 216 seeds, the wider-code direct generator raised the avera
 | 1,536 → 1,024 | 45,640,192 | 251.5 | 250.5 | 0.421 |
 | **768 → 2,048** | **61,369,088** | **215.2** | **214.6** | **0.357** |
 
-All three models used seed 7 and the same full-data schedule. On a fixed panel of 2,048 training portraits, the larger code better preserved facial edges associated with eyeglasses and open-mouth smiles. Facial-hair contrast was essentially flat. The local contact sheet shows the same 18 original portraits beside each model's reconstructions, with visible losses in fine detail. [Earlier capacity experiments](assets/results/celeba-capacity.json)
+All three models used seed 7 and the same full-data schedule. On a fixed panel of 2,048 training images, the larger embedding better preserved facial edges associated with eyeglasses and open-mouth smiles. Facial-hair contrast was essentially flat. The local contact sheet shows the same 18 original images beside each model's reconstructions, with visible losses in fine detail. [Earlier capacity experiments](assets/results/celeba-capacity.json)
 
 | Sampled directions per component | Facial-edge spread ↑ | Brightness quantile error ↓ | High-frequency chroma ↓ |
 |---|---:|---:|---:|
@@ -221,16 +223,16 @@ The table averages the two seed blocks with the same decoder, Gaussian component
 | Stage | Layer sizes | Trainable weights and biases |
 |---|---|---:|
 | First encoder layer | 12,288 → 768 | 9,437,952 |
-| Encoder code layer | 768 → 2,048 | 1,574,912 |
+| Encoder bottleneck layer | 768 → 2,048 | 1,574,912 |
 | Image-vector decoder | 2,048 → 24,576 | 50,356,224 |
 | Fixed pooling | 24,576 → 12,288 RGB values | 0 |
 | **Total** | | **61,369,088** |
 
-The encoder subtracts the same training-set feature mean vector from every flattened portrait. Its first layer has three Gaussian pools of 256 neurons, each with 128 increase and 128 decrease neurons. Its second layer has pools of 684, 684, and 680 neurons containing complete increase/decrease pairs. Both encoder layers use Gaussian width **0.50**. The decoder computes the whole image in one dense pass. Each output scalar has a two-neuron pool of Gaussian width **0.24**, with one increase neuron and one decrease neuron. Fixed pooling subtracts their activity magnitudes, then clips and rounds to 8-bit RGB.
+The encoder subtracts the same training-set feature mean vector from every flattened image. Its first layer has three Gaussian pools of 256 neurons, each with 128 increase and 128 decrease neurons. Its second layer has pools of 684, 684, and 680 neurons containing complete increase/decrease pairs. Both encoder layers use Gaussian width **0.50**. The decoder computes the whole image in one dense pass. Each output scalar has a two-neuron pool of Gaussian width **0.24**, with one increase neuron and one decrease neuron. Fixed pooling subtracts their activity magnitudes, then clips and rounds to 8-bit RGB.
 
-Each minibatch contains 32 portraits. For each output scalar, the quantized target minus the quantized prediction supplies the teaching sign. Matching values supply a zero sign. A fixed random permutation assigns output coordinates to pairs in each encoder layer, with 32 votes per pair in the first layer and 12 in the code layer. Half of a pair's votes carry a positive multiplier and half carry a negative one. The sum of these votes, multiplied by the neuron's class polarity, teaches each neuron through local presynaptic and postsynaptic coactivity. The coactivity and activity-power denominators count all nonzero votes, including those that cancel. All three dense layers train on each minibatch. The decoder step starts at **0.004** and the encoder step starts at **0.0006**. The schedule holds them for the first fifth of the run and then decays them to zero with a cosine. The training error on a fixed 512-portrait panel selects the checkpoint. [Local update equations](#network-and-updates)
+Each minibatch contains 32 images. For each output scalar, the quantized target minus the quantized prediction supplies the teaching sign. Matching values supply a zero sign. A fixed random permutation assigns output coordinates to pairs in each encoder layer, with 32 votes per pair in the first layer and 12 in the bottleneck layer. Half of a pair's votes carry a positive multiplier and half carry a negative one. The sum of these votes, multiplied by the neuron's class polarity, teaches each neuron through local presynaptic and postsynaptic coactivity. The coactivity and activity-power denominators count all nonzero votes, including those that cancel. All three dense layers train on each minibatch. The decoder step starts at **0.004** and the encoder step starts at **0.0006**. The schedule holds them for the first fifth of the run and then decays them to zero with a cosine. The training error on a fixed 512-image panel selects the checkpoint. [Local update equations](#network-and-updates)
 
-The decoder export uses **16 Gaussian components** computed from the training codes. Grouping uses the eight leading standardized code directions. Each component retains its 64 largest covariance directions and scales their standard deviations by **0.85**. A seed chooses a component by training frequency and draws a fresh code for the decoder.
+The decoder export uses **16 Gaussian components** computed from the training embeddings. Grouping uses the eight leading standardized embedding directions. Each component retains its 64 largest covariance directions and scales their standard deviations by **0.85**. A seed chooses a component by training frequency and draws a fresh embedding for the decoder.
 
 Use a local ZIP of the aligned CelebA JPEGs and pass `--partitions` if the official split list is separate. [CelebA data and research terms](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html)
 
@@ -248,18 +250,18 @@ python -m hebbian_fit.autoencoder runs/celeba-capacity/fixed768x2048/full/decode
 
 #### Decoder depth and output width
 
-All six models used seed 7, 162,770 training portraits, and the same one-pass schedule. The projected-vote decoder variants also used a smaller step for their added hidden layer.
+All six models used seed 7, 162,770 training images, and the same one-pass schedule. The projected-vote decoder variants also used a smaller step for their added hidden layer.
 
 | Decoder variant | Trainable parameters | Training RGB error | Test RGB error |
 |---|---:|---:|---:|
 | Published baseline | 61,369,088 | 215.2 | 214.6 |
-| Two output pairs, 2,048-value code | 111,725,312 | 242.8 | 242.4 |
-| Two output pairs, 1,024-value code | 60,606,208 | 268.4 | 267.6 |
+| Two output pairs, 2,048-value embedding | 111,725,312 | 242.8 | 242.4 |
+| Two output pairs, 1,024-value embedding | 60,606,208 | 268.4 | 267.6 |
 | Sequential decoder layer | 65,671,940 | 645.0 | 638.0 |
 | Sequential layer with projected votes | 65,671,940 | 248.6 | 247.8 |
 | **Decoder layer with skip connection** | **81,817,088** | **208.7** | **208.2** |
 
-In the initial decoder comparison, the lowest reconstruction error came from a **768-neuron layer with a skip connection**. The RGB layer receives the 2,048 original code values together with the 768 learned activations. The extra layer uses balanced votes from the final signed residuals and starts at a step of 0.0006. All layers train together.
+In the initial decoder comparison, the lowest reconstruction error came from a **768-neuron layer with a skip connection**. The RGB layer receives the 2,048 original embedding values together with the 768 learned activations. The extra layer uses balanced votes from the final signed residuals and starts at a step of 0.0006. All layers train together.
 
 An additional low-rate pass started from the published checkpoint. The baseline scored **214.7** on the fixed checkpoint panel after the pass, so selection kept its original weights. The run with an added skip layer started from the same predictions and lowered that panel score from **213.2 to 211.2**. Its selected test error was **213.1**. [Run settings and measurements](assets/results/celeba-decoder-comparison.json)
 
@@ -278,7 +280,7 @@ python -m experiments.celeba_prior runs/celeba-capacity/decoder-skip768/full \
 
 #### Extra pass from the one-layer skip checkpoint
 
-A second pass initialized from the 208.2-test-error skip decoder, with an initial step of 0.0004 for the output layer and 0.00006 for the earlier layers. The training-panel errors before the pass and at each quarter were **206.67**, 208.13, 208.51, 207.82, and 207.79. Selection kept the starting weights. On the 19,962 test portraits, the end-of-pass weights scored **209.75**, up from **208.25** at the start. The selected decoder reproduced the same samples across the two seed blocks. [Continuation settings and measurements](assets/results/celeba-decoder-comparison.json)
+A second pass initialized from the 208.2-test-error skip decoder, with an initial step of 0.0004 for the output layer and 0.00006 for the earlier layers. The training-panel errors before the pass and at each quarter were **206.67**, 208.13, 208.51, 207.82, and 207.79. Selection kept the starting weights. On the 19,962 test images, the end-of-pass weights scored **209.75**, up from **208.25** at the start. The selected decoder reproduced the same samples across the two seed blocks. [Continuation settings and measurements](assets/results/celeba-decoder-comparison.json)
 
 To reproduce the continuation, use the skip-decoder training command above with a new output directory and add `--rate .0004 --checks-per-epoch 4 --initialize-from runs/celeba-capacity/decoder-skip768/full/selected.npz`.
 
@@ -292,15 +294,15 @@ To reproduce the continuation, use the skip-decoder training command above with 
 | 2 × 768 | 101,282,048 | 204.80 | 204.40 | 0.787 | 0.0762 |
 | 3 × 768 | 120,747,008 | 202.91 | 202.42 | 0.747 | 0.0733 |
 
-Three layers reduced the average sum of squared RGB differences per test portrait by **2.8%** relative to one 768-neuron layer. The width control also improved reconstruction. It scored **203.59** with essentially the same parameter count and exactly the same RGB-layer input width as the two-layer model (**204.40**). This single training seed leaves the independent benefit of depth uncertain.
+Three layers reduced the average sum of squared RGB differences per test image by **2.8%** relative to one 768-neuron layer. The width control also improved reconstruction. It scored **203.59** with essentially the same parameter count and exactly the same RGB-layer input width as the two-layer model (**204.40**). This single training seed leaves the independent benefit of depth uncertain.
 
-Two layers raised the average facial-edge spread from **0.716 to 0.787**, about **10%**. The wide control reached **0.783**, and which of these two led changed between the two seed blocks. Three layers gave the lowest color grain and a closer match to the contrast distribution of real portraits. For context, the 512 real reference portraits had facial-edge spread **1.301** and color grain **0.0229**. Lighting affects the edge measurement, and several generated faces still have mottled shadows. The spread measure cannot determine how many distinct identities a model produces. [Settings, per-block measurements, and decoder checksums](assets/results/celeba-decoder-depth.json)
+Two layers raised the average facial-edge spread from **0.716 to 0.787**, about **10%**. The wide control reached **0.783**, and which of these two led changed between the two seed blocks. Three layers gave the lowest color grain and a closer match to the contrast distribution of real images. For context, the 512 real reference images had facial-edge spread **1.301** and color grain **0.0229**. Lighting affects the edge measurement, and several generated faces still have mottled shadows. The spread measure cannot determine how many distinct identities a model produces. [Settings, per-block measurements, and decoder checksums](assets/results/celeba-decoder-depth.json)
 
-![Generated portraits from five decoders for seeds 0–5 and 216–221, one decoder per row](assets/results/celeba-decoder-depth.png)
+![Generated images from five decoders for seeds 0–5 and 216–221, one decoder per row](assets/results/celeba-decoder-depth.png)
 
-Every model learns a 2,048-value face code with the same encoder architecture. With two hidden layers, the first maps 2,048 → 768 and the second maps 768 → 768. The output layer receives the concatenation of the code and both layers, giving it 3,584 inputs. A third 768 → 768 layer brings that to 4,352 inputs. All variants use 24,576 output neurons and fixed increase/decrease pooling for the 12,288 RGB values.
+Every model learns a 2,048-value face embedding with the same encoder architecture. With two hidden layers, the first maps 2,048 → 768 and the second maps 768 → 768. The output layer receives the concatenation of the embedding and both layers, giving it 3,584 inputs. A third 768 → 768 layer brings that to 4,352 inputs. All variants use 24,576 output neurons and fixed increase/decrease pooling for the 12,288 RGB values.
 
-Every hidden layer uses its own fixed permutation of the final pixel signs. Each pair in a 768-neuron layer gets 32 signed votes, half with each polarity. Each hidden layer starts at the same 0.0006 step and the output layer starts at 0.004. The encoder, minibatch order, one-pass cosine schedule, and sampler settings match the one-layer experiment. Training uses the encoder's exact code for each portrait.
+Every hidden layer uses its own fixed permutation of the final pixel signs. Each pair in a 768-neuron layer gets 32 signed votes, half with each polarity. Each hidden layer starts at the same 0.0006 step and the output layer starts at 0.004. The encoder, minibatch order, one-pass cosine schedule, and sampler settings match the one-layer experiment. Training uses the encoder's exact embedding for each image.
 
 To reproduce the two- or three-layer runs, use the one-layer skip training command above with `--vector-hidden-depth 2` or `--vector-hidden-depth 3` and a separate output directory. For the wide one-layer control, use `--vector-hidden-width 256 --vector-hidden-depth 1`. Each unit of this width adds one increase and one decrease neuron for each of the three color channels. Use the same mixture-export command on each run directory. For example, these commands export and sample the two-layer decoder after training.
 
@@ -315,18 +317,18 @@ For each trained decoder, `python -m experiments.celeba_diversity --seed-start 0
 
 #### A second pass for the deeper decoders
 
-Both models completed another pass over the same 162,770 CelebA training portraits in the original seed-7 minibatch order. The output step restarted at **0.0002**, one twentieth of its initial training value. All earlier layers restarted at **0.00003**. The schedule held those steps for the first 20% of the pass, then decayed them to zero with a half cosine. The 512-portrait training panel chose between the starting weights and four evenly spaced checkpoints.
+Both models completed another pass over the same 162,770 CelebA training images in the original seed-7 minibatch order. The output step restarted at **0.0002**, one twentieth of its initial training value. All earlier layers restarted at **0.00003**. The schedule held those steps for the first 20% of the pass, then decayed them to zero with a half cosine. The 512-image training panel chose between the starting weights and four evenly spaced checkpoints.
 
 | Decoder | Test RGB error, before → after ↓ | Generated facial-edge spread, before → after | Color grain, before → after ↓ |
 |---|---:|---:|---:|
 | 2 × 768 | 204.40 → 205.29 | 0.785 → 0.775 | 0.0766 → 0.0742 |
 | 3 × 768 | 202.42 → 203.79 | 0.765 → 0.793 | 0.0733 → 0.0718 |
 
-Reconstruction error stayed above its starting value at every check for both models. The table scores the actual end-of-pass weights on all 19,962 test portraits. Both reconstruction-selected checkpoints retained their starting weights.
+Reconstruction error stayed above its starting value at every check for both models. The table scores the actual end-of-pass weights on all 19,962 test images. Both reconstruction-selected checkpoints retained their starting weights.
 
-![Average squared RGB error on the 512 training portraits at each quarter of the extra pass](assets/results/celeba-extra-pass-curve.png)
+![Average squared RGB error on the 512 training images at each quarter of the extra pass](assets/results/celeba-extra-pass-curve.png)
 
-For generation, each endpoint received a fresh fit of the same 16-component, rank-64 sampler using its training codes. The generation columns average four blocks of 216 seeds. On the original 432 seeds, two-layer spread rose from 0.787 to 0.827, but on 432 fresh seeds it fell from 0.784 to 0.724. Three-layer spread rose on both sets, from 0.747 to 0.759 and from 0.783 to 0.827. On all 864 seeds its increase was **0.028**, with a paired seed-bootstrap 95% interval of **0.002 to 0.054**. This measures variation in facial edges, which also respond to lighting. The interval covers sampling variation for this one trained model. [Measurements, checkpoints, and exports](assets/results/celeba-extra-pass.json)
+For generation, each endpoint received a fresh fit of the same 16-component, rank-64 sampler using its training embeddings. The generation columns average four blocks of 216 seeds. On the original 432 seeds, two-layer spread rose from 0.787 to 0.827, but on 432 fresh seeds it fell from 0.784 to 0.724. Three-layer spread rose on both sets, from 0.747 to 0.759 and from 0.783 to 0.827. On all 864 seeds its increase was **0.028**, with a paired seed-bootstrap 95% interval of **0.002 to 0.054**. This measures variation in facial edges, which also respond to lighting. The interval covers sampling variation for this one trained model. [Measurements, checkpoints, and exports](assets/results/celeba-extra-pass.json)
 
 ![Two- and three-layer generators before and after the additional pass, using the same seeds from all four blocks](assets/results/celeba-extra-pass-faces.png)
 
@@ -344,6 +346,8 @@ python -m hebbian_fit.autoencoder runs/celeba-capacity/decoder-skip768x3-pass2/f
 The network maps raw $(x,y)$ coordinates to RGB on the bundled 128 × 128 crop of Apollo 17 frame AS17-148-22727. Each color channel has an increase class and a decrease class. Every coordinate passes through the same dense network. [NASA Johnson Space Center source photograph](https://science.nasa.gov/resource/the-blue-marble/)
 
 All **16,384** original pixels participate in training and checkpoint selection.
+
+![Blue Marble network showing dense connections between signed RGB classes, the twelve layer estimates and the three teaching signs](papers/figures/implicit-image.png)
 
 The network maps $(x,y)$ through **12 dense hidden layers of 432 neurons** to three RGB outputs. Each hidden layer contains 72 increase and 72 decrease neurons per channel. Each channel's two classes share one Gaussian competition pool. The widths, in layer order, are 0.240, 0.225, 0.211, 0.196, 0.182, 0.167, 0.153, 0.138, 0.124, 0.109, 0.095 and 0.080. The first layer has 1,296 affine parameters and the remaining layers have 187,056 each, for **2,058,912 trainable weights and biases**. Weight initialization uses a zero-mean normal distribution with standard deviation $1/\sqrt{\text{fan-in}}$, and biases use standard deviation 0.35.
 

@@ -21,3 +21,11 @@ Develop a generic, fully connected mixed-class MLP that callers can use as a bla
 - Exclude spatial routing, grid-based sites, region-specific subnetworks or parameter banks, coordinate lookup, and features or partitions designed around a benchmark's known structure.
 - Explore capacity directly by varying hidden width and depth. A prediction from each hidden layer may contribute to one combined output, with the residual of that output teaching every hidden layer.
 - Treat sine, staircase, and image fitting as diagnostic benchmarks. A proposed architectural or learning-rule change should be usable on a new regression task given only its input and target vectors. Keep benchmark-specific knowledge in evaluation. Judge progress by what the shared MLP learns and report misses and limitations directly.
+
+## Scientific writing
+
+Describe each algorithm step by naming the quantity, the operation and its result. For example, “the increase class receives $e_k$ and the decrease class receives $-e_k$” specifies both teaching signals. Define each symbol at first use. Distinguish one example's contribution to signed coactivity, the minibatch average and the resulting weight update.
+
+Report each measurement in terms of what was counted or measured. A layer's share of the parameters supports a statement about model size. A claim about computational cost needs an operation count or timing.
+
+Use “image” for autoencoder inputs, reconstructions and generated samples in manuscript text, figures and documentation. Use “CelebA image” when the dataset matters.

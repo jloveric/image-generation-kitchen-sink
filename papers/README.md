@@ -1,8 +1,10 @@
-# Supervised Hebbian Class Networks for Continuous Outputs
+# Supervised Hebbian Class Networks: Regression Without Backpropagation
 
 [Read the paper (PDF)](main.pdf) · [LaTeX source](main.tex) · [Bibliography](references.bib)
 
-The manuscript reports four network sizes on one discontinuous sine target, the all-pixel Blue Marble reconstruction, and the sequential CelebA autoencoder with a 256-value bottleneck. The portrait panel and reconstruction score use the checkpoint chosen on the official validation split.
+This paper extends John Loverich’s supervised Hebbian classifier to regression. It retains joint, local Hebbian training and assigns an increase class and a decrease class to each continuous output. [Original paper, *Supervised Hebbian Class Networks: Learning Without Backpropagation*](https://arxiv.org/abs/2611.24314)
+
+The manuscript reports four network sizes on one discontinuous sine target, the all-pixel Blue Marble reconstruction, and the sequential CelebA autoencoder with a 256-value bottleneck. The image panel and reconstruction score use the checkpoint chosen on the official validation split.
 
 ## Build the paper
 
@@ -10,7 +12,7 @@ The figures are included. From this directory, run `tectonic main.tex` or `latex
 
 ## Reproduce the figures and measurements
 
-Run the following commands in Bash **from the repository root**. The scalar fits and the diagram scripts use NumPy and Matplotlib. The coordinate fits use NumPy. The portrait training runs use the Mojo backend on an NVIDIA RTX 5070 Laptop GPU. Use Python 3.12 or later and the project dependencies. Set `HEBBIAN_GPU_TARGET` to the target of your GPU if it differs from the default `sm_120`.
+Run the following commands in Bash **from the repository root**. The scalar fits and the diagram scripts use NumPy and Matplotlib. The coordinate fits use NumPy. The image training runs use the Mojo backend on an NVIDIA RTX 5070 Laptop GPU. Use Python 3.12 or later and the project dependencies. Set `HEBBIAN_GPU_TARGET` to the target of your GPU if it differs from the default `sm_120`.
 
 ```bash
 uv sync --extra gpu
@@ -19,7 +21,7 @@ export OPENBLAS_NUM_THREADS=1
 python -m papers.diagrams
 ```
 
-For just the diagrams and the sine fits, `uv sync` installs the CPU dependencies. The two diagrams are editable vector figures. [Diagram source](diagrams.py) · [Figure and measurement code](results.py)
+For just the diagrams and the sine fits, `uv sync` installs the CPU dependencies. The diagrams are editable vector figures. [Blue Marble network diagram](figures/implicit-image.pdf) · [CelebA autoencoder diagram](figures/autoencoder.pdf) · [Hidden-pair feedback diagram](figures/pixel-votes.pdf) · [Diagram source](diagrams.py) · [Figure and measurement code](results.py)
 
 ### Discontinuous sine
 
@@ -68,11 +70,13 @@ OPENBLAS_NUM_THREADS=4 python -m experiments.celeba_prior "$run/full" --vector-g
 python -m papers.results portraits --run "$run/full"
 ```
 
-The model maps 12,288 input values through layers of 3,072 and 1,536 neurons to 256 code values. The decoder uses a 1,536-neuron hidden layer and 24,576 output neurons arranged in 12,288 increase/decrease pairs. There are 81,033,472 learned weights and biases.
+The autoencoder diagram uses the first test image and its semi-implicit Lion reconstruction from the first two rows of the comparison sheet. The bundled comparison sheet and the CPU diagram command above reproduce the figure. [Reconstruction sheet](../assets/results/celeba-256-lion-explicit-reconstructions.png)
 
-Training makes two passes over all 162,770 training portraits with one Lion update throughout. A single schedule holds the starting step for the first fifth of all minibatches and decays it to zero along a half cosine. The checkpoint is selected on 512 official validation portraits. With the selected weights, validation chose an RGB Gaussian width of 0.40, giving **184.19** mean summed squared RGB error on the 19,962 official test portraits. The sampler fits the selected encoder's codes for all training portraits. An existing mixture export is sufficient to draw the 36 portraits. [Run settings and measurements](../assets/results/celeba-256.json) · [Sampler](../experiments/celeba_prior.py) · [Paper portrait panel](figures/portraits.png)
+The model maps 12,288 input values through layers of 3,072 and 1,536 neurons to a 256-value embedding. The decoder uses a 1,536-neuron hidden layer and 24,576 output neurons arranged in 12,288 increase/decrease pairs. There are 81,033,472 learned weights and biases.
 
-To compare updates on a smaller training sample, reuse `portrait_args`. All runs use the same 8,192 portraits from the official training split and the same 512 validation portraits. They train for two passes in batches of 128. The two ordinary Lion runs use the paper's layer timesteps and one shared timestep, respectively. Adaptive Lion starts from the shared timestep and adjusts it for each neuron.
+Training makes two passes over all 162,770 training images with one Lion update throughout. A single schedule holds the starting step for the first fifth of all minibatches and decays it to zero along a half cosine. The checkpoint is selected on 512 official validation images. With the selected weights, validation chose an RGB Gaussian width of 0.40, giving **184.19** mean summed squared RGB error on the 19,962 official test images. The sampler fits the selected encoder's embeddings for all training images. An existing mixture export is sufficient to draw the 36 images. [Run settings and measurements](../assets/results/celeba-256.json) · [Sampler](../experiments/celeba_prior.py) · [Paper image panel](figures/portraits.png)
+
+To compare updates on a smaller training sample, reuse `portrait_args`. All runs use the same 8,192 images from the official training split and the same 512 validation images. They train for two passes in batches of 128. The two ordinary Lion runs use the paper's layer timesteps and one shared timestep, respectively. Adaptive Lion starts from the shared timestep and adjusts it for each neuron.
 
 ```bash
 pilot=("${portrait_args[@]}" --pilot-only --pilot-images 8192 --epochs 2 --checks-per-epoch 4)
@@ -93,7 +97,7 @@ OPENBLAS_NUM_THREADS=2 python -m experiments.celeba "${pilot[@]}" \
 | Ordinary Lion with one shared timestep | **445.16** |
 | Adaptive Lion with one shared timestep | 445.54 |
 
-A shared timestep reduced the pilot's validation error by about 5.4%. The two shared-step runs finished within 0.39 squared RGB error per portrait. The final mean adaptive multipliers across the five layers ranged from 0.9972 to 0.9997. The paper's portrait panel uses the full-data run described above. [Pilot settings, measurements and curves](../assets/results/celeba-256-shared-step.json)
+A shared timestep reduced the pilot's validation error by about 5.4%. The two shared-step runs finished within 0.39 squared RGB error per image. The final mean adaptive multipliers across the five layers ranged from 0.9972 to 0.9997. The paper's image panel uses the full-data run described above. [Pilot settings, measurements and curves](../assets/results/celeba-256-shared-step.json)
 
 ### Explicit and semi-implicit Lion
 
@@ -136,9 +140,9 @@ The lowest Top-K error at the original pixels was **415.91** with **K=18**, 99.7
 
 [Blue Marble fits for both Lion updates](../assets/results/blue-marble-lion-fits.png)
 
-On CelebA, mean summed squared RGB error per test portrait was **184.19** with semi-implicit Lion and **184.11** with explicit Lion. The 256-value models use the same two-pass training schedule and the same RGB Gaussian width of 0.40 for inference. Explicit Lion reduced mean reconstruction error by 0.04% and had lower squared RGB error on 10,421 of 19,962 test portraits. The decoder panels use the same sampler settings fitted to each model's training codes. [Measurements](../assets/results/celeba-256-lion-explicit.json) · [Explicit Lion decoder samples](../assets/results/celeba-256-lion-explicit-portraits.png) · [Semi-implicit Lion decoder samples](figures/portraits.png)
+On CelebA, mean summed squared RGB error per test image was **184.19** with semi-implicit Lion and **184.11** with explicit Lion. The 256-value models use the same two-pass training schedule and the same RGB Gaussian width of 0.40 for inference. Explicit Lion reduced mean reconstruction error by 0.04% and had lower squared RGB error on 10,421 of 19,962 test images. The decoder panels use the same sampler settings fitted to each model's training embeddings. [Measurements](../assets/results/celeba-256-lion-explicit.json) · [Explicit Lion decoder samples](../assets/results/celeba-256-lion-explicit-portraits.png) · [Semi-implicit Lion decoder samples](figures/portraits.png)
 
-![Test portraits reconstructed by both Lion models with a 256-value bottleneck](../assets/results/celeba-256-lion-explicit-reconstructions.png)
+![Test images reconstructed by both Lion models with a 256-value bottleneck](../assets/results/celeba-256-lion-explicit-reconstructions.png)
 
 Run both variants and render the paired figures from the repository root.
 
@@ -366,7 +370,7 @@ OPENBLAS_NUM_THREADS=1 python -m experiments.blue_marble_shared_step --rule lion
 
 ### One shared timestep with sign agreement
 
-Each neuron starts with a step multiplier of one. On each update, it averages the product of the signs of its current Hebbian coactivity and its previous Lion history over its incoming weights and bias. If that average is $a$, the neuron multiplies its step factor by $0.99^{-a}$ and clips the factor to $[0.01,1]$. Consistent signs bring the factor back toward one. Sign reversals reduce it. The factor scales the entire semi-implicit Lion step for that neuron. All layers start from the same cosine and follow the same update rule from initialization.
+Each neuron starts with a step multiplier $g_j=1$. In each minibatch, $a_j$ is the average sign agreement between its current Hebbian coactivity and its old Lion history over its incoming weights and bias. A nonzero match adds $+1$, a reversal adds $-1$, and a zero on either side adds $0$ before averaging. The neuron uses $a_j$ to update $g_j$ by multiplying it by $0.99^{-a_j}$ and clipping it to $[0.01,1]$. The resulting step $\eta_t g_j$ replaces the shared cosine step $\eta_t$ in both parts of the semi-implicit weight update for that minibatch.
 
 On Blue Marble, the agreement rule uses the same 12-layer architecture, batch size 128 and 560-epoch cosine starting at 0.004. Its summed squared RGB error reached **6.82** at epoch 560. The tapered run reached a best error of **23.56** at epoch 520, which the agreement run first bettered at epoch 285. The mean step factors for the agreement rule at epoch 100 were 0.010 in the first layer and 0.949 in the last. [Convergence](../assets/results/blue-marble-shared-step-lion-adaptive-agreement-0.004.png) · [Measurements](../assets/results/blue-marble-shared-step-lion-adaptive-agreement-0.004.json)
 
