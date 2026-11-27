@@ -28,7 +28,7 @@ NUMPY_ONLY_RULES = tuple(rule for rule in (*ADAPTIVE_LION_RULES, *COACTIVITY_DIR
                          if rule != "lion-adaptive-agreement")
 HIDDEN_RULES = ("lion", "lion-explicit", "lion-adaptive-agreement", *NUMPY_ONLY_RULES, "signsgd", "activity-sign")
 PAIRED_READOUTS = ("fixed", "class-sum", "sum", "class-energy")
-READOUTS = (*PAIRED_READOUTS, "magnitude")
+READOUTS = (*PAIRED_READOUTS, "magnitude", "signed-activity")
 COMPETITIONS = ("class", "output", "layer")
 TENT_FLOOR = np.float32(0.01)
 
@@ -127,7 +127,7 @@ class ModelConfig:
 
     @property
     def classes_per_output(self):
-        return 1 if self.readout == "magnitude" else 2
+        return 1 if self.readout in ("magnitude", "signed-activity") else 2
 
     @property
     def classes(self):
@@ -369,6 +369,8 @@ class NumpyModel:
         if config.readout == "magnitude":
             # Map image intensities in [0, 1] to the model's [-1, 1] convention.
             return 2 * np.abs(activity) - 1
+        if config.readout == "signed-activity":
+            return activity.reshape(len(activity), config.outputs, config.width).sum(axis=-1)
         grouped = activity.reshape(len(activity), config.outputs, 2, config.width)
         if config.readout == "sum":
             return grouped.sum(axis=(2, 3))
@@ -419,7 +421,10 @@ class NumpyModel:
             contributes = (signs != 0) & (activity != 0)
             counts = contributes.sum(axis=0)
             normalizer = np.maximum(counts, 1).astype(np.float32)
-            products = (incoming.T @ (signs * activity)) / normalizer
+            # Signed pooling makes the activity's own sign take the role of
+            # the fixed class polarity in the teaching signal.
+            post = np.abs(activity) if self.config.readout == "signed-activity" else activity
+            products = (incoming.T @ (signs * post)) / normalizer
             if rule == "lion-centered":
                 # Center the incoming features while treating the constant bias separately.
                 input_mean = incoming[:, :-1].mean(axis=0)

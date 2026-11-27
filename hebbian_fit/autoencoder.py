@@ -66,7 +66,7 @@ def signed_totals(signs):
     return (positive - negative).astype(np.float32), (positive + negative).astype(np.float32)
 
 
-def vote_assignment(pairs, seed, balanced, votes_per_pair=None):
+def vote_assignment(pairs, seed, balanced, votes_per_pair=None, *, independent=False):
     rng = np.random.default_rng(seed)
     outputs = SIZE * SIZE * 3
     votes = outputs // pairs
@@ -77,6 +77,11 @@ def vote_assignment(pairs, seed, balanced, votes_per_pair=None):
     groups = rng.permutation(outputs)[:pairs * votes].reshape(pairs, votes)
     if votes_per_pair is not None:
         groups = groups[:, :votes_per_pair].copy()
+    if independent:
+        # Repartition the same channels so each channel teaches as many neurons
+        # as it did with paired feedback. Shuffle rows across competition pools.
+        other = rng.permutation(groups.ravel()).reshape(groups.shape)
+        groups = rng.permutation(np.concatenate((groups, other)))
     polarity = (np.where(np.arange(groups.shape[1]) % 2, -1., 1.).astype(np.float32) if balanced
                 else rng.choice(np.array([-1, 1], np.float32), size=groups.shape))
     return groups, polarity
@@ -85,8 +90,11 @@ def vote_assignment(pairs, seed, balanced, votes_per_pair=None):
 def projected_votes(teaching, projection, pair_index):
     groups, polarity = projection
     votes = teaching[:, groups] * polarity
-    return (np.ascontiguousarray(votes.sum(axis=2)[:, pair_index]),
-            np.ascontiguousarray(np.count_nonzero(votes, axis=2)[:, pair_index], dtype=np.float32))
+    totals = votes.sum(axis=2)
+    counts = np.count_nonzero(votes, axis=2)
+    if pair_index is not None:
+        totals, counts = totals[:, pair_index], counts[:, pair_index]
+    return np.ascontiguousarray(totals), np.ascontiguousarray(counts, dtype=np.float32)
 
 
 def class_pair_indices(width):
@@ -139,8 +147,12 @@ class EncoderLayer:
             out, _ = select(z, self.config)
         return out, (incoming, out)
 
-    def update(self, traces, signs, counts, rate):
+    def update(self, traces, signs, counts, rate, *, independent_votes=False):
         if isinstance(self.model, MojoModel):
+            if independent_votes:
+                # The encoder kernel applies the pair polarity. Cancel it for
+                # feedback that is already signed separately for each neuron.
+                signs = signs * self.polarity
             self.model.network.update_encoder(signs, counts, float(rate), self.channel_width)
             return
         incoming, activity = traces
@@ -150,7 +162,9 @@ class EncoderLayer:
         active = total > 0
         normalizer = total[active]
         activity = activity[:, active]
-        directions = signs[:, channels[active]] * self.polarity[active]
+        directions = signs[:, channels[active]]
+        if not independent_votes:
+            directions = directions * self.polarity[active]
         coactivity = incoming.T @ (activity * directions) / normalizer
         squared = (contributors[:, active] * activity**2).sum(axis=0) / normalizer
         if self.config.uses_history:
@@ -225,7 +239,7 @@ class Autoencoder:
                  encoder_width=ENCODER_WIDTH, latent_width=LATENT, vector_output_class_width=1,
                  vector_decoder_skip=False, projected_decoder_votes=False, vector_hidden_depth=1,
                  vector_gate_width=.24, zero_init_bias=False, encoder_top_k=(0, 0), vector_top_k=0,
-                 encoder_hidden_widths=(), single_output_neuron=False):
+                 encoder_hidden_widths=(), single_output_neuron=False, independent_hidden_votes=False):
         if decoder_kind not in ("coordinate", "vector"):
             raise ValueError("Unknown decoder kind")
         if vector_hidden_depth < 1 or (vector_hidden_depth > 1 and not vector_hidden_width):
@@ -260,17 +274,23 @@ class Autoencoder:
         if encoder_votes_per_pair is not None and (
                 not projected_encoder_votes or encoder_votes_per_pair < 2 or encoder_votes_per_pair % 2):
             raise ValueError("Sparse balanced feedback needs a positive even vote count")
+        if independent_hidden_votes and not (projected_encoder_votes and projected_decoder_votes):
+            raise ValueError("Independent hidden votes require projected feedback in the encoder and decoder")
+        self.independent_hidden_votes = independent_hidden_votes
         encoder_widths = (encoder_width, *encoder_hidden_widths)
         vote_seeds = (1, *range(2 + vector_hidden_depth, 2 + vector_hidden_depth + len(encoder_hidden_widths)))
         self.encoder_projections = [
-            (vote_assignment(width // 2, vote_seed, True, encoder_votes_per_pair), class_pair_indices(width))
+            (vote_assignment(width // 2, vote_seed, True, encoder_votes_per_pair,
+                             independent=independent_hidden_votes),
+             None if independent_hidden_votes else class_pair_indices(width))
             if projected_encoder_votes else (None, None)
             for width, vote_seed in zip(encoder_widths, vote_seeds, strict=True)
         ]
         self.encoder_projections.append((
-            vote_assignment(latent_width // 2, 0, projected_encoder_votes, encoder_votes_per_pair)
+            vote_assignment(latent_width // 2, 0, projected_encoder_votes, encoder_votes_per_pair,
+                            independent=independent_hidden_votes)
             if projected_latent_votes or projected_encoder_votes else None,
-            np.arange(latent_width) // 2,
+            None if independent_hidden_votes else np.arange(latent_width) // 2,
         ))
         self.center_each_input = center_each_input or normalize_each_input
         self.normalize_each_input = normalize_each_input
@@ -294,7 +314,7 @@ class Autoencoder:
         self.decoder_projections = []
         if projected_decoder_votes:
             pairs = 3 * vector_hidden_width
-            self.decoder_pairs = class_pair_indices(2 * pairs)
+            self.decoder_pairs = None if independent_hidden_votes else class_pair_indices(2 * pairs)
         layers = []
         previous_width = latent_width
         for index in range(vector_hidden_depth if vector_hidden_width else 0):
@@ -304,7 +324,8 @@ class Autoencoder:
                                        images_per_batch, backend, False))
             previous_width = hidden_config.units
             if projected_decoder_votes:
-                self.decoder_projections.append(vote_assignment(pairs, 2 + index, True))
+                self.decoder_projections.append(vote_assignment(pairs, 2 + index, True,
+                                                                independent=independent_hidden_votes))
         self.decoder_hidden = layers[0] if len(layers) == 1 else tuple(layers) or None
         if decoder_kind == "vector":
             decoder_inputs = previous_width
@@ -398,12 +419,14 @@ class Autoencoder:
             hidden_signs, hidden_counts = signs, counts
             if self.decoder_projections:
                 hidden_signs, hidden_counts = projected_votes(teaching, self.decoder_projections[index], self.decoder_pairs)
-            layer.update(decoder_trace[index], hidden_signs, hidden_counts, rate * self.decoder_hidden_rate)
+            layer.update(decoder_trace[index], hidden_signs, hidden_counts, rate * self.decoder_hidden_rate,
+                         independent_votes=self.independent_hidden_votes)
         encoder_rate = rate * encoder_rate_scale
         for layer, trace, (projection, pairs) in zip(self.encoder, traces, self.encoder_projections, strict=True):
             layer_signs, layer_counts = ((signs, counts) if projection is None else
                                          projected_votes(teaching, projection, pairs))
-            layer.update(trace, layer_signs, layer_counts, encoder_rate)
+            layer.update(trace, layer_signs, layer_counts, encoder_rate,
+                         independent_votes=self.independent_hidden_votes)
 
     def components(self):
         models = {f"encoder_{i}": layer.model for i, layer in enumerate(self.encoder)}

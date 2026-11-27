@@ -49,10 +49,9 @@ def population(ax):
         for z in ys:
             wire(ax, [(2.03, y), (4.31, z)], width=.85)
     for x in (2.03, 4.31):
-        for i, y in enumerate(ys):
-            color, fill, mark = (TEAL, COOL, "+") if i >= 2 else (GOLD, WARM, "−")
-            ax.add_patch(Circle((x, y), .163, ec=color, fc=fill, lw=1.15))
-            label(ax, x, y-.003, mark, 13, color, "bold")
+        for y in ys:
+            ax.add_patch(Circle((x, y), .163, ec=TEAL, fc=COOL, lw=1.15))
+            label(ax, x, y-.003, "$h$", 12, TEAL)
     ax.add_patch(Circle((.81, 2.46), .18, ec=INK, fc="white", lw=1.1))
     label(ax, .81, 2.46, "$x$", 13)
 
@@ -68,7 +67,7 @@ def regressor():
     population(ax)
     for x, i in ((2.03, 1), (4.31, 2)):
         arrow(ax, (x, 1.59), (x, 1.35), TEAL)
-        box(ax, x, 1.11, 1.88, .46, rf"$r_{i}=\sum_{{+}}|h|-\sum_{{-}}|h|$", color=TEAL, fill=COOL)
+        box(ax, x, 1.11, 1.88, .46, rf"$r_{i}=\sum_j h_j$", color=TEAL, fill=COOL)
         wire(ax, [(x, .88), (x, .46), (5.71, .46)], TEAL)
     arrow(ax, (5.71, .46), (5.71, .76), TEAL)
     box(ax, 6.37, 1.11, 1.92, .70, "Prediction", r"$\hat y=(r_1+r_2)/2$", TEAL, COOL)
@@ -79,7 +78,7 @@ def regressor():
     wire(ax, [(5.67, 2.84), (5.67, 3.45), (2.32, 3.45)], GOLD, style="--")
     for x in (2.32, 4.60):
         arrow(ax, (x, 3.45), (x, 3.30), GOLD)
-    label(ax, 5.81, 3.69, "Teaching sign", 11, GOLD)
+    label(ax, 5.81, 3.69, r"Error sign $e$", 11, GOLD)
     fig.savefig(OUT / "class-network.pdf")
     plt.close(fig)
 
@@ -91,7 +90,7 @@ def implicit_image():
     layers = ((2.18, 1), (4.06, 2), (6.44, 12))
     pools = (("R", 3.25, "#f8e9e6"), ("G", 2.49, "#e4f1e8"),
              ("B", 1.73, "#e7eff8"))
-    heights = [center + offset for _, center, _ in pools for offset in (.17, -.17)]
+    heights = [center for _, center, _ in pools]
     label(ax, .62, 3.89, "Position", 12, weight="bold")
     for (x, y), name in zip(inputs, ("$x$", "$y$"), strict=True):
         for height in heights:
@@ -110,9 +109,7 @@ def implicit_image():
             ax.add_patch(FancyBboxPatch((x-.35, y-.34), .70, .68,
                                         boxstyle="round,pad=0,rounding_size=.09",
                                         ec=WIRE, fc=fill, lw=.7))
-            for offset, sign in ((.17, "+"), (-.17, "−")):
-                ax.add_patch(Circle((x, y+offset), .155, ec=INK, fc="white", lw=.8))
-                label(ax, x, y+offset, color+sign, 10, weight="bold")
+            label(ax, x, y, color, 12, weight="bold")
         arrow(ax, (x, 1.27), (x, 1.05), TEAL)
         box(ax, x, .81, 1.10, .46, rf"$\mathbf{{r}}_{{{depth}}}$", color=TEAL, fill=COOL)
         wire(ax, [(x, .58), (x, .28)], TEAL)
@@ -135,9 +132,9 @@ def implicit_image():
     wire(ax, [(8.17, 3.35), (8.17, 4.25), (2.18, 4.25)], GOLD, style="--")
     for x, _ in layers:
         arrow(ax, (x, 4.25), (x, 4.02), GOLD, "--")
-    label(ax, 5.14, 4.52, r"Teaching signs $(e_R,\, e_G,\, e_B)$ at every layer", 12, GOLD)
-    label(ax, 2.82, -.19, "Each Gaussian pool has 72 increase and 72 decrease neurons.", 11)
-    label(ax, 8.26, -.19, r"Each layer estimates each color as  $r_{\ell c}=\sum_{c+}|h|-\sum_{c-}|h|$.", 11)
+    label(ax, 5.14, 4.52, r"At each layer: $e_R$ to red, $e_G$ to green, $e_B$ to blue", 12, GOLD)
+    label(ax, 2.82, -.19, "Each color pool has 144 neurons.", 11)
+    label(ax, 8.26, -.19, r"Each color estimate sums the signed activities in its pool.", 11)
     fig.savefig(OUT / "implicit-image.pdf")
     fig.savefig(OUT / "implicit-image.png", dpi=160)
     plt.close(fig)
@@ -161,26 +158,21 @@ def pixel_votes():
     wire(ax, [(5.76, 2.15), (5.87, 2.15), (5.87, .57), (5.76, .57)])
     arrow(ax, (5.87, 1.36), (6.16, 1.36))
     box(ax, 6.82, 1.36, 1.26, .70, "Sum", "+1")
-    label(ax, 9.18, 2.55, "One hidden pair", 12, weight="bold")
-    for y, neuron, value, color, fill in (
-        (1.95, "Increase neuron", "+1", TEAL, COOL),
-        (.77, "Decrease neuron", "−1", GOLD, WARM),
-    ):
-        wire(ax, [(7.45, 1.36), (7.78, 1.36), (7.78, y)], color)
-        arrow(ax, (7.78, y), (8.14, y), color)
-        box(ax, 9.18, y, 2.0, .76, neuron, value, color, fill)
+    arrow(ax, (7.45, 1.36), (7.94, 1.36), GOLD)
+    box(ax, 9.12, 1.36, 2.30, .76, "One hidden neuron", r"$u_i h_j\cdot(+1)$", GOLD, WARM)
     fig.savefig(OUT / "pixel-votes.pdf")
     plt.close(fig)
 
 
 def autoencoder():
-    fig, ax = canvas(12.5, 6.28)
-    ax.set_ylim(2.44, 8.72)
-    # Original and semi-implicit reconstruction of the same official test image.
-    # contact_sheet uses 88-pixel tiles, a four-pixel gap and a 204-pixel label column.
-    sheet = plt.imread(OUT.parent.parent / "assets/results/celeba-256-lion-explicit-reconstructions.png")
-    original = sheet[4:92, 204:292]
-    reconstruction = sheet[96:184, 204:292]
+    from hebbian_fit.autoencoder import vote_assignment
+
+    fig, ax = canvas(12.5, 7.44)
+    ax.set_ylim(2.44, 9.88)
+    # The reconstruction command saves two square tiles side by side.
+    sheet = plt.imread(OUT / "celeba-reconstruction.png")
+    original = sheet[:, :sheet.shape[0]]
+    reconstruction = sheet[:, sheet.shape[0]:]
 
     def draw_image(pixels, x, y):
         ax.imshow(pixels, extent=(x-.45, x+.45, y-.45, y+.45), interpolation="nearest")
@@ -188,40 +180,51 @@ def autoencoder():
     def heading(y, title, color):
         ax.text(.12, y, title, fontsize=15, va="center", color=color, weight="bold")
 
-    heading(8.46, "How pixel errors teach every hidden layer", INK)
-    label(ax, 10.38, 8.46, "One bottleneck pair, one image", 12)
-    columns = (1.17, 3.03, 4.28, 5.42, 6.88)
-    for x, title in zip(columns, ("Assigned channels", "Low (+1)", "High (−1)",
-                                  "Correct (0)", "Vote total"), strict=True):
-        label(ax, x, 7.94, title, 12, weight="bold")
-    wire(ax, [(.15, 7.71), (7.65, 7.71)], width=.8)
-    rows = (
-        (7.39, (r"48 with $v_k=+1$", "2", "1", "45", r"$(+1)(2-1)=+1$")),
-        (6.88, (r"48 with $v_k=-1$", "0", "2", "46", r"$(-1)(0-2)=+2$")),
-    )
-    for y, row in rows:
-        for x, entry in zip(columns, row, strict=True):
-            label(ax, x, y, entry, 12)
-    for y in (7.39, 6.88):
-        arrow(ax, (7.68, y), (8.14, 7.14 + .55 * (y-7.14)), GOLD)
-    box(ax, 8.81, 7.14, 1.27, .84, "Sum", "+3", GOLD, WARM)
-    for y, name, multiplier, color, fill in (
-        (7.58, "Increase neuron", "+3", TEAL, COOL),
-        (6.72, "Decrease neuron", "−3", GOLD, WARM),
-    ):
-        arrow(ax, (9.47, 7.14), (10.02, y), color)
-        box(ax, 11.15, y, 2.18, .68, name, multiplier, color, fill)
-    label(ax, 4.00, 6.27, "This pair uses the same 96 channels on every image.", 11)
+    heading(9.59, "How 12,288 output classes teach the hidden layers", INK)
+    left, right = 4.68, 7.82
+    rows = (8.27, 7.15)
+    label(ax, left, 9.02, "Bottleneck", 13, weight="bold")
+    label(ax, right, 9.02, "Decoder hidden", 13, weight="bold")
+    for source in rows:
+        for dest in rows:
+            arrow(ax, (left+.30, source), (right-.30, dest), INK)
+    # The ellipses flank the two expanded layers on the forward path.
+    for x, dx in ((left, -1), (right, 1)):
+        label(ax, x + dx*.93, 7.71, r"$\cdots$", 17)
+        for y in rows:
+            earlier = (x + dx*.73, 7.71)
+            node = (x + dx*.21, y + (.20 if y < 7.71 else -.20))
+            endpoints = (earlier, node) if dx < 0 else (node, earlier)
+            arrow(ax, *endpoints, WIRE)
+
+    # Use the same two assignments as the manuscript's trained autoencoder.
+    for x, group_x, width, assignment_seed in ((left, 1.76, 256, 0), (right, 10.74, 2040, 2)):
+        groups, polarity = vote_assignment(width // 2, assignment_seed, True, independent=True)
+        label(ax, group_x, 9.02, f"{groups.shape[1]} classes per neuron", 13, GOLD, "bold")
+        for j, y in enumerate(rows):
+            ax.add_patch(Circle((x, y), .28, ec=TEAL, fc=COOL, lw=1.3))
+            label(ax, x, y, rf"$h_{{{j+1}}}$", 15, TEAL)
+            k, m = groups[j, :2] + 1  # Number the output neurons from one.
+            first, second = ("+" if v > 0 else "-" for v in polarity[:2])
+            box(ax, group_x, y, 3.22, .79, f"Output neurons {k:,}, {m:,}, …",
+                rf"${first}e_{{{k}}}{second}e_{{{m}}}+\cdots$", GOLD, WARM, size=12)
+            direction = 1 if group_x < x else -1
+            arrow(ax, (group_x+direction*1.62, y), (x-direction*.30, y), GOLD, "--")
+        label(ax, x, 6.66, r"$\vdots$", 15)
+    arrow(ax, (.26, 6.32), (.96, 6.32))
+    label(ax, 2.20, 6.32, "Forward connection", 12)
+    arrow(ax, (4.24, 6.32), (4.94, 6.32), GOLD, "--")
+    label(ax, 8.19, 6.32, r"Weighted sum of the assigned class error signs", 12, GOLD)
     wire(ax, [(.12, 6.02), (12.38, 6.02)], width=.7)
 
     heading(5.80, "Reconstruction", INK)
-    label(ax, 8.35, 5.80, "At the bottleneck, 128 pairs pass 256 separate activities to the decoder.", 12)
+    label(ax, 8.35, 5.80, "The bottleneck passes 256 signed activities to the decoder.", 12)
     layers = (
         (2.37, "Encoder 1", 3072, 8),
         (4.21, "Encoder 2", 1536, 16),
         (6.05, "Bottleneck", 256, 96),
-        (7.89, "Decoder hidden", 1536, 16),
-        (9.73, "Decoder output", 24576, 1),
+        (7.89, "Decoder hidden", 2040, 12),
+        (9.73, "Decoder output", 12288, 1),
     )
     y = 4.74
     draw_image(original, .69, y)
@@ -229,7 +232,7 @@ def autoencoder():
     label(ax, .69, 5.44, "Input image", 12, weight="bold")
     label(ax, 11.76, 5.44, "Reconstruction", 12, weight="bold")
     label(ax, .69, 4.04, "Center the RGB\ninput values", 11)
-    label(ax, 11.76, 4.04, r"$|h_{+}|-|h_{-}|$" + "\nclip and round", 11)
+    label(ax, 11.76, 4.04, r"$\min(1,|h_k|)$" + "\nround to 8 bits", 11)
     previous = 1.16
     for x, name, width, group_size in layers:
         label(ax, x, 5.44, name, 12, weight="bold")
@@ -237,10 +240,10 @@ def autoencoder():
                                    boxstyle="round,pad=0,rounding_size=.08",
                                    ec=TEAL if name.startswith("Decoder") or name == "Bottleneck" else WIRE,
                                    fc=COOL if name == "Bottleneck" else LIGHT))
-        for dx, symbol, color, fill in ((-.22, "+", TEAL, COOL), (.22, "−", GOLD, WARM)):
-            ax.add_patch(Circle((x+dx, y+.18), .18, ec=color, fc=fill, lw=1.1))
-            label(ax, x+dx, y+.18, symbol, 14, color, "bold")
-        label(ax, x, y-.22, f"{width // 2:,} pairs", 12, weight="bold")
+        single = name == "Decoder output"
+        ax.add_patch(Circle((x, y+.18), .18, ec=TEAL, fc=COOL, lw=1.1))
+        label(ax, x, y+.18, "$h_k$" if single else "$h_j$", 13, TEAL)
+        label(ax, x, y-.22, f"{width:,} neurons", 10.5, weight="bold")
         arrow(ax, (previous, y), (x-.75, y))
         previous = x+.75
         # Feedback travels from the final pixel comparison directly to each layer.
@@ -250,12 +253,11 @@ def autoencoder():
         wire(ax, [(x, 3.40), (x, 3.19)], GOLD, style="--")
     arrow(ax, (previous, y), (11.26, y))
     heading(3.59, "Training", GOLD)
-    label(ax, .74, 3.17, "Per pair", 12, GOLD)
     wire(ax, [(layers[0][0], 3.19), (10.75, 3.19)], GOLD, style="--")
     box(ax, 11.55, 3.18, 1.72, .74, "Error signs", "sign(target − output)", GOLD, WARM, 12)
     arrow(ax, (11.76, 3.79), (11.76, 3.58), GOLD, "--")
     label(ax, 6.23, 2.72,
-          "Each hidden layer groups the same 12,288 final errors. Each output pair takes its own channel’s sign directly.",
+          "Signs per neuron. Each output neuron receives its own channel’s sign.",
           12, GOLD)
     fig.savefig(OUT / "autoencoder.pdf")
     fig.savefig(OUT / "autoencoder.png", dpi=160)

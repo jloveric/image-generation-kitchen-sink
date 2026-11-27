@@ -52,6 +52,8 @@ def fit_components(codes, components, local_scale, local_rank=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run", type=Path, help="Pilot or full results directory")
+    parser.add_argument("--backend", choices=("numpy", "mojo"), default="numpy",
+                        help="Backend for encoding the training images")
     parser.add_argument("--components", type=int, default=16)
     parser.add_argument("--local-scale", type=float, default=.6)
     parser.add_argument("--local-rank", type=int, help="Keep this many leading directions in each component")
@@ -69,7 +71,8 @@ def main():
                                  for name in ("decoder.npz", "selected.npz", "latest.npz")}:
         parser.error("Choose an export path distinct from the decoder and training checkpoints")
     config = json.loads((args.run / "results.json").read_text())["config"]
-    model = model_for(config, args.run, code_top_k=args.code_top_k, vector_gate_width=args.vector_gate_width)
+    model = model_for(config, args.run, backend=args.backend, code_top_k=args.code_top_k,
+                      vector_gate_width=args.vector_gate_width)
     if args.local_rank is not None and args.local_rank > model.latent_width:
         parser.error("Local rank cannot exceed code width")
     load_checkpoint(args.run / f"{args.checkpoint}.npz", model)

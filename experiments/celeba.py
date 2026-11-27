@@ -153,7 +153,8 @@ def train(train_images, validation, path, args):
                         vector_decoder_skip=args.vector_decoder_skip, projected_decoder_votes=args.projected_decoder_votes,
                         vector_gate_width=args.vector_gate_width, zero_init_bias=args.zero_init_bias,
                         encoder_top_k=args.encoder_top_k, vector_top_k=args.vector_top_k,
-                        encoder_hidden_widths=args.encoder_hidden_widths, single_output_neuron=args.single_output_neuron)
+                        encoder_hidden_widths=args.encoder_hidden_widths, single_output_neuron=args.single_output_neuron,
+                        independent_hidden_votes=args.independent_hidden_votes)
     rng = np.random.default_rng(args.seed)
     latest, best = path / "latest.npz", path / "selected.npz"
     tuning = dict(coordinate_scale=1., decoder_rate_decay=1., encoder_gate_widths=[.24, .18],
@@ -166,7 +167,7 @@ def train(train_images, validation, path, args):
                   vector_output_class_width=1, vector_decoder_skip=False, projected_decoder_votes=False,
                   checks_per_epoch=1, vector_hidden_depth=1, vector_gate_width=.24,
                   zero_init_bias=False, encoder_top_k=[0, 0], vector_top_k=0, encoder_hidden_widths=[],
-                  single_output_neuron=False)
+                  single_output_neuron=False, independent_hidden_votes=False)
     config = dict(epochs=args.epochs, seed=args.seed, lr=args.rate, encoder_rate=args.encoder_rate,
                   rule=args.rule, depth=args.depth, gate_width=args.gate_width, images=len(train_images),
                   validation_images=len(validation), **{key: getattr(args, key) for key in tuning})
@@ -363,6 +364,8 @@ def main():
                         help="Give the output layer both the code and the decoder hidden activations")
     parser.add_argument("--projected-decoder-votes", action="store_true",
                         help="Assign hidden decoder pairs balanced signed subsets of output votes")
+    parser.add_argument("--independent-hidden-votes", action="store_true",
+                        help="Assign separate signed output groups to hidden neurons in both encoder and decoder")
     parser.add_argument("--depth", type=int, default=6)
     parser.add_argument("--images-per-batch", type=int, default=IMAGES_PER_BATCH)
     parser.add_argument("--pixels-per-image", type=int, default=PIXELS_PER_IMAGE)

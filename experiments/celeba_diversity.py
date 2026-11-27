@@ -106,7 +106,8 @@ def model_for(config, path, backend="numpy", *, code_top_k=None, vector_gate_wid
                        vector_hidden_width=config.get("vector_hidden_width", 0),
                        vector_hidden_depth=config.get("vector_hidden_depth", 1),
                        vector_gate_width=vector_gate_width, encoder_top_k=encoder_top_k, vector_top_k=vector_top_k,
-                       single_output_neuron=config.get("single_output_neuron", False))
+                       single_output_neuron=config.get("single_output_neuron", False),
+                       independent_hidden_votes=config.get("independent_hidden_votes", False))
 
 
 def compare(path, validation, target_edges, labels, decoder_path=None, seed_start=0):

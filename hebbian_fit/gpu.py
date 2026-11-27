@@ -54,7 +54,7 @@ class MojoModel:
         self.adaptive_agreement = config.hidden_rule == "lion-adaptive-agreement"
         self.network = load_extension().Network(
             config.inputs, config.outputs, config.width, config.depth, config.keep_per_pool,
-            config.readout == "sum", capacity, config.competition_groups,
+            config.readout in ("sum", "signed-activity"), capacity, config.competition_groups,
             GATES.index(config.gate), config.gate_widths, config.readout_divisor, config.heads,
             config.unit_norm_updates, config.sine_omega or 0.0, config.basis_size,
             config.uses_history, config.hidden_rule == "activity-sign", config.output_bound or 0.0,

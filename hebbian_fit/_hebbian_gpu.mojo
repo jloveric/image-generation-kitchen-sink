@@ -230,11 +230,12 @@ def predict(activity: Read, prediction: Write, batch_arg: Int32,
         return
     var pair = i * 2 * width
     var value: Float32 = 0
-    if classes_per_output == 1:
+    if sum_arg != 0:
+        var units_per_output = Int(classes_per_output) * width
+        for j in range(units_per_output):
+            value += activity[i * units_per_output + j]
+    elif classes_per_output == 1:
         value = 2 * abs(activity[i]) - 1
-    elif sum_arg != 0:
-        for j in range(2 * width):
-            value += activity[pair + j]
     else:
         var up: Float32 = 0
         var down: Float32 = 0
@@ -291,7 +292,7 @@ def hebbian[observe: Bool = False](x: Read, activity: Read, teaching: Read,
             weights: Write, history: Write, observations: Write, stats: Write,
             batch_arg: Int32, inputs_arg: Int32, outputs_arg: Int32, width_arg: Int32,
             offset_arg: Int32, rate: Float32, lion: Int32, scale_direction: Int32, explicit_decay: Int32,
-            classes_per_output_arg: Int32):
+            classes_per_output_arg: Int32, signed_activity: Int32):
     var batch = Int(batch_arg)
     var inputs = Int(inputs_arg)
     var outputs = Int(outputs_arg)
@@ -317,7 +318,8 @@ def hebbian[observe: Bool = False](x: Read, activity: Read, teaching: Read,
             var pre: Float32 = 1
             if incoming < inputs:
                 pre = x[sample * inputs + incoming]
-            product += pre * (direction * post)
+            var response = abs(post) if signed_activity != 0 else post
+            product += pre * (direction * response)
             squared += post * post
             count += 1
     comptime if observe:
@@ -799,7 +801,7 @@ struct Network(Movable, Writable):
                     write(self[].weights), write(self[].history), write(self[].observations), write(self[].encoder_stats),
                     Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
                     Int32(offset), step, Int32(self[].lion), Int32(self[].scale_direction), self[].explicit_decay,
-                    Int32(self[].classes_per_output),
+                    Int32(self[].classes_per_output), Int32(self[].raw_sum and self[].classes_per_output == 1),
                     grid_dim=ceildiv(count, Block), block_dim=Block)
                 self[].adapt_and_update(inputs, offset, layer, step)
             else:
@@ -809,7 +811,7 @@ struct Network(Movable, Writable):
                     write(self[].weights), write(self[].history), write(self[].observations), write(self[].encoder_stats),
                     Int32(batch), Int32(inputs), Int32(self[].outputs), Int32(self[].width),
                     Int32(offset), step, Int32(self[].lion), Int32(self[].scale_direction), self[].explicit_decay,
-                    Int32(self[].classes_per_output),
+                    Int32(self[].classes_per_output), Int32(self[].raw_sum and self[].classes_per_output == 1),
                     grid_dim=ceildiv(count, Block), block_dim=Block)
             if self[].unit_norm_updates:
                 self[].ctx.enqueue_function[normalize_updated](

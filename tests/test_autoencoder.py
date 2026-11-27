@@ -197,6 +197,34 @@ class AutoencoderTest(unittest.TestCase):
         np.testing.assert_array_equal(counts, 8)
         self.assertEqual(len(np.unique(projection[0])), 96 * 8)
 
+    def test_independent_votes_preserve_feedback_coverage(self):
+        for pairs, seed in ((1536, 1), (768, 3), (128, 0), (1020, 2)):
+            paired, _ = vote_assignment(pairs, seed, True)
+            independent, polarity = vote_assignment(pairs, seed, True, independent=True)
+            self.assertEqual(independent.shape, (2 * pairs, paired.shape[1]))
+            np.testing.assert_array_equal(np.bincount(independent.ravel()),
+                                          2 * np.bincount(paired.ravel()))
+            self.assertEqual(len(np.unique(np.sort(independent, axis=1), axis=0)), 2 * pairs)
+            self.assertEqual(polarity.sum(), 0)
+            teaching = np.ones((1, 64 * 64 * 3), np.float32)
+            totals, counts = projected_votes(teaching, (independent, polarity), None)
+            np.testing.assert_array_equal(totals, 0)
+            np.testing.assert_array_equal(counts, paired.shape[1])
+
+    @unittest.skipUnless(os.environ.get("HEBBIAN_TEST_GPU") == "1", "GPU disabled")
+    def test_gpu_independent_hidden_votes_agree_with_numpy(self):
+        settings = dict(images_per_batch=4, inputs=12, decoder_kind="vector", encoder_width=24,
+                        encoder_hidden_widths=(18,), latent_width=8, vector_hidden_width=4,
+                        projected_encoder_votes=True, projected_decoder_votes=True,
+                        single_output_neuron=True, independent_hidden_votes=True, rule="lion")
+        cpu, gpu = Autoencoder(3, **settings), Autoencoder(3, "mojo", **settings)
+        targets = np.random.default_rng(19).uniform(-1, 1, (4, 4096, 3)).astype(np.float32)
+        for model in (cpu, gpu):
+            model.step(self.images, None, targets, .004)
+        actual = gpu.state()
+        for key, expected in cpu.state().items():
+            np.testing.assert_allclose(actual[key], expected, atol=3e-6, err_msg=key)
+
     def test_decoder_samples_mixture_without_encoder(self):
         model = Autoencoder(3, inputs=12, decoder_kind="vector")
         codes = model.encode(self.images)

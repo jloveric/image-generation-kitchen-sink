@@ -12,25 +12,23 @@
 \maketitle
 
 \begin{abstract}
-We extend the classifier introduced in \emph{Supervised Hebbian Class Networks: Learning Without Backpropagation} to regression. We retain its local Hebbian updates and joint training of all layers, and assign two neuron classes to each continuous output. For each output, we sum the activity magnitudes of the increase neurons and subtract the corresponding sum for the decrease neurons. When the prediction falls below its target, increase neurons receive a positive teaching sign and decrease neurons a negative one. An overprediction reverses the signs. Each connection updates its weight using that sign and the activities of the two neurons it connects. For large output vectors, each hidden neuron pair receives votes from a fixed subset of the outputs. We demonstrate the approach on scalar curve fitting, implicit representation of an image, and image generation using an autoencoder.
+We extend the classifier introduced in \emph{Supervised Hebbian Class Networks: Learning Without Backpropagation} to regression. The sign of the final prediction error supplies a teaching signal to every layer. Each connection learns from that sign and the activities of the neurons it connects. Neurons can reinforce or suppress their activity on different examples. For a large output vector, each hidden neuron combines the error signs from a group of outputs. We demonstrate the approach on scalar curve fitting, implicit representation of an image, and image generation using an autoencoder.
 \end{abstract}
 
 \section{Regression from Class Network}
-We extend the supervised Hebbian classifier of \citet{loverich2026} to scalar regression by assigning two classes to one numerical output, increase ($+$) and decrease ($-$). To generate a color image, the decoder predicts a red, a green and a blue value at every pixel. Each value gets its own $+$ and $-$ classes, giving six signed output classes per pixel. The $64\times64$ CelebA decoder therefore has $64\times64\times3\times2=24{,}576$ signed output classes. A hidden pair can serve a group of outputs, so even a narrow hidden layer can learn from errors across the image.
+We extend the supervised Hebbian classifier of \citet{loverich2026} to regression. The classifier uses the target label and the strongest competing label to decide which classes to reinforce and suppress. For regression we treat each quantity to be predicted as an \emph{output class}. Each class has a numerical target. The class error tells the network whether to increase or decrease its prediction. The curve has one class. Blue Marble has three classes, one per color at the supplied coordinates. The CelebA autoencoder has $64\times64\times3=12{,}288$ classes, one per color channel at each image position. It predicts a value for every class in one forward pass.
 
-In the original classifier, the target label determines which class to reinforce, and the class scores identify its strongest competitor. Here the sign of the difference between the target value and the prediction determines which member of the increase/decrease pair to reinforce.
-
-Let $h$ be a neuron's signed output after competition in its layer. An \emph{increase} neuron adds its magnitude $|h|$ to the layer estimate, and a \emph{decrease} neuron subtracts $|h|$. For example, class totals of $1.1$ and $0.7$ give a layer estimate of $0.4$. Figure~\ref{fig:network} averages two such estimates. If the prediction falls below the target, the increase class in each layer should contribute more or the decrease class less. Each layer is fully connected to the previous layer, independent of neuron class.
+In the curve and implicit image models, each neuron contributes its signed activity $h$ to one class. Its contribution can be positive on one input and negative on another. When the prediction is too low, the learning rule reinforces positive activities and suppresses negative activities. When the prediction is too high, the directions reverse. Figure~\ref{fig:network} illustrates this rule for a scalar output. The Blue Marble network applies the same rule separately to red, green and blue. In the CelebA autoencoder, each hidden neuron receives a weighted sum of error signs from a fixed subset of the 12,288 classes. Each output neuron predicts one class and receives its error sign.
 
 \begin{figure}[!ht]
 \centering\includegraphics[width=.92\linewidth]{figures/class-network.pdf}
-\caption{A scalar regressor with two dense layers. Each circle marked $+$ adds the absolute value of its output, $|h|$, to its layer's estimate. Each circle marked $-$ subtracts it. Gray lines are learned connections. Teal lines carry the layer estimates $r_1$ and $r_2$ to the output, where they are averaged. Dashed arrows return the sign of the prediction error to each layer during training.}
+\caption{A scalar regressor with two fully connected layers. Each layer sums its signed neuron activities to give an estimate $r_1$ or $r_2$. The prediction is their average. Dashed arrows send the sign $e$ of the final prediction error to all layers during training.}
 \label{fig:network}
 \end{figure}
 
 \section{Forward pass with competitive activations and signed pooling}
 \label{sec:prediction}
-For a vector of $K$ continuous outputs, the network estimates all $K$ values on every example. Each output $k$ has two neuron classes, $(k,+)$ and $(k,-)$, for a total of $2K$ signed output classes. Table~\ref{tab:output-classes} gives the counts for the three experiments.
+For a vector of $K$ continuous targets, the network estimates all $K$ values in one forward pass.
 
 Let $u$ be the input to one dense layer. The first layer receives the supplied input vector, and each subsequent layer receives the activities from its predecessor. Neuron $j$ computes $z_j=b_j+\sum_i w_{ij}u_i$. The layer then compares magnitudes within a group of neurons, called a \emph{competition pool}. The input weights remain dense across pool and class boundaries. With hard top-$k$ selection, the $k$ neurons with the largest $|z_j|$ in each pool retain their signed activities. The remaining activities are set to zero.
 
@@ -43,14 +41,21 @@ For Gaussian competition in the image models, the reference magnitude $m$ is the
 An all-zero pool returns zeros. A neuron at the reference magnitude retains its full activity. A neuron one width away retains about 61\%. The cap keeps the Gaussian factor representable in the arithmetic used here. The scalar fits use a smoothly varying reference,
 $m=(\sum_j |z_j|^{16}/\sum_j |z_j|^{14})^{1/2}$, with the same all-zero convention. This gives greater weight to the larger magnitudes and varies smoothly as two neurons exchange rank.
 
-For output $k$, let $P_{\ell k}$ and $N_{\ell k}$ be the increase and decrease neurons in layer $\ell$. The coordinate regressors use all $L$ layers to form one estimate,
+In the coordinate regressors, let $P_{\ell k}$ be the neurons that estimate output $k$ in layer $\ell$. Each layer gives one estimate and the network averages them over all $L$ layers,
 \begin{equation}
- r_{\ell k}=\sum_{j\in P_{\ell k}} |h_j|-\sum_{j\in N_{\ell k}} |h_j|,
+ r_{\ell k}=\sum_{j\in P_{\ell k}} h_j,
  \qquad
  a_k=\frac{1}{L}\sum_{\ell=1}^{L} r_{\ell k}.
  \label{eq:output}
 \end{equation}
-For scalar regression the prediction is $\hat y_k=a_k$. For an image, we clip $a_k$ to $[-1,1]$ and round to the nearest of 256 equally spaced values in that interval. We apply the same conversion to the target. In the autoencoder only the final pairs contribute directly to the prediction. Its earlier layers supply learned features to those pairs.
+For scalar regression the prediction is $\hat y_k=a_k$. For the implicit image representation, we clip $a_k$ to $[-1,1]$ and round to the nearest of 256 equally spaced values in that interval. We apply the same conversion to the target.
+
+The CelebA decoder predicts each channel from one dense output neuron. Its signed activity is $h_k=b_k+\sum_i w_{ik}u_i$, where $u$ contains the activities of the final hidden layer. On the RGB intensity scale $[0,1]$, its prediction is
+\begin{equation}
+ \hat I_k=\frac{\operatorname{round}\!\left(255\min(1,|h_k|)\right)}{255}.
+ \label{eq:intensity}
+\end{equation}
+For training we express this intensity on the same scale as the input image, $\hat y_k=2\hat I_k-1$. The output neuron receives the teaching signal $s_k=e_k$, where $e_k$ is the sign of the target minus the prediction (Eq.~\ref{eq:sign}). Because the local update uses the signed $h_k$, a positive teaching sign reinforces activity of either sign and a negative teaching sign suppresses it.
 
 We initialize weights and biases independently from zero-mean normal distributions with standard deviations $1/\sqrt{F}$ and $0.35$, respectively, where $F$ counts the inputs to the neuron. For the CelebA autoencoder, we multiply the initial weights and biases of the RGB output layer by $0.12$.
 
@@ -60,13 +65,13 @@ For each example the network computes the complete prediction, then compares it 
  e_k=\sgn(y_k-\hat y_k),\qquad \sgn(0)=0 .
  \label{eq:sign}
 \end{equation}
-An increase neuron assigned to $k$ receives $s_j=e_k$, and a decrease neuron receives $s_j=-e_k$. For example, if the red value of a pixel is too low and its green value is correct, the pair assigned to red receives signs $+1$ and $-1$, respectively. Both neurons assigned to green receive zero. Each layer uses signs from the \emph{final} prediction, even if its own contribution $r_{\ell k}$ would suggest a different correction. We omit channels whose predictions match their targets when counting observations for the update.
+For a neuron $j$ that contributes its signed activity to output $k$, set $s_j=e_k\sgn(h_j)$. When $e_k=+1$, the neuron receives $s_j=+1$ if its contribution is positive and $s_j=-1$ if its contribution is negative. Its signed coactivity then uses $h_js_j=|h_j|e_k$. A neuron that predicts an intensity through its magnitude receives $s_j=e_k$. In both rules the final prediction supplies the error sign.
 
 \paragraph{Joint training.} Each minibatch passes through all layers before any weight changes. Every layer computes its update from the activities recorded on that pass and the signs of the errors in the final prediction. In the autoencoder this includes the encoder, the bottleneck layer and the decoder from the first minibatch onward.
 \begin{enumerate}
 \item Pass every example through the network. Save the input and activity of each neuron.
 \item Pool the activities into output values. Compare each final output with its target to obtain $e_k$.
-\item Give each increase/decrease pair opposite teaching signs. For pairs assigned several outputs, combine the error signs as in Section~\ref{sec:grouped-signs}.
+\item Compute the teaching signal $s_j$ for each neuron. For autoencoder hidden neurons, combine the output signs as in Section~\ref{sec:grouped-signs}.
 \item At each neuron, average the signed activity products and squared activities over contributing examples. Update its incoming weights and bias using the chosen Lion rule. The next minibatch uses the updated network.
 \end{enumerate}
 
@@ -99,7 +104,7 @@ Let $d_{\rm in}$ count the inputs to a neuron, including the constant input for 
 \end{equation}
 The division by $\sqrt{d_{\rm in}}$ bounds the length of the signed step across all incoming weights of a neuron by $\eta$. The denominator shrinks the incoming weights more strongly at a neuron with larger squared activity. The explicit form is $w_{ij}\leftarrow w_{ij}+\eta D_{ij}-\eta Q_j w_{ij}$, with the weight before the minibatch in the last term. Both forms follow \citet{loverich2026}. \citet{oja1982} used the receiving neuron's squared activity to control weight growth.
 
-Each run uses the same update throughout training. The target supplies only the sign in Equation~\ref{eq:sign}. The computation is local to a connection given that sign, the activities at its ends, and the receiving neuron's activity statistic. The output comparison itself requires information from the whole network.
+Each run uses the same update throughout training. The target supplies only the sign in Equation~\ref{eq:sign}. Given its teaching signal, each neuron updates its incoming weights from the activities at the two ends of each connection. The output comparison itself requires information from the whole network.
 
 \subsection{Per-neuron step sizes from sign agreement}
 In preliminary fits of the Blue Marble image with a 12-layer MLP, assigning smaller steps to layers closer to the input reduced the summed squared pixel error compared with using the same step in every layer. This motivated a rule that adjusts the step size of each neuron during training, so the effective steps can vary across layers without specifying a rate for each layer.
@@ -117,56 +122,54 @@ For example, if 40\% of the incoming weights agree and 60\% disagree, then $a_{j
 \end{equation}
 Here $D_{ij}$ and $Q_j$ are the direction and mean squared activity for the current minibatch. A neuron with no contributing examples keeps its previous multiplier and weights.
 
-\subsection{Grouping output classes to teach narrower hidden layers}
+\subsection{Grouping output errors to teach a narrower layer}
 \label{sec:grouped-signs}
-The CelebA autoencoder predicts an entire image at once. Each combination of pixel position and color channel is one continuous output. For a $64\times64$ RGB image, this gives $K=12{,}288$ outputs. The final layer has one increase neuron and one decrease neuron per output, hence $2K=24{,}576$ neurons. The bottleneck, by comparison, has 256 neurons. Its 128 pairs can each receive feedback from a group of outputs.
+In the CelebA autoencoder, each hidden neuron $j$ has a signed activity $h_j$ and a fixed set $G_j$ of output classes. Each class in $G_j$ contributes its error sign to the teaching signal for that neuron. The number of assigned classes $N=|G_j|$ depends on the layer. For example, each of the 256 bottleneck neurons receives signs from 96 of the 12,288 classes (Fig.~\ref{fig:auto}).
 
-We partition the output indices among the pairs in each hidden layer. The grouping rule uses only the indices, so the same construction applies to a vector of targets with no spatial structure. In the CelebA experiment we shuffle the indices once per layer and divide them evenly. Each bottleneck pair receives $12{,}288/128=96$ output error signs. Each assigned channel $k$ has a fixed multiplier $v_k$, equal to $+1$ for 48 channels and $-1$ for the other 48. Its vote on image $b$ is $v_k e_{bk}$, where $e_{bk}$ is the sign of the target minus the prediction. The increase neuron multiplies its local activity product by the sum of these votes, and the decrease neuron multiplies its own activity product by the negative of that sum (Figure~\ref{fig:pixel-votes}). These channel multipliers enter only during training.
+In each hidden layer, we shuffle the output indices and divide them among half as many groups as neurons. We use the largest even group size that fits and set aside any remainder. We independently shuffle and partition the same covered indices a second time, then shuffle the groups from both partitions and assign one group to each neuron. These assignments remain fixed throughout training. Each layer is fully connected to the preceding layer regardless of the group assignments. Every covered output therefore teaches two neurons in the layer. Half of the indices $k$ in each group have a fixed multiplier $v_{jk}=+1$ and half have $v_{jk}=-1$. The grouping uses only the output indices.
 
 \begin{figure}[!ht]
 \centering\includegraphics[width=.96\linewidth]{figures/pixel-votes.pdf}
-\caption{Feedback to one bottleneck pair for one illustrative image. The rows show four of its 96 assigned channels. Suppose the other 92 match their targets. Three channels cast nonzero votes. Their sum of $+1$ multiplies the increase neuron's local activity product, and $-1$ multiplies the decrease neuron's.}
+\caption{Four of the 96 channels assigned to one bottleneck neuron. Suppose the other 92 match their targets. The three nonzero votes sum to $+1$, which multiplies the neuron's local activity product on this example.}
 \label{fig:pixel-votes}
 \end{figure}
 
-For image $b$, let $t_b$ be the sum of the votes for this pair and $c_b$ the number of its channels that missed their targets. For the pair's group $G$, $t_b=\sum_{k\in G}v_k e_{bk}$ and $c_b=\sum_{k\in G}|e_{bk}|$. Opposite votes cancel in $t_b$ and both count in $c_b$. Across the minibatch, $C_j=\sum_{b:\,h_{bj}\ne0}c_b$ counts the votes received while neuron $j$ was active. With $\sigma_j=+1$ for the increase neuron and $-1$ for the decrease neuron, the activity measurements in Equation~\ref{eq:observations} become
+For image $b$, the teaching signal is the vote sum $t_{bj}=\sum_{k\in G_j}v_{jk}e_{bk}$. Let $c_{bj}=\sum_{k\in G_j}|e_{bk}|$ count the incorrect intensities in that group. Opposite votes cancel in $t_{bj}$ and both count in $c_{bj}$. The total number of votes received while neuron $j$ was active is $C_j=\sum_{b:\,h_{bj}\ne0}c_{bj}$. We use this total to average the minibatch observations,
 \begin{equation}
- A_{ij}=\frac{\sigma_j}{C_j}\sum_b u_{bi}h_{bj}t_b,\qquad
- Q_j=\frac{1}{C_j}\sum_b c_b h_{bj}^2 .
+ A_{ij}=\frac{1}{C_j}\sum_b u_{bi}h_{bj}t_{bj},\qquad
+ Q_j=\frac{1}{C_j}\sum_b c_{bj} h_{bj}^2 .
  \label{eq:votes}
 \end{equation}
-Skip the update if $C_j=0$. In the output layer each pair reconstructs one pixel channel and takes its error sign directly.
+Skip the update if $C_j=0$. The output neurons use Equation~\ref{eq:observations} directly, with $s_k=e_k$.
 
 \section{Experimental Results}
-In the classifier of \citet{loverich2026}, a neuron's class tells us which label its activity supports. Here a class identifies an output and a direction of change. For example, increasing red and increasing green correspond to distinct classes. For output $k$, the increase class receives $e_k$ and the decrease class receives $-e_k$.
+Table~\ref{tab:output-classes} gives the class count for each experiment. In the CelebA network, 256 bottleneck neurons receive teaching signals from all 12,288 classes collectively. Each individual bottleneck neuron uses only 96 of them.
 
 \begin{table}[!ht]
 \centering
-\caption{Each continuous output has an increase class and a decrease class.}
+\caption{Output classes in the three regression problems. The last column gives the number of classes whose error signs teach one hidden neuron.}
 \label{tab:output-classes}
-\begin{tabular}{@{}l p{.46\linewidth} r@{}}
+\begin{tabular}{@{}l r l l@{}}
 \toprule
-Experiment & What one forward pass predicts & Signed output classes\\
+Experiment & Classes & One class predicts & Classes per hidden neuron\\
 \midrule
-Sine fit & One value $y$ at the supplied $x$ & 2\\
-Blue Marble & Red, green, and blue at the supplied $(x,y)$ & 6\\
-CelebA autoencoder & Red, green, and blue at every pixel in a $64\times64$ image & 24,576\\
+Sine fit & 1 & Curve value at $x$ & 1\\
+Blue Marble & 3 & One color at $(x,y)$ & 1 (its assigned color)\\
+CelebA autoencoder & 12,288 & One color at one image position & 8, 16, 96, 12 in layer order\\
 \bottomrule
 \end{tabular}
 \end{table}
-
-The CelebA decoder has a separate output pair for each of the 12,288 pixel channels. Its bottleneck has only 128 pairs because each pair draws its teaching signal from 96 channels. The same grouping rule applies to larger output vectors. More outputs can teach each hidden pair while the hidden width stays fixed. The final layer still grows by two neurons per additional output.
 
 \subsection{1D Curve Fitting}
 We test how well the Hebbian rule trains a plain, fully connected multilayer perceptron (MLP) to follow a curve with a jump. One set of weights serves the whole interval. A sinusoidal representation network (SIREN) can express a sine wave with one sine unit and an output scale \citep{sitzmann2020}. \citet{lane1990} used B-splines for the connections in an MLP.
 
 For $x\in[-1,1]$ the target is $0.5\sin(2\pi x)$ through $x=0.25$ and $0.5\sin(2\pi x)+0.5$ thereafter. Its value jumps from $0.5$ to $1$ where both branches have zero limiting slope. The network receives only $x$. We assign 12,288 equally spaced cell centers cyclically to training, validation and test sets of 4,096 points each. The validation points select checkpoints. Test points measure interpolation.
 
-Each layer has one competition pool divided equally between increase and decrease neurons. The multilayer models use Gaussian widths from $0.32$ to $0.16$ across layers, and the single-layer model uses $0.32$. We train for 640 epochs in batches of 64 with adaptive semi-implicit Lion. The shared step starts at $0.00075$ and decays along one half cosine. After training, we select from checkpoints saved every five epochs.
+Each layer has one competition pool. We train signed-activity networks at four sizes (Table~\ref{tab:sine}). The multilayer models use Gaussian widths from $0.32$ to $0.16$ across layers, and the single-layer model uses $0.32$. We train for 640 epochs in batches of 64 with adaptive semi-implicit Lion. The shared step starts at $0.00075$ and decays along one half cosine. We evaluate checkpoints every five epochs and retain the one with the lowest validation error. The single-layer network misses both the depth of the trough and the jump at the crest. Among the width-64 networks, median test error decreases from 0.02856 at four layers to 0.01131 at 24 layers.
 
 \begin{figure}[ht]
 \centering\includegraphics[width=\linewidth]{figures/sine.pdf}
-\caption{Left, the target and the 24-layer fit with the median test error. The right panel enlarges the boxed region and shows all four fits, labeled by hidden depth $\times$ width. The filled circle gives the target at $x=0.25$ and the open circle its limit from the right.}
+\caption{Discontinuous sine and the four signed-activity networks. Each curve shows the run with the median test error for that size. The legend gives hidden layer count $\times$ width. The right panel magnifies the region marked at left.}
 \label{fig:sine}
 \end{figure}
 
@@ -178,10 +181,10 @@ Each layer has one competition pool divided equally between increase and decreas
 \toprule
 Hidden layers $\times$ width & Parameters & Test RMSE\\
 \midrule
-$1\times512$ & 1,024 & 0.08171\\
-$4\times64$ & 12,608 & 0.02883\\
-$12\times64$ & 45,888 & 0.01697\\
-$24\times64$ & 95,808 & 0.01103\\
+$1\times512$ & 1,024 & 0.37958\\
+$4\times64$ & 12,608 & 0.02856\\
+$12\times64$ & 45,888 & 0.01331\\
+$24\times64$ & 95,808 & 0.01131\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -190,13 +193,13 @@ $24\times64$ & 95,808 & 0.01103\\
 \subsection{Implicit Representation of an Image}
 We train a plain MLP to represent a photograph as a function from image coordinates to RGB values. One set of weights serves the whole image. For applications that need a compact image representation, SIRENs offer a specialized alternative. \citet{sitzmann2020} used sine activations to recover fine image detail from pixel coordinates.
 
-The input is a position $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. At every position the network uses the same six signed classes to predict three values, one each for red, green and blue. Each target is the RGB triple at that point in a crop of the Apollo 17 Blue Marble photograph \citep{nasa1972}. Twelve layers of 432 neurons each contain one Gaussian competition pool per color, with 72 increase and 72 decrease neurons per pool. The Gaussian widths range from $0.24$ to $0.08$ across layers. There are 2,058,912 learned weights and biases.
+The input is a position $(x,y)$ on a $128\times128$ grid spanning $[-1,1]^2$. Each target is the RGB triple at that point in a crop of the Apollo 17 Blue Marble photograph \citep{nasa1972}. Each of the 12 layers has three Gaussian competition pools of 144 neurons, one per color. Gaussian widths range from $0.24$ to $0.08$ across layers. There are 2,058,912 learned weights and biases.
 
-Figure~\ref{fig:implicit-image} shows how the network predicts RGB values and assigns teaching signs. We train and evaluate on all 16,384 pixels. Training uses adaptive semi-implicit Lion for 560 epochs in batches of 128. The shared step starts at $0.004$ and decays along one half cosine. Every neuron uses the same rule in Equation~\ref{eq:agreement}. We retain the checkpoint with the lowest error on the complete image, evaluating every five epochs. The final checkpoint gives the lowest error.
+For each position the network computes three error signs $(e_R,e_G,e_B)$. A neuron $j$ in the red pool receives only the red error sign and uses $s_j=e_R\sgn(h_j)$ in its update. The green and blue pools use $e_G$ and $e_B$ in the same way (Fig.~\ref{fig:implicit-image}). A neuron in any of the three pools receives inputs from all three pools in the preceding hidden layer. We train and evaluate on all 16,384 pixels. Training uses adaptive semi-implicit Lion for 560 epochs in batches of 128. The shared step starts at $0.004$ and decays along one half cosine. Every neuron uses the same rule in Equation~\ref{eq:agreement}. We retain the checkpoint with the lowest error on the complete image, evaluating every five epochs. The final checkpoint gives the lowest error.
 
 \begin{figure}[!ht]
 \centering\includegraphics[width=\linewidth]{figures/implicit-image.pdf}
-\caption{Blue Marble network for one pixel position. Each labeled circle stands for 72 neurons of one signed color class. Each shaded pair of circles forms one competition pool. Gray lines show dense connections across all colors in adjacent layers. Each layer contributes its red, green and blue estimates as one triple. The dashed path carries the final error signs during training. For color $c$, its increase neurons receive $e_c$ and its decrease neurons receive $-e_c$. A correctly predicted channel gives both classes zero.}
+\caption{Blue Marble network for one pixel position. Each layer is fully connected to the preceding layer and sums its signed neuron activities separately for each color. The dashed path carries the final error signs to the corresponding pools during training.}
 \label{fig:implicit-image}
 \end{figure}
 
@@ -206,10 +209,10 @@ Figure~\ref{fig:implicit-image} shows how the network predicts RGB values and as
 \label{fig:earth}
 \end{figure}
 
-With RGB values expressed on $[0,1]$, the sum of squared differences across all 49,152 channel values is 6.82. This corresponds to a root mean squared difference of 0.0118 per channel.
+With RGB values expressed on $[0,1]$, the sum of squared differences across all 49,152 channel values is 9.22.
 
 \newpage
-Figure~\ref{fig:earth-layers} shows the individual and accumulated estimates. Layer 4 gives the lowest error on its own, at 2,851.15. The accumulated error drops from 9,871.91 at layer 1 to 44.19 through layer 11 and 6.82 through layer 12.
+Figure~\ref{fig:earth-layers} shows how each layer contributes to the reconstruction.
 
 \begin{figure}[!htb]
 \centering\includegraphics[width=\linewidth]{figures/earth-layers.pdf}
@@ -223,18 +226,18 @@ The encoder maps an image to a 256-value embedding, and the decoder reconstructs
 
 \begin{figure}[ht]
 \centering\includegraphics[width=\linewidth]{figures/autoencoder.pdf}
-\caption{All four hidden layers use the same voting rule. Each layer divides the final pixel channels among its own pairs. Each channel contributes its error sign times its fixed multiplier, $+1$ or $-1$. In the bottleneck example at top, five of the 96 channels miss their targets. Their votes sum to $+3$, so the two neurons multiply their local activity products by $+3$ and $-3$, respectively. Below, the dashed arrows show the number of channels assigned to a pair in each layer. Each output pair uses its own pixel channel's error sign directly.}
+\caption{Class assignments in the CelebA autoencoder. At top, $h_1$ and $h_2$ are the signed activities of the first two neurons in each layer. Solid arrows show the dense forward connections. Dashed arrows show the error signs used in training. For example, output neurons 5,996 and 7,655 contribute $+e_{5996}$ and $-e_{7655}$ to the first bottleneck neuron. Its other 94 assigned classes supply the remaining terms. Below, the full network reconstructs the first test image.}
 \label{fig:auto}
 \end{figure}
 
-The $+$ and $-$ symbols in Figure~\ref{fig:auto} give the two neuron polarities. In the hidden layers each pair represents a group of outputs for training. In the final layer each pair represents one pixel channel. A neuron of either polarity can have positive or negative activity. The encoder maps the 12,288 input values through widths of 3,072 and 1,536 to the 256-value embedding. The decoder maps the embedding through 1,536 neurons to 24,576 neurons arranged in RGB output pairs. Every layer receives all activities from its immediate predecessor. Each output pair estimates its channel value as $|h_+|-|h_-|$. The five dense layers contain 81,033,472 learned weights and biases.
+The encoder maps the 12,288 input values through layers of 3,072 and 1,536 neurons to the 256-value embedding. The decoder has one hidden layer of 2,040 neurons and an output layer of 12,288 neurons. Each layer is fully connected to its immediate predecessor. In the output layer each neuron predicts its channel from its own activity magnitude (Eq.~\ref{eq:intensity}). The five dense layers contain 68,469,496 learned weights and biases.
 
-The first encoder layer uses hard top-$k$ selection with $k=768$ in each of three pools of 1,024 neurons. The second encoder layer and the decoder hidden layer each have three pools of 512 neurons and use Gaussian widths of 0.85 and 0.50, respectively. The bottleneck uses $k=86$ in pools of 86, 86 and 84 neurons, so all 256 activities pass through to the decoder. The fixed groups in Section~\ref{sec:grouped-signs} assign 8, 16, 96 and 16 pixel channels to a pair in the first four layers, respectively. Each RGB output pair has its own Gaussian pool and uses the error sign for its channel.
+In each of three pools of 1,024 neurons, the first encoder layer retains the signed activities of the 768 neurons with the largest magnitudes. The second encoder layer uses three Gaussian pools of 512 neurons with width 0.85. The bottleneck passes all 256 signed activities to the decoder. The decoder hidden layer uses three Gaussian pools of 680 neurons with width 0.50. Each hidden neuron receives 8, 16, 96 or 12 channel error signs in these four layers, respectively. The decoder hidden layer covers 12,240 channels, with each sign used twice. Every output neuron receives its own channel's sign directly.
 
-All five layers use the semi-implicit update in Equation~\ref{eq:update} and the coactivity history in Equation~\ref{eq:history}. Training uses two passes in minibatches of 128 images. The RGB layer starts at step $0.0008$ and all earlier layers at $0.00012$. The schedule holds the starting steps for the first fifth of training, then decays them along a half cosine over the remaining minibatches. We evaluate the starting weights and checkpoints every half pass on 512 official validation images. The final checkpoint gives the lowest error. With these weights, validation selects an RGB Gaussian width of 0.40 for inference from a training width of 0.44.
+All five layers use semi-implicit Hebbian Lion (Eqs.~\ref{eq:history} and~\ref{eq:update}) for three passes through the training set in minibatches of 128 images. The output layer starts at step $0.0008$ and the four hidden layers at $0.00008$. The schedule holds these steps for the first fifth of training, then decays them along a half cosine. We evaluate the initial weights and each half-pass checkpoint on 512 official validation images. The checkpoint at 2.5 passes has the lowest validation error.
 
 \paragraph{Reconstruction.}
-On the 19,962 official test images, the mean sum of squared RGB differences per image is 184.19. The sum is over 12,288 values on the $[0,1]$ scale. The root mean squared difference per channel is 0.122.
+On the 19,962 official test images, the mean sum of squared RGB differences per image is 171.74. Each sum covers 12,288 intensities on the $[0,1]$ scale.
 
 \paragraph{Generating with the decoder.}
 After training, we encode the training images and estimate a distribution of embeddings. We group the embeddings by $k$-means in the eight leading principal directions, after scaling each direction to unit variance. In each of the 16 groups we compute the mean $\mu_g$ and the leading 64 eigenvectors and eigenvalues of the covariance in the original 256-dimensional embedding space. To draw an image, choose group $g$ with probability proportional to its membership. Let $U_g$ contain its retained eigenvectors and $\Lambda_g$ its retained eigenvalues. Draw 64 independent standard normal values $\epsilon$ and decode
@@ -244,15 +247,15 @@ After training, we encode the training images and estimate a distribution of emb
 The factor $0.85$ scales the sampled standard deviations. Estimating these means and covariances uses the completed encoder and leaves all network weights fixed. Once the distribution is stored, a draw needs only the sampler and decoder.
 
 \begin{figure}[ht]
-\centering\includegraphics[width=.58\linewidth]{figures/portraits.png}
-\caption{Images generated from 36 consecutive draws from the fitted embedding distribution. Hair, background and illumination vary. Many faces share a similar frontal pose and facial outline. Fine details such as hair strands remain soft.}
+\centering\includegraphics[width=.58\linewidth]{figures/celeba-generated.png}
+\caption{CelebA decoder output for 36 consecutive draws from the fitted embedding distribution.}
 \label{fig:faces}
 \end{figure}
 
 \section{Relation to other local learning methods}
-The classifier of \citet{loverich2026} trains its layers jointly. A single class decision, based on activities across layers, supplies the teaching signs for that minibatch. Here the classes stand for opposite contributions to a number. The sign of the final discrepancy teaches both classes throughout the network. Signed groups of output coordinates carry the same information to hidden layers narrower than the output.
+The classifier of \citet{loverich2026} trains its layers jointly. A class decision based on the activities across layers supplies the teaching signals. In our regression networks, the sign of the final discrepancy supplies the teaching signal for each output. Groups of these signs teach hidden layers narrower than the output.
 
-\citet{padmani2025} use Forward-Forward learning for regression. They train each layer by gradient descent to distinguish candidate pairs $(x,y)$ inside and outside a tolerance band around the target function. At inference they test multiple values of $y$ for one $x$ and average the accepted values. \citet{liu2026ffr} use competing neuron groups for ordered intervals of the target and combine estimates from several depths. Each hidden layer optimizes its own loss. A learned linear map of the group scores supplies the final layer's estimate and is trained by squared error with gradients confined to that map. In our coordinate regressor, the prediction at $x$ is the average of the layer estimates (Eq.~\ref{eq:output}). The sign of its error teaches the increase and decrease neurons at every depth.
+\citet{padmani2025} use Forward-Forward learning for regression. They train each layer by gradient descent to distinguish candidate pairs $(x,y)$ inside and outside a tolerance band around the target function. At inference they test multiple values of $y$ for one $x$ and average the accepted values. \citet{liu2026ffr} use competing neuron groups for ordered intervals of the target and combine estimates from several depths. Each hidden layer optimizes its own loss. A learned linear map of the group scores supplies the final layer's estimate and is trained by squared error with gradients confined to that map. In our coordinate regressor, the prediction at $x$ is the average of the layer estimates (Eq.~\ref{eq:output}). The final error sign for each output teaches the neurons contributing to that output at every depth.
 
 \citet{qiao1992} used a global scalar error to train the hidden layer of a two-layer optical network without propagating derivatives through the output weights. Their hidden-layer rule suppresses an activity pattern after an error. Their output weights follow a gradient update derived from the output loss.
 
@@ -262,16 +265,16 @@ For autoencoders, \citet{hinton1988recirculation} trained the encoding and recon
 
 \citet{teh2000} reconstruct face pairs without backpropagation. In their restricted Boltzmann machine, the same weights connect pixels to hidden units in both directions. Training compares their correlations on observed face pairs and on one-step reconstructions (their Fig.~1 and Eq.~3). \citet{ororbia2022} train a predictive coding model without backpropagation. The network repeatedly adjusts its hidden activities while an image is held at the input. Each layer predicts the one below it. The connections that produce the image learn from the activity above and the prediction error at the pixels. After training, the authors fitted a Gaussian mixture to the highest layer and sampled from it to generate images.
 
-Our autoencoder trains the encoder and decoder together. The signs of the reconstruction errors from one forward pass teach both the hidden and output pairs.
+Our autoencoder trains the encoder and decoder together. The signs of the reconstruction errors from one forward pass teach the hidden neurons and the individual output neurons.
 
 We fit the embedding distribution after training the autoencoder. \citet{ghosh2020} trained the encoder and decoder by backpropagation with Adam, then fitted a distribution to the training embeddings. \citet{samuth2024} started with a pretrained VQ-GAN autoencoder and fitted a low-rank mixture in its embedding space, refining samples by nearest-neighbor matching before decoding. In our CelebA experiment, the mixture supplies embeddings for generation. Reconstructing a supplied image uses only the encoder and decoder.
 
 \section{Conclusion}
-Supervised Hebbian class networks can train deep, fully connected networks for regression without backpropagation or gradient descent. The extension from classification is to give each continuous output an increase class and a decrease class. Comparing a prediction with its target tells the two classes which way to change. This gives every layer a teaching signal from the final prediction. All layers learn together, with each connection using the activities of the neurons it connects.
+Supervised Hebbian class networks can train deep, fully connected networks for regression without backpropagation or gradient descent. A neuron can reinforce or suppress its activity using an error sign from the final prediction. All layers learn together, with each connection using the activities of the neurons it connects.
 
 The same principle can be applied to scalar curve fitting, implicit representation and image generation. In the CelebA autoencoder, the signs of the reconstruction errors train the encoder and decoder together. After training, the decoder generates images from samples drawn from a distribution fitted to the learned embeddings.
 
-The Blue Marble fit improved when we gave earlier layers smaller steps. To automate step selection, we modified Hebbian Lion to adjust each neuron's step according to the sign agreement between its current and past Hebbian coactivities (Eq.~\ref{eq:agreement}). We used this rule for both the curve fit and the implicit image representation. The reduction in image fitting error from this change to Lion motivates further research on optimizers designed for supervised Hebbian class networks.
+To automate step selection across layers, we modified Hebbian Lion to adjust each neuron's step according to the sign agreement between its current and past Hebbian coactivities (Eq.~\ref{eq:agreement}). We used this rule for both the curve fit and the implicit image representation. The choice of update rule for supervised Hebbian class networks warrants further study.
 
 \bibliographystyle{tmlr}
 \bibliography{references}

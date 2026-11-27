@@ -11,6 +11,16 @@ from hebbian_fit.model import ModelConfig, NumpyModel, connection_inputs, invers
 
 
 class NumpyTests(unittest.TestCase):
+    def test_signed_activity_uses_output_error_sign_with_either_activity_sign(self):
+        config = ModelConfig(width=2, depth=1, gate="none", readout="signed-activity")
+        model = NumpyModel(config, 1)
+        x = np.array([[1.]], dtype=np.float32)
+        model.weights[0][:] = [[0., 0.], [.5, -.25]]
+        np.testing.assert_allclose(model.predict_values(x), [[.25]])
+        model.step(x, np.array([[.75]], dtype=np.float32), .01)
+        np.testing.assert_allclose(model.history[0], [[.005, .0025], [.005, .0025]])
+        self.assertGreater(model.predict_values(x).item(), .25)
+
     def test_checked_step_restores_weights_and_history_before_skipping_a_reversed_sign(self):
         cfg = ModelConfig(width=1, depth=1, gate="none")
         ordinary = NumpyModel(cfg, 5)
@@ -600,9 +610,9 @@ class GpuTests(unittest.TestCase):
 
     def test_all_layer_readouts(self):
         from hebbian_fit.gpu import MojoModel
-        for readout in ("fixed", "class-sum", "sum", "class-energy"):
+        for readout in ("fixed", "class-sum", "sum", "class-energy", "signed-activity"):
             config = ModelConfig(inputs=2, outputs=3, width=4, depth=3, gate="gaussian",
-                                 readout=readout, readout_layers="all")
+                                 readout=readout, readout_layers="all", hidden_rule="lion-adaptive-agreement")
             self.check_parity(NumpyModel(config, 17), MojoModel(config, 17))
         config = replace(config, initialization="unit-affine", unit_norm_updates=True)
         self.check_parity(NumpyModel(config, 17), MojoModel(config, 17))

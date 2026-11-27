@@ -136,7 +136,7 @@ def train(trial, seed, data, full=False, parent=None, checkpoint_pixels=None, sq
                 raise ValueError(f"Nonfinite predictions for {trial.label}, seed {seed}, epoch {epoch}")
             train_error = squared_error(model, data, pixels) if checkpoint_pixels is None else error
             point = dict(epoch=phase_start + epoch, validation_sse=error, train_sse=train_error)
-            if rule in ADAPTIVE_LION_RULES:
+            if rule in ADAPTIVE_LION_RULES and isinstance(model, NumpyModel):
                 point["mean_step_multipliers"] = model.take_mean_step_multipliers()
             if checkpoint_pixels is not None and epoch % 25 == 0:
                 print(f"{trial.label}: epoch {epoch}/{budget}, squared RGB error {error:.2f}", flush=True)
