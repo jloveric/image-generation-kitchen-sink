@@ -15,13 +15,19 @@ from papers import lion
 RULE = "lion-adaptive-agreement"
 
 
-def trial_for(task, rate=None, epochs=None, depth=None, width=None, batch=None, backend="numpy"):
+def trial_for(task, rate=None, epochs=None, depth=None, width=None, batch=None, backend="numpy",
+              *, sine_center=None):
     if task == "sine":
         trial = lion.comparison_trial(sine_jump.deeper(depth or 24), RULE)
     else:
         trial = blue_marble_shared_step.trial_for(RULE, .004)
     rule, starting_rate, size, budget, decay = trial.phases[0]
     config = replace(trial.config, readout="signed-activity", width=width or 2 * trial.config.width)
+    if task == "sine":
+        gate = {"max-abs": "gaussian", "smooth": "gaussian-smooth"}[sine_center or "max-abs"]
+        config = replace(config, gate=gate)
+    elif sine_center is not None:
+        raise ValueError("The sine center applies only to the sine experiment")
     if depth is not None and depth != config.depth:
         widths = tuple(round(float(w), 3) for w in np.linspace(
             config.gate_widths[0], config.gate_widths[-1], depth
@@ -29,6 +35,8 @@ def trial_for(task, rate=None, epochs=None, depth=None, width=None, batch=None, 
         config = replace(config, depth=depth, layer_gate_widths=widths)
     phase = (rule, rate or starting_rate, batch or size, epochs or budget, decay)
     name = f"{task}-signed-activity-{config.depth}x{config.units}-{phase[1]:g}-b{phase[2]}-e{phase[3]}"
+    if task == "sine" and config.gate == "gaussian":
+        name += "-max-abs"
     if backend != "numpy":
         name += f"-{backend}"
     return replace(trial, label=name, config=config, phases=(phase,), backend=backend)
@@ -68,6 +76,8 @@ def main():
     parser.add_argument("--width-per-output", type=int)
     parser.add_argument("--batch", type=int)
     parser.add_argument("--backend", choices=("numpy", "mojo"), default="numpy")
+    parser.add_argument("--sine-center", choices=("max-abs", "smooth"),
+                        help="Reference magnitude for Gaussian competition on the sine task (default: max-abs)")
     parser.add_argument("--until", type=int, help="Marble epoch to pause on the scheduled cosine")
     args = parser.parse_args()
     if (args.rate is not None and not 0 < args.rate < np.inf
@@ -76,8 +86,10 @@ def main():
         parser.error("Rate, epoch budget, depth, width and batch size must be positive")
     if args.until is not None and args.task != "marble":
         parser.error("--until applies to Blue Marble")
+    if args.sine_center is not None and args.task != "sine":
+        parser.error("--sine-center applies to the sine task")
     trial = trial_for(args.task, args.rate, args.epochs, args.depth, args.width_per_output,
-                      args.batch, args.backend)
+                      args.batch, args.backend, sine_center=args.sine_center)
     if args.task == "sine":
         result = sine(trial)
         print(f"{trial.label}: median test RMSE {result['medians']['test_rmse']:.8f}", flush=True)

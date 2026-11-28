@@ -37,12 +37,14 @@ python -m papers.results sine
 
 For each size, train three independent fits for 640 epochs in batches of 64, using one cosine starting at 0.00075. Each split contains 4,096 distinct points. For each fit, select weights by validation error. The paper reports the median test RMSE at each size and plots the checkpoint that attained that value. [Curve fits and zoom](figures/sine.pdf)
 
-| Hidden layers × width | Parameters | Median test RMSE | Data |
-| --- | ---: | ---: | --- |
-| 1 × 512 | 1,024 | 0.37958 | [Run measurements](../assets/results/sine-signed-activity-1x512-0.00075-b64-e640.json) |
-| 4 × 64 | 12,608 | 0.02856 | [Run measurements](../assets/results/sine-signed-activity-4x64-0.00075-b64-e640.json) |
-| 12 × 64 | 45,888 | 0.01331 | [Run measurements](../assets/results/sine-signed-activity-12x64-0.00075-b64-e640.json) |
-| 24 × 64 | 95,808 | 0.01131 | [Run measurements](../assets/results/sine-signed-activity-24x64-0.00075-b64-e640.json) |
+| Hidden layers × width | Parameters | Max-abs test RMSE (paper) | Smooth-center test RMSE |
+| --- | ---: | ---: | ---: |
+| 1 × 512 | 1,024 | [0.26120](../assets/results/sine-signed-activity-1x512-0.00075-b64-e640-max-abs.json) | [0.37958](../assets/results/sine-signed-activity-1x512-0.00075-b64-e640.json) |
+| 4 × 64 | 12,608 | [0.03095](../assets/results/sine-signed-activity-4x64-0.00075-b64-e640-max-abs.json) | [0.02856](../assets/results/sine-signed-activity-4x64-0.00075-b64-e640.json) |
+| 12 × 64 | 45,888 | [0.01592](../assets/results/sine-signed-activity-12x64-0.00075-b64-e640-max-abs.json) | [0.01331](../assets/results/sine-signed-activity-12x64-0.00075-b64-e640.json) |
+| 24 × 64 | 95,808 | [0.01141](../assets/results/sine-signed-activity-24x64-0.00075-b64-e640-max-abs.json) | [0.01131](../assets/results/sine-signed-activity-24x64-0.00075-b64-e640.json) |
+
+The paper uses the maximum absolute preactivation in each pool as the Gaussian center. To reproduce the smooth-center column, repeat the training commands above with `--sine-center smooth`. After both sets of runs, `python -m papers.results sine-centers` plots the median fit for each configuration. [Curve fits with both centers](../assets/results/sine-gaussian-centers.png)
 
 ### Blue Marble
 

@@ -38,7 +38,7 @@ The signed-activity fit reaches **9.22** summed squared RGB error at epoch 560. 
 
 The target is $f(x)=0.5\sin(2\pi x)+0.5\,\mathbf{1}_{x>0.25}$. Its left and right slopes approach zero at the crest, where the value jumps from 0.5 to 1.0. The MLP receives only raw coordinates. Each of the training, validation and test grids contains 4,096 points.
 
-The four signed-activity MLPs train for 640 epochs in batches of 64 with the same Hebbian update as Blue Marble and a cosine starting at 0.00075. For each size, the figure shows the fit with the median test RMSE across three runs. [Measurements and reproduction commands](papers/README.md#discontinuous-sine)
+Each Gaussian competition pool uses its maximum absolute preactivation as the center. The four signed-activity MLPs train for 640 epochs in batches of 64 with the same Hebbian update as Blue Marble and a cosine starting at 0.00075. For each size, the figure shows the fit with the median test RMSE across three runs. [Measurements and reproduction commands](papers/README.md#discontinuous-sine)
 
 ![Four signed-activity MLPs fit the discontinuous sine, with the region around the jump enlarged at right](papers/figures/sine.png)
 

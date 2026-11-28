@@ -27,26 +27,37 @@ plt.rcParams.update({"pdf.fonttype": 42, "font.size": 10, "axes.spines.top": Fal
                      "axes.spines.right": False, "axes.labelcolor": INK, "text.color": INK})
 
 
+SINE_SIZES = ((1, 512), (4, 64), (12, 64), (24, 64))
+
+
+def median_sine_fit(depth, width, center=None):
+    trial = signed_activity.trial_for("sine", depth=depth, width=width, sine_center=center)
+    rows = sorted(lion.report(trial.label)["runs"], key=lambda r: r["test_rmse"])
+    median = rows[len(rows) // 2]
+    return sine_jump.load_model(median["seed"], trial), median["test_rmse"]
+
+
+def sine_target(ax, left, right):
+    x_left = np.linspace(left, sine_jump.JUMP_X, 1001)
+    x_right = np.linspace(sine_jump.JUMP_X, right, 1001)
+    ax.plot(x_left, sine_jump.sine(x_left), ls=(0, (5, 2)), lw=1.35, color=INK, label="Target")
+    ax.plot(x_right, sine_jump.sine(x_right)+sine_jump.JUMP_HEIGHT, ls=(0, (5, 2)), lw=1.35, color=INK)
+
+
 def sine():
     fits = []
-    for depth, width, color, style in ((1, 512, "#b76e3d", ":"), (4, 64, "#77518c", "-."),
-                                        (12, 64, "#477299", "--"), (24, 64, TEAL, "-")):
-        trial = signed_activity.trial_for("sine", depth=depth, width=width)
-        rows = sorted(lion.report(trial.label)["runs"], key=lambda r: r["test_rmse"])
-        median = rows[len(rows) // 2]
-        model = sine_jump.load_model(median["seed"], trial)
+    styles = (("#b76e3d", ":"), ("#77518c", "-."), ("#477299", "--"), (TEAL, "-"))
+    for (depth, width), (color, style) in zip(SINE_SIZES, styles, strict=True):
+        model, rmse = median_sine_fit(depth, width)
         fits.append((model, f"{depth} × {width}", color, style))
-        print(f"{depth} × {width}: median test RMSE {median['test_rmse']:.5f}")
+        print(f"{depth} × {width}: median test RMSE {rmse:.5f}")
     fig, axes = plt.subplots(1, 2, figsize=(7.5, 3.05), width_ratios=(1.12, 1),
                              layout="constrained")
     for ax, (left, right), title in zip(axes, ((-1, 1), (.15, .35)), ("Curve fit", "Zoom of discontinuity")):
         x = np.linspace(left, right, 8001, dtype=np.float32)
         for model, label, color, style in fits:
             ax.plot(x, sine_jump.curve(model, x), lw=1.55, color=color, ls=style, label=label)
-        x_left = np.linspace(left, sine_jump.JUMP_X, 1001)
-        x_right = np.linspace(sine_jump.JUMP_X, right, 1001)
-        ax.plot(x_left, sine_jump.sine(x_left), ls=(0, (5, 2)), lw=1.35, color=INK, label="Target")
-        ax.plot(x_right, sine_jump.sine(x_right)+sine_jump.JUMP_HEIGHT, ls=(0, (5, 2)), lw=1.35, color=INK)
+        sine_target(ax, left, right)
         ax.set(xlabel="Input  $x$", xlim=(left, right))
         ax.set_title(title, loc="left", fontsize=11, weight="bold")
         ax.grid(axis="y", color="#dae1e3", lw=.6)
@@ -64,6 +75,29 @@ def sine():
                                 fill=False, edgecolor=INK, linewidth=0.9))
     fig.savefig(OUT / "sine.pdf")
     fig.savefig(OUT / "sine.png", dpi=180)
+    plt.close(fig)
+
+
+def sine_centers():
+    fig, axes = plt.subplots(4, 2, figsize=(8.5, 8.2), layout="constrained", sharex="col")
+    for (depth, width), panels in zip(SINE_SIZES, axes, strict=True):
+        fits = [median_sine_fit(depth, width, center) for center in ("max-abs", "smooth")]
+        for ax, (left, right) in zip(panels, ((-1, 1), (.15, .35)), strict=True):
+            x = np.linspace(left, right, 8001, dtype=np.float32)
+            for (model, _), label, color, style in zip(fits, ("Maximum", "Smooth center"),
+                                                       (TEAL, "#bd7134"), ("-", "-."), strict=True):
+                ax.plot(x, sine_jump.curve(model, x), label=label, color=color, ls=style, lw=1.6)
+            sine_target(ax, left, right)
+            ax.set_xlim(left, right)
+            ax.grid(axis="y", alpha=.25)
+        panels[0].set_ylabel(f"{depth} × {width}\nOutput")
+    axes[0, 0].set_title("Curve fit")
+    axes[0, 1].set_title("Zoom of discontinuity")
+    for ax in axes[-1]:
+        ax.set_xlabel("Input  $x$")
+    handles, labels = axes[0, 0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="outside lower center", frameon=False, ncol=3)
+    fig.savefig(lion.RESULTS / "sine-gaussian-centers.png", dpi=160)
     plt.close(fig)
 
 
@@ -120,7 +154,7 @@ def marble(checkpoint=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("task", choices=("sine", "marble", "images", "portraits", "reconstruction"))
+    parser.add_argument("task", choices=("sine", "sine-centers", "marble", "images", "portraits", "reconstruction"))
     parser.add_argument("--run", type=Path, help="CelebA full run directory")
     parser.add_argument("--mixture", type=Path, help="Use this fitted code distribution and decoder export")
     parser.add_argument("--checkpoint", type=Path, help="Use this saved Blue Marble checkpoint")
@@ -142,6 +176,8 @@ def main():
     run = args.run or (lion.PORTRAIT_BASELINE if args.task == "portraits" else FACE_RUN)
     if args.task == "sine":
         sine()
+    elif args.task == "sine-centers":
+        sine_centers()
     elif args.task == "marble":
         marble(args.checkpoint)
     elif args.task in ("images", "portraits"):
