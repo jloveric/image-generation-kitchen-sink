@@ -167,98 +167,72 @@ def pixel_votes():
 def autoencoder():
     from hebbian_fit.autoencoder import vote_assignment
 
-    fig, ax = canvas(12.5, 7.44)
-    ax.set_ylim(2.44, 9.88)
-    # The reconstruction command saves two square tiles side by side.
+    fig, ax = canvas(12.5, 5.78)
     sheet = plt.imread(OUT / "celeba-reconstruction.png")
-    original = sheet[:, :sheet.shape[0]]
-    reconstruction = sheet[:, sheet.shape[0]:]
+    original, reconstruction = sheet[:, :sheet.shape[0]], sheet[:, sheet.shape[0]:]
 
-    def draw_image(pixels, x, y):
-        ax.imshow(pixels, extent=(x-.45, x+.45, y-.45, y+.45), interpolation="nearest")
+    def heading(x, y, title):
+        ax.text(x, y, title, fontsize=15, va="center", color=INK, weight="bold")
 
-    def heading(y, title, color):
-        ax.text(.12, y, title, fontsize=15, va="center", color=color, weight="bold")
+    heading(.15, 5.52, "Forward pass")
+    y = 4.60
+    for x, pixels, title, detail in (
+        (.68, original, "Input image", "Center the RGB values"),
+        (11.80, reconstruction, "Output image", r"Round $\min(1,|h_k|)$ to 8 bits"),
+    ):
+        ax.imshow(pixels, extent=(x-.41, x+.41, y-.41, y+.41), interpolation="nearest")
+        label(ax, x, 5.17, title, 12, weight="bold")
+        label(ax, max(1.03, min(11.39, x)), 3.95, detail, 11)
 
-    heading(9.59, "How 12,288 output classes teach the hidden layers", INK)
-    left, right = 4.68, 7.82
-    rows = (8.27, 7.15)
-    label(ax, left, 9.02, "Bottleneck", 13, weight="bold")
-    label(ax, right, 9.02, "Decoder hidden", 13, weight="bold")
+    previous = 1.09
+    layers = (
+        (2.37, "Encoder 1", 3072), (4.23, "Encoder 2", 1536), (6.09, "Bottleneck", 256),
+        (7.95, "Decoder hidden", 2040), (9.81, "Decoder output", 12288),
+    )
+    for x, title, width in layers:
+        box(ax, x, y, 1.60, .84, title, f"{width:,} neurons", TEAL, COOL)
+        arrow(ax, (previous+.03, y), (x-.82, y))
+        previous = x+.80
+    arrow(ax, (previous+.03, y), (11.37, y))
+    wire(ax, [(.15, 3.64), (12.35, 3.64)], width=.75)
+
+    heading(.15, 3.34, "Connections between two hidden layers")
+    heading(6.10, 3.34, "Class assignments used during training")
+    wire(ax, [(5.86, .23), (5.86, 3.46)], width=.75)
+    left, right = 1.49, 4.18
+    rows = (2.21, 1.16)
+    label(ax, left, 2.82, "Bottleneck (B)", 12, weight="bold")
+    label(ax, right, 2.82, "Decoder hidden (D)", 12, weight="bold")
     for source in rows:
         for dest in rows:
-            arrow(ax, (left+.30, source), (right-.30, dest), INK)
-    # The ellipses flank the two expanded layers on the forward path.
-    for x, dx in ((left, -1), (right, 1)):
-        label(ax, x + dx*.93, 7.71, r"$\cdots$", 17)
-        for y in rows:
-            earlier = (x + dx*.73, 7.71)
-            node = (x + dx*.21, y + (.20 if y < 7.71 else -.20))
-            endpoints = (earlier, node) if dx < 0 else (node, earlier)
-            arrow(ax, *endpoints, WIRE)
+            arrow(ax, (left+.31, source), (right-.31, dest))
+    for x, layer, dx in ((left, "B", -1), (right, "D", 1)):
+        mid = sum(rows)/2
+        label(ax, x + dx*1.11, mid, r"$\cdots$", 18)
+        for j, row_y in enumerate(rows, start=1):
+            edge = (x + dx*.88, mid)
+            node = (x + dx*.27, row_y + (.11 if row_y < mid else -.11))
+            start, end = (edge, node) if dx < 0 else (node, edge)
+            arrow(ax, start, end, WIRE)
+            ax.add_patch(Circle((x, row_y), .29, ec=TEAL, fc=COOL, lw=1.2))
+            label(ax, x, row_y, rf"$h^{{\mathrm{{{layer}}}}}_{{{j}}}$", 14, TEAL)
+        label(ax, x, .58, r"$\vdots$", 16)
 
-    # Use the same two assignments as the manuscript's trained autoencoder.
-    for x, group_x, width, assignment_seed in ((left, 1.76, 256, 0), (right, 10.74, 2040, 2)):
+    columns = (6.70, 8.23, 10.63)
+    for x, title in zip(columns, ("Neuron", "Class count", "Teaching signal"), strict=True):
+        label(ax, x, 2.82, title, 12, weight="bold")
+    wire(ax, [(6.10, 2.63), (12.35, 2.63)], width=.8)
+    row_y = 2.36
+    for layer, width, assignment_seed in (("B", 256, 0), ("D", 2040, 2)):
         groups, polarity = vote_assignment(width // 2, assignment_seed, True, independent=True)
-        label(ax, group_x, 9.02, f"{groups.shape[1]} classes per neuron", 13, GOLD, "bold")
-        for j, y in enumerate(rows):
-            ax.add_patch(Circle((x, y), .28, ec=TEAL, fc=COOL, lw=1.3))
-            label(ax, x, y, rf"$h_{{{j+1}}}$", 15, TEAL)
-            k, m = groups[j, :2] + 1  # Number the output neurons from one.
+        for j in range(2):
+            k, m = groups[j, :2] + 1
             first, second = ("+" if v > 0 else "-" for v in polarity[:2])
-            box(ax, group_x, y, 3.22, .79, f"Output neurons {k:,}, {m:,}, …",
-                rf"${first}e_{{{k}}}{second}e_{{{m}}}+\cdots$", GOLD, WARM, size=12)
-            direction = 1 if group_x < x else -1
-            arrow(ax, (group_x+direction*1.62, y), (x-direction*.30, y), GOLD, "--")
-        label(ax, x, 6.66, r"$\vdots$", 15)
-    arrow(ax, (.26, 6.32), (.96, 6.32))
-    label(ax, 2.20, 6.32, "Forward connection", 12)
-    arrow(ax, (4.24, 6.32), (4.94, 6.32), GOLD, "--")
-    label(ax, 8.19, 6.32, r"Weighted sum of the assigned class error signs", 12, GOLD)
-    wire(ax, [(.12, 6.02), (12.38, 6.02)], width=.7)
-
-    heading(5.80, "Reconstruction", INK)
-    label(ax, 8.35, 5.80, "The bottleneck passes 256 signed activities to the decoder.", 12)
-    layers = (
-        (2.37, "Encoder 1", 3072, 8),
-        (4.21, "Encoder 2", 1536, 16),
-        (6.05, "Bottleneck", 256, 96),
-        (7.89, "Decoder hidden", 2040, 12),
-        (9.73, "Decoder output", 12288, 1),
-    )
-    y = 4.74
-    draw_image(original, .69, y)
-    draw_image(reconstruction, 11.76, y)
-    label(ax, .69, 5.44, "Input image", 12, weight="bold")
-    label(ax, 11.76, 5.44, "Reconstruction", 12, weight="bold")
-    label(ax, .69, 4.04, "Center the RGB\ninput values", 11)
-    label(ax, 11.76, 4.04, r"$\min(1,|h_k|)$" + "\nround to 8 bits", 11)
-    previous = 1.16
-    for x, name, width, group_size in layers:
-        label(ax, x, 5.44, name, 12, weight="bold")
-        ax.add_patch(FancyBboxPatch((x-.73, y-.48), 1.46, .96,
-                                   boxstyle="round,pad=0,rounding_size=.08",
-                                   ec=TEAL if name.startswith("Decoder") or name == "Bottleneck" else WIRE,
-                                   fc=COOL if name == "Bottleneck" else LIGHT))
-        single = name == "Decoder output"
-        ax.add_patch(Circle((x, y+.18), .18, ec=TEAL, fc=COOL, lw=1.1))
-        label(ax, x, y+.18, "$h_k$" if single else "$h_j$", 13, TEAL)
-        label(ax, x, y-.22, f"{width:,} neurons", 10.5, weight="bold")
-        arrow(ax, (previous, y), (x-.75, y))
-        previous = x+.75
-        # Feedback travels from the final pixel comparison directly to each layer.
-        arrow(ax, (x, 3.86), (x, y-.51), GOLD, "--")
-        label(ax, x, 3.59, f"{group_size} sign" + ("s" if group_size > 1 else ""),
-              12, GOLD, "bold")
-        wire(ax, [(x, 3.40), (x, 3.19)], GOLD, style="--")
-    arrow(ax, (previous, y), (11.26, y))
-    heading(3.59, "Training", GOLD)
-    wire(ax, [(layers[0][0], 3.19), (10.75, 3.19)], GOLD, style="--")
-    box(ax, 11.55, 3.18, 1.72, .74, "Error signs", "sign(target − output)", GOLD, WARM, 12)
-    arrow(ax, (11.76, 3.79), (11.76, 3.58), GOLD, "--")
-    label(ax, 6.23, 2.72,
-          "Signs per neuron. Each output neuron receives its own channel’s sign.",
-          12, GOLD)
+            label(ax, columns[0], row_y, rf"$h^{{\mathrm{{{layer}}}}}_{{{j+1}}}$", 14, TEAL)
+            label(ax, columns[1], row_y, str(groups.shape[1]), 13)
+            label(ax, columns[2], row_y, rf"${first}e_{{{k}}}{second}e_{{{m}}}+\cdots$", 14)
+            row_y -= .48
+    label(ax, 9.20, .37, r"$e_k$ is the sign of the error at output neuron $k$.", 12)
     fig.savefig(OUT / "autoencoder.pdf")
     fig.savefig(OUT / "autoencoder.png", dpi=160)
     plt.close(fig)
